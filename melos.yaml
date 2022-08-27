@@ -1,0 +1,33 @@
+name: animated_value
+packages:
+  - packages/**
+repository: https://github.com/blaugold/animated_value
+
+ide:
+  intellij: false
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+  version:
+    linkToCommits: true
+    branch: main
+    workspaceChangelog: true
+
+scripts:
+  format:
+    run: daco format .
+
+  format:check:
+    run: daco format --set-exit-if-changed .
+
+  analyze:
+    exec: dart analyze
+
+  analyze:doc_comments:
+    exec: daco analyze
+
+  test:unit:
+    exec: flutter test
+    select-package:
+      dir-exists: test

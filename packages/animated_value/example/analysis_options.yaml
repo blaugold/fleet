@@ -1,0 +1,6 @@
+include: ../../../analysis_options.yaml
+
+linter:
+  rules:
+    # Does not make sense in an example app.
+    public_member_api_docs: false
