@@ -3,16 +3,16 @@ import 'dart:collection';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-/// Specification for how to animate changes to an [AnimatedValue].
+/// Specification for animating changes of [AnimatedValue]s.
 ///
 /// See:
 ///
-/// - [withAnimation] for animating changes to [AnimatedValue]s.
+/// - [withAnimation] for animating changes of [AnimatedValue]s.
 class AnimationSpec {
-  /// Convenience animation which uses [defaultCurve] and [defaultDuration].
+  /// Animation which uses [defaultCurve] and [defaultDuration].
   factory AnimationSpec() => AnimationSpec.curve(defaultCurve);
 
-  /// Animation which animates for [duration] and uses [curve].
+  /// Animation which uses the provided [curve].
   AnimationSpec.curve(Curve curve, [Duration duration = defaultDuration])
       : this._(
           provider: _CurveAnimationProvider(
@@ -21,23 +21,23 @@ class AnimationSpec {
           ),
         );
 
-  /// Animation which uses [Curves.linear] and animators for [duration].
+  /// Animation which uses [Curves.linear].
   factory AnimationSpec.linear([Duration duration = defaultDuration]) =>
       AnimationSpec.curve(Curves.linear, duration);
 
-  /// Animation which uses [Curves.ease] and animates for [duration].
+  /// Animation which uses [Curves.ease].
   factory AnimationSpec.ease([Duration duration = defaultDuration]) =>
       AnimationSpec.curve(Curves.ease, duration);
 
-  /// Animation which uses [Curves.easeIn] and animates for [duration].
+  /// Animation which uses [Curves.easeIn].
   factory AnimationSpec.easeIn([Duration duration = defaultDuration]) =>
       AnimationSpec.curve(Curves.easeIn, duration);
 
-  /// Animation which uses [Curves.easeOut] and animates for [duration].
+  /// Animation which uses [Curves.easeOut].
   factory AnimationSpec.easeOut([Duration duration = defaultDuration]) =>
       AnimationSpec.curve(Curves.easeOut, duration);
 
-  /// Animation which uses [Curves.easeInOut] and animates for [duration].
+  /// Animation which uses [Curves.easeInOut].
   factory AnimationSpec.easeInOut([Duration duration = defaultDuration]) =>
       AnimationSpec.curve(Curves.easeInOut, duration);
 
@@ -195,6 +195,14 @@ typedef TweenFactory<T> = Tween<T> Function();
 ///
 /// Changing [value] outside of [withAnimation] will not animate the change and
 /// update [animatedValue] immediately.
+///
+/// See:
+///
+/// - [AnimationSpec] for specifying how to animate changes of [AnimatedValue]s.
+/// - [withAnimation] for applying an [AnimationSpec] to changes of
+///   [AnimatedValue]s.
+/// - [AnimatedValueObserver] for rebuilding part of the widget tree each time
+///   one or more [AnimatedValue]s update their [animatedValue].
 class AnimatedValue<T> extends ChangeNotifier {
   /// Creates a wrapper around a [value] that animates changes to that value.
   ///
