@@ -1,4 +1,5 @@
 import 'package:animated_value/animated_value.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide AnimatedSize;
 
 void main() {
@@ -24,7 +25,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with TickerProviderStateMixin, Diagnosticable {
   late final color = AnimatedColor(Colors.blue, vsync: this);
   late final size = AnimatedSize(const Size.square(200), vsync: this);
 
@@ -87,5 +89,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('color', color));
+    properties.add(DiagnosticsProperty('size', size));
   }
 }
