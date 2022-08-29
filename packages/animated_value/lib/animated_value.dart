@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
@@ -8,7 +9,7 @@ import 'package:flutter/widgets.dart';
 /// See:
 ///
 /// - [withAnimation] for animating changes of [AnimatedValue]s.
-class AnimationSpec {
+class AnimationSpec with Diagnosticable {
   /// Animation which uses [defaultCurve] and [defaultDuration].
   factory AnimationSpec() => AnimationSpec.curve(defaultCurve);
 
@@ -132,6 +133,32 @@ class AnimationSpec {
     }
     return _copyWith(speed: speed);
   }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    _provider.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<Duration>(
+        'delay',
+        _delay,
+        missingIfNull: true,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'repeat',
+        _repeatForever ? 'forever' : _repeatCount,
+        defaultValue: 1,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<bool>('reverse', _reverse, defaultValue: false),
+    );
+    properties.add(
+      DiagnosticsProperty<double>('speed', _speed, defaultValue: 1),
+    );
+  }
 }
 
 /// Runs a [block] of code and animates all changes made to [AnimatedValue]s
@@ -203,7 +230,7 @@ typedef TweenFactory<T> = Tween<T> Function();
 ///   [AnimatedValue]s.
 /// - [AnimatedValueObserver] for rebuilding part of the widget tree each time
 ///   one or more [AnimatedValue]s update their [animatedValue].
-class AnimatedValue<T> extends ChangeNotifier {
+class AnimatedValue<T> extends ChangeNotifier with Diagnosticable {
   /// Creates a wrapper around a [value] that animates changes to that value.
   ///
   /// It uses the provided [tweenFactory] to creates [Tween]s to interpolate
@@ -284,10 +311,25 @@ class AnimatedValue<T> extends ChangeNotifier {
 
   void _updateWithAnimation(AnimationSpec spec) => _animation =
       spec._provider.createAnimation(spec, this, _animation)..start();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+
+    properties.add(DiagnosticsProperty<T>('value', value));
+    properties.add(DiagnosticsProperty<T>('animatedValue', animatedValue));
+    properties.add(
+      DiagnosticsProperty(
+        'animation',
+        _animation,
+        missingIfNull: true,
+      ),
+    );
+  }
 }
 
 // ignore: one_member_abstracts
-abstract class _AnimationProvider {
+abstract class _AnimationProvider with Diagnosticable {
   _Animation<T> createAnimation<T>(
     AnimationSpec spec,
     AnimatedValue<T> value,
@@ -295,7 +337,7 @@ abstract class _AnimationProvider {
   );
 }
 
-abstract class _Animation<T> {
+abstract class _Animation<T> with Diagnosticable {
   _Animation(this._spec, this._value)
       : _tween = _value._tweenFactory()
           ..begin = _value._animatedValue
@@ -315,12 +357,17 @@ abstract class _Animation<T> {
   Tween<T?> get tween => _tween;
 
   void start() {
+    assert(!_ticker.isActive);
     _ticker.start();
   }
 
   void stop() {
     if (_ticker.isActive) {
       _ticker.stop();
+    }
+
+    if (_value._animation == this) {
+      _value._animation = null;
     }
   }
 
@@ -378,6 +425,14 @@ abstract class _Animation<T> {
       stop();
     }
   }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('spec', _spec));
+    properties.add(DiagnosticsProperty('repeat', _repeat));
+    properties.add(DiagnosticsProperty('forward', _forward));
+  }
 }
 
 class _CurveAnimationProvider extends _AnimationProvider {
@@ -394,6 +449,13 @@ class _CurveAnimationProvider extends _AnimationProvider {
   ) {
     previousAnimation?.stop();
     return _CurveAnimation(spec, value, this);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(EnumProperty('curve', curve));
+    properties.add(DiagnosticsProperty<Duration>('duration', duration));
   }
 }
 
