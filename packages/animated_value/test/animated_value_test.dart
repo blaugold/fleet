@@ -9,6 +9,9 @@ void main() {
       'do not animate value if animations are disabled',
       (tester) async {
         debugSemanticsDisableAnimations = true;
+        addTearDown(() {
+          debugSemanticsDisableAnimations = false;
+        });
 
         final value = AnimatedValue<double>(0, vsync: tester);
         final history = valueHistory(value);
