@@ -26,6 +26,49 @@ void main() {
     );
   });
 
+  group('set value without spec', () {
+    testWidgets(
+      'different value stops running animation',
+      (tester) async {
+        final value = AnimatedValue<double>(0, vsync: tester);
+        final history = valueHistory(value);
+
+        await tester.withAnimation(linear1sCurve, () => value.value = 1);
+
+        await tester.pump(d500ms); // .5
+
+        expect(value.animatedValue, .5);
+        value.value = 2;
+        expect(value.animatedValue, 2);
+
+        await tester.pumpAndSettle();
+
+        expect(history, [0, .5, 2]);
+      },
+    );
+
+    testWidgets(
+      'same value allows running animation to continue',
+      (tester) async {
+        final value = AnimatedValue<double>(0, vsync: tester);
+        final history = valueHistory(value);
+
+        await tester.withAnimation(linear1sCurve, () => value.value = 1);
+
+        await tester.pump(d500ms); // .5
+
+        expect(value.animatedValue, .5);
+        value.value = 1;
+        expect(value.animatedValue, .5);
+
+        await tester.pump(d500ms); // 1
+        await tester.pumpAndSettle();
+
+        expect(history, [0, .5, 1]);
+      },
+    );
+  });
+
   group('curve', () {
     testWidgets('simple', (tester) async {
       final value = AnimatedValue<double>(0, vsync: tester);

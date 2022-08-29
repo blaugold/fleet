@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 /// See:
 ///
 /// - [withAnimation] for animating changes of [AnimatedValue]s.
+@immutable
 class AnimationSpec with Diagnosticable {
   /// Animation which uses [defaultCurve] and [defaultDuration].
   factory AnimationSpec() => AnimationSpec.curve(defaultCurve);
@@ -160,6 +161,26 @@ class AnimationSpec with Diagnosticable {
       DiagnosticsProperty<double>('speed', _speed, defaultValue: 1),
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AnimationSpec &&
+          runtimeType == other.runtimeType &&
+          _provider == other._provider &&
+          _delay == other._delay &&
+          _repeatCount == other._repeatCount &&
+          _reverse == other._reverse &&
+          _speed == other._speed;
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^
+      _provider.hashCode ^
+      _delay.hashCode ^
+      _repeatCount.hashCode ^
+      _reverse.hashCode ^
+      _speed.hashCode;
 }
 
 /// Runs a [block] of code and animates all changes made to [AnimatedValue]s
@@ -266,13 +287,28 @@ class AnimatedValue<T> extends ChangeNotifier with Diagnosticable {
   T _value;
 
   set value(T value) {
-    _value = value;
-
     final spec = AnimationSpec.current;
-    if (spec == null || SemanticsBinding.instance.disableAnimations) {
-      _updateWithoutAnimation();
+
+    if (_value == value) {
+      if (spec == null) {
+        // We let any running animation continue.
+        return;
+      } else {
+        // Start a new animation from the current _animatedValue to _value
+        // with the currently active spec.
+        _updateWithAnimation(spec);
+      }
     } else {
-      _updateWithAnimation(spec);
+      _value = value;
+
+      if (spec == null || SemanticsBinding.instance.disableAnimations) {
+        // Immediately update _animatedValue to the new _value.
+        _updateWithoutAnimation();
+      } else {
+        // Start a new animation from the current _animatedValue to the new
+        // _value with the currently active spec.
+        _updateWithAnimation(spec);
+      }
     }
   }
 
@@ -306,12 +342,17 @@ class AnimatedValue<T> extends ChangeNotifier with Diagnosticable {
 
   void _updateWithoutAnimation() {
     _animation?.stop();
-    _animation = null;
     _setAnimatedValue(_value);
   }
 
-  void _updateWithAnimation(AnimationSpec spec) => _animation =
-      spec._provider.createAnimation(spec, this, _animation)..start();
+  void _updateWithAnimation(AnimationSpec spec) {
+    if (_animation == null && _value == _animatedValue) {
+      return;
+    }
+
+    _animation = spec._provider.createAnimation(spec, this, _animation)
+      ..start();
+  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -329,7 +370,7 @@ class AnimatedValue<T> extends ChangeNotifier with Diagnosticable {
   }
 }
 
-// ignore: one_member_abstracts
+@immutable
 abstract class _AnimationProvider with Diagnosticable {
   _Animation<T> createAnimation<T>(
     AnimationSpec spec,
@@ -436,6 +477,7 @@ abstract class _Animation<T> with Diagnosticable {
   }
 }
 
+@immutable
 class _CurveAnimationProvider extends _AnimationProvider {
   _CurveAnimationProvider({required this.curve, required this.duration});
 
@@ -458,6 +500,17 @@ class _CurveAnimationProvider extends _AnimationProvider {
     properties.add(EnumProperty('curve', curve));
     properties.add(DiagnosticsProperty<Duration>('duration', duration));
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _CurveAnimationProvider &&
+          runtimeType == other.runtimeType &&
+          curve == other.curve &&
+          duration == other.duration;
+
+  @override
+  int get hashCode => runtimeType.hashCode ^ curve.hashCode ^ duration.hashCode;
 }
 
 class _CurveAnimation<T> extends _Animation<T> {
