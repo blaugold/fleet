@@ -1,6 +1,5 @@
 import 'package:animated_value/animated_value.dart';
 import 'package:animated_value/animated_value.dart' as av;
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -153,10 +152,7 @@ void main() {
 const d250ms = Duration(milliseconds: 250);
 const d500ms = Duration(milliseconds: 500);
 
-final linear1sCurve = AnimationSpec.curve(
-  curve: Curves.linear,
-  duration: const Duration(seconds: 1),
-);
+final linear1sCurve = AnimationSpec.linear(const Duration(seconds: 1));
 
 List<T> valueHistory<T>(AnimatedValue<T> value) {
   final history = <T>[value.value];

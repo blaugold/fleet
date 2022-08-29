@@ -9,19 +9,37 @@ import 'package:flutter/widgets.dart';
 ///
 /// - [withAnimation] for animating changes to [AnimatedValue]s.
 class AnimationSpec {
-  /// Convenience animation which animates for 200ms and uses [Curves.ease].
-  factory AnimationSpec() => AnimationSpec.curve();
+  /// Convenience animation which uses [defaultCurve] and [defaultDuration].
+  factory AnimationSpec() => AnimationSpec.curve(defaultCurve);
 
   /// Animation which animates for [duration] and uses [curve].
-  AnimationSpec.curve({
-    Curve curve = Curves.ease,
-    Duration duration = const Duration(milliseconds: 200),
-  }) : this._(
+  AnimationSpec.curve(Curve curve, [Duration duration = defaultDuration])
+      : this._(
           provider: _CurveAnimationProvider(
             curve: curve,
             duration: duration,
           ),
         );
+
+  /// Animation which uses [Curves.linear] and animators for [duration].
+  factory AnimationSpec.linear([Duration duration = defaultDuration]) =>
+      AnimationSpec.curve(Curves.linear, duration);
+
+  /// Animation which uses [Curves.ease] and animates for [duration].
+  factory AnimationSpec.ease([Duration duration = defaultDuration]) =>
+      AnimationSpec.curve(Curves.ease, duration);
+
+  /// Animation which uses [Curves.easeIn] and animates for [duration].
+  factory AnimationSpec.easeIn([Duration duration = defaultDuration]) =>
+      AnimationSpec.curve(Curves.easeIn, duration);
+
+  /// Animation which uses [Curves.easeOut] and animates for [duration].
+  factory AnimationSpec.easeOut([Duration duration = defaultDuration]) =>
+      AnimationSpec.curve(Curves.easeOut, duration);
+
+  /// Animation which uses [Curves.easeInOut] and animates for [duration].
+  factory AnimationSpec.easeInOut([Duration duration = defaultDuration]) =>
+      AnimationSpec.curve(Curves.easeInOut, duration);
 
   AnimationSpec._({
     required _AnimationProvider provider,
@@ -34,6 +52,12 @@ class AnimationSpec {
         _repeatCount = repeatCount ?? 1,
         _reverse = reverse ?? false,
         _speed = speed ?? 1;
+
+  /// The default [Curve] used for animations, when no curve is specified.
+  static const defaultCurve = Curves.linear;
+
+  /// The default duration used for animations, when no duration is specified.
+  static const defaultDuration = Duration(milliseconds: 200);
 
   static const _foreverRepeatCount = -1;
 
@@ -122,7 +146,7 @@ class AnimationSpec {
 /// -->
 ///
 /// ```dart main multi_end
-/// withAnimation(AnimationSpec.curve(curve: Curves.easeIn), () {
+/// withAnimation(AnimationSpec.curve(Curves.easeIn), () {
 ///   color.value = Colors.blue;
 /// });
 /// ```
