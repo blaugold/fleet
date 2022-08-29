@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _animateToRed() {
-    withAnimation(AnimationSpec.curve(curve: Curves.easeInOutCubic), () {
+    withAnimation(AnimationSpec.easeInOut(), () {
       color.value = Colors.red;
       size.value = const Size.square(250);
     });
@@ -44,10 +44,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   void _animateToGreen() {
     withAnimation(
-      AnimationSpec.curve(
-        duration: const Duration(seconds: 1),
-        curve: Curves.easeInOutExpo,
-      ),
+      AnimationSpec.curve(Curves.easeInOutExpo, const Duration(seconds: 1)),
       () {
         color.value = Colors.green;
         size.value = (context.findRenderObject()! as RenderBox).size;
