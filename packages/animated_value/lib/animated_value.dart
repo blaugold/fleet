@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 
 /// Specification for animating changes of [AnimatedValue]s.
@@ -268,7 +269,7 @@ class AnimatedValue<T> extends ChangeNotifier with Diagnosticable {
     _value = value;
 
     final spec = AnimationSpec.current;
-    if (spec == null) {
+    if (spec == null || SemanticsBinding.instance.disableAnimations) {
       _updateWithoutAnimation();
     } else {
       _updateWithAnimation(spec);
