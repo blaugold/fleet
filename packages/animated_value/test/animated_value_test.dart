@@ -1,8 +1,31 @@
 import 'package:animated_value/animated_value.dart';
 import 'package:animated_value/animated_value.dart' as av;
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  group('disabled animations', () {
+    testWidgets(
+      'do not animate value if animations are disabled',
+      (tester) async {
+        debugSemanticsDisableAnimations = true;
+        addTearDown(() {
+          debugSemanticsDisableAnimations = false;
+        });
+
+        final value = AnimatedValue<double>(0, vsync: tester);
+        final history = valueHistory(value);
+
+        await tester.withAnimation(linear1sCurve, () => value.value = 1);
+
+        await tester.pump(d500ms);
+        await tester.pumpAndSettle();
+
+        expect(history, [0, 1]);
+      },
+    );
+  });
+
   group('curve', () {
     testWidgets('simple', (tester) async {
       final value = AnimatedValue<double>(0, vsync: tester);
