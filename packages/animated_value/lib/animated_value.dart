@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 /// Specification for how to animate changes to an [AnimatedValue].
 ///
@@ -16,21 +16,26 @@ class AnimationSpec {
   AnimationSpec.curve({
     Curve curve = Curves.ease,
     Duration duration = const Duration(milliseconds: 200),
-  }) : this._(type: _CurveAnimation(curve: curve, duration: duration));
+  }) : this._(
+          provider: _CurveAnimationProvider(
+            curve: curve,
+            duration: duration,
+          ),
+        );
 
   AnimationSpec._({
-    required _AnimationType type,
+    required _AnimationProvider provider,
     Duration? delay,
     int? repeatCount,
-    bool? repeatForever,
     bool? reverse,
     double? speed,
-  })  : _type = type,
+  })  : _provider = provider,
         _delay = delay,
-        _repeatCount = repeatCount,
-        _repeatForever = repeatForever,
-        _reverse = reverse,
-        _speed = speed;
+        _repeatCount = repeatCount ?? 1,
+        _reverse = reverse ?? false,
+        _speed = speed ?? 1;
+
+  static const _foreverRepeatCount = -1;
 
   /// The current [AnimationSpec] that will be used to animated changes to
   /// [AnimatedValue]s.
@@ -49,25 +54,24 @@ class AnimationSpec {
     }
   }
 
-  final _AnimationType _type;
+  final _AnimationProvider _provider;
   final Duration? _delay;
-  final int? _repeatCount;
-  final bool? _repeatForever;
-  final bool? _reverse;
-  final double? _speed;
+  final int _repeatCount;
+  final bool _reverse;
+  final double _speed;
+
+  bool get _repeatForever => _repeatCount == _foreverRepeatCount;
 
   AnimationSpec _copyWith({
     Duration? delay,
     int? repeatCount,
-    bool? repeatForever,
     bool? reverse,
     double? speed,
   }) {
     return AnimationSpec._(
-      type: _type,
+      provider: _provider,
       delay: delay ?? _delay,
       repeatCount: repeatCount ?? _repeatCount,
-      repeatForever: repeatForever ?? _repeatForever,
       reverse: reverse ?? _reverse,
       speed: speed ?? _speed,
     );
@@ -92,9 +96,8 @@ class AnimationSpec {
   ///
   /// If [reverse] is true, the animation will reverse after finishing, instead
   /// of starting immediately from the beginning.
-  AnimationSpec repeatForever({bool reverse = false}) {
-    return _copyWith(repeatForever: true, reverse: reverse);
-  }
+  AnimationSpec repeatForever({bool reverse = false}) =>
+      _copyWith(repeatCount: _foreverRepeatCount, reverse: reverse);
 
   /// Returns a copy of this [AnimationSpec] with the given [speed].
   ///
@@ -105,14 +108,6 @@ class AnimationSpec {
     }
     return _copyWith(speed: speed);
   }
-}
-
-class _AnimationType {}
-
-class _CurveAnimation extends _AnimationType {
-  _CurveAnimation({required this.curve, required this.duration});
-  final Curve curve;
-  final Duration duration;
 }
 
 /// Runs a [block] of code and animates all changes made to [AnimatedValue]s
@@ -191,24 +186,11 @@ class AnimatedValue<T> extends ChangeNotifier {
   })  : _value = value,
         _animatedValue = value,
         _tweenFactory = tweenFactory ?? Tween.new,
-        _tween = (tweenFactory ?? Tween.new)(),
-        _controller = AnimationController(vsync: vsync) {
-    final animation = _tween.chain(_curveTween).animate(_controller);
+        _vsync = vsync;
 
-    // We don't need to remove the listener later because after the controller
-    // is disposed, the animation will never call the listener again.
-    animation.addListener(() {
-      // ignore: null_check_on_nullable_type_parameter
-      _setAnimatedValue(animation.value!);
-    });
-  }
-
-  // ignore: unused_field
   final TweenFactory<T?> _tweenFactory;
-  final Tween<T?> _tween;
-  final AnimationController _controller;
-  final _curveTween = CurveTween(curve: Curves.linear);
-  final _animations = <_AnimationImpl<T>>[];
+  final TickerProvider _vsync;
+  _Animation<T>? _animation;
 
   /// The current, unanimated value of this property.
   ///
@@ -258,107 +240,149 @@ class AnimatedValue<T> extends ChangeNotifier {
 
   @override
   void dispose() {
-    _cancelAllAnimations();
+    _animation?.stop();
     super.dispose();
   }
 
   void _updateWithoutAnimation() {
-    _cancelAllAnimations();
+    _animation?.stop();
+    _animation = null;
     _setAnimatedValue(_value);
   }
 
-  void _updateWithAnimation(AnimationSpec spec) {
-    _cancelAllAnimations();
-    _animations.add(_AnimationImpl<T>(this, spec, _value)..start());
+  void _updateWithAnimation(AnimationSpec spec) => _animation =
+      spec._provider.createAnimation(spec, this, _animation)..start();
+}
+
+// ignore: one_member_abstracts
+abstract class _AnimationProvider {
+  _Animation<T> createAnimation<T>(
+    AnimationSpec spec,
+    AnimatedValue<T> value,
+    _Animation<T>? previousAnimation,
+  );
+}
+
+abstract class _Animation<T> {
+  _Animation(this._spec, this._value)
+      : _tween = _value._tweenFactory()
+          ..begin = _value._animatedValue
+          ..end = _value._value {
+    _ticker = _value._vsync.createTicker(_onTick);
   }
 
-  void _cancelAllAnimations() {
-    while (_animations.isNotEmpty) {
-      _animations.removeLast().cancel();
+  final AnimationSpec _spec;
+  final AnimatedValue<T> _value;
+  final Tween<T?> _tween;
+  late final Ticker _ticker;
+  var _repeat = 0;
+  var _forward = true;
+  Duration _lastRepeatEnd = Duration.zero;
+  Duration _lastRepeatDuration = Duration.zero;
+
+  Tween<T?> get tween => _tween;
+
+  void start() {
+    _ticker.start();
+  }
+
+  void stop() {
+    if (_ticker.isActive) {
+      _ticker.stop();
+    }
+  }
+
+  Duration? isDone(Duration elapsed);
+
+  T valueAt(Duration elapsed);
+
+  void _onTick(Duration elapsed) {
+    var elapsedForAllRepeats = elapsed;
+
+    final delay = _spec._delay;
+    if (delay != null) {
+      if (elapsedForAllRepeats < delay) {
+        return;
+      }
+      elapsedForAllRepeats -= delay;
+    }
+
+    elapsedForAllRepeats *= _spec._speed;
+
+    var elapsedForRepeat = elapsedForAllRepeats - _lastRepeatEnd;
+
+    if (_forward) {
+      final endDelta = isDone(elapsedForRepeat);
+      if (endDelta != null) {
+        assert(endDelta.isNegative || endDelta.inMicroseconds == 0);
+        elapsedForRepeat = elapsedForRepeat + endDelta;
+        _lastRepeatEnd += elapsedForRepeat;
+        _lastRepeatDuration = elapsedForRepeat;
+
+        if (_spec._reverse) {
+          _forward = false;
+        }
+
+        _onFinishRepeat();
+      }
+    } else {
+      elapsedForRepeat = _lastRepeatDuration - elapsedForRepeat;
+
+      if (elapsedForRepeat.isNegative || elapsedForRepeat.inMicroseconds == 0) {
+        _lastRepeatEnd += _lastRepeatDuration + elapsedForRepeat;
+        elapsedForRepeat = elapsedForRepeat.abs();
+
+        _forward = true;
+
+        _onFinishRepeat();
+      }
+    }
+
+    _value._setAnimatedValue(valueAt(elapsedForRepeat));
+  }
+
+  void _onFinishRepeat() {
+    if (!_spec._repeatForever && ++_repeat >= _spec._repeatCount) {
+      stop();
     }
   }
 }
 
-class _AnimationImpl<T> {
-  _AnimationImpl(this._property, this._spec, this._endValue);
+class _CurveAnimationProvider extends _AnimationProvider {
+  _CurveAnimationProvider({required this.curve, required this.duration});
 
-  final AnimationSpec _spec;
-  final AnimatedValue<T> _property;
-  final T _endValue;
-  Timer? _delayTimer;
+  final Curve curve;
+  final Duration duration;
 
-  void start() {
-    final spec = _spec;
+  @override
+  _Animation<T> createAnimation<T>(
+    AnimationSpec spec,
+    AnimatedValue<T> value,
+    _Animation<T>? previousAnimation,
+  ) {
+    previousAnimation?.stop();
+    return _CurveAnimation(spec, value, this);
+  }
+}
 
-    final delay = spec._delay;
-    if (delay != null) {
-      _delayTimer = Timer(delay, () {
-        _delayTimer = null;
-        _animate();
-      });
-      return;
+class _CurveAnimation<T> extends _Animation<T> {
+  _CurveAnimation(super.spec, super.value, this._provider);
+
+  final _CurveAnimationProvider _provider;
+
+  @override
+  Duration? isDone(Duration elapsed) {
+    if (elapsed >= _provider.duration) {
+      return _provider.duration - elapsed;
     }
-
-    _animate();
+    return null;
   }
 
-  void _animate() {
-    final animationType = _spec._type;
-    if (animationType is _CurveAnimation) {
-      var duration = animationType.duration;
-
-      final speed = _spec._speed;
-      if (speed != null) {
-        duration = duration * (1 / speed);
-      }
-
-      _property._curveTween.curve = animationType.curve;
-      _property._tween.begin = _property._animatedValue;
-      _property._tween.end = _endValue;
-
-      final controller = _property._controller;
-      controller.duration = duration;
-      controller.reset();
-
-      if (_spec._repeatForever ?? false) {
-        controller.repeat(reverse: _spec._reverse ?? false);
-      } else if (_spec._repeatCount != null) {
-        var remainingRepeats = _spec._repeatCount!;
-
-        void repeat() {
-          if (remainingRepeats-- <= 0) {
-            return;
-          }
-
-          TickerFuture future;
-          if (controller.status == AnimationStatus.dismissed) {
-            future = controller.forward();
-          } else {
-            future = _spec._reverse ?? false
-                ? controller.reverse()
-                : controller.forward(from: controller.lowerBound);
-          }
-
-          future.whenComplete(repeat);
-        }
-
-        repeat();
-      } else {
-        controller.forward();
-      }
-    } else {
-      throw UnimplementedError('$animationType');
-    }
-  }
-
-  void cancel() {
-    final delayTimer = _delayTimer;
-    if (delayTimer != null) {
-      delayTimer.cancel();
-      _delayTimer = null;
-    } else {
-      _property._controller.stop();
-    }
+  @override
+  T valueAt(Duration elapsed) {
+    var t = elapsed.inMicroseconds / _provider.duration.inMicroseconds;
+    t = _provider.curve.transform(t);
+    return tween.transform(t)!;
   }
 }
 
