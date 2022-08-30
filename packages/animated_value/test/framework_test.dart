@@ -1,5 +1,4 @@
-import 'package:animated_value/animated_value.dart';
-import 'package:animated_value/animated_value.dart' as av;
+import 'package:animated_value/src/framework.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -233,7 +232,7 @@ extension on WidgetTester {
     AnimationSpec animationSpec,
     T Function() block,
   ) async {
-    final result = av.withAnimation(animationSpec, block);
+    final result = runWithAnimation(animationSpec, block);
     await pump();
     return result;
   }

@@ -524,7 +524,7 @@ abstract class _Animation<T> with Diagnosticable {
   T? valueAt(Duration elapsed);
 
   void _onTick(Duration elapsed) {
-    var elapsedForAllRepeats = elapsed;
+    var elapsedForAllRepeats = elapsed * _spec._speed;
 
     final delay = _spec._delay;
     if (delay != null) {
@@ -533,8 +533,6 @@ abstract class _Animation<T> with Diagnosticable {
       }
       elapsedForAllRepeats -= delay;
     }
-
-    elapsedForAllRepeats *= _spec._speed;
 
     var elapsedForRepeat = elapsedForAllRepeats - _lastRepeatEnd;
 

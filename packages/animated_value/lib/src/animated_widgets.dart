@@ -47,7 +47,7 @@ class _ASizedBoxState extends AnimatedValueState<ASizedBox> {
   }
 
   @override
-  Widget buildWithAnimatedValues(BuildContext context) {
+  Widget build(BuildContext context) {
     return SizedBox(
       height: _height.animatedValue,
       width: _width.animatedValue,
@@ -82,9 +82,70 @@ class _AColoredBoxState extends AnimatedValueState<AColoredBox> {
   }
 
   @override
-  Widget buildWithAnimatedValues(BuildContext context) {
+  Widget build(BuildContext context) {
     return ColoredBox(
       color: _color.animatedValue,
+      child: widget.child,
+    );
+  }
+}
+
+/// A version of [Align] that supports state-based animation with [Animated].
+class AAlign extends StatefulWidget {
+  /// Creates a version of [Align] that supports state-based animation with
+  /// [Animated].
+  const AAlign({
+    super.key,
+    this.alignment = Alignment.center,
+    this.widthFactor,
+    this.heightFactor,
+    this.child,
+  });
+
+  /// See [Align.alignment].
+  final AlignmentGeometry alignment;
+
+  /// See [Align.widthFactor].
+  final double? widthFactor;
+
+  /// See [Align.heightFactor].
+  final double? heightFactor;
+
+  /// See [ProxyWidget.child].
+  final Widget? child;
+
+  @override
+  State<AAlign> createState() => _AAlignState();
+}
+
+class _AAlignState extends AnimatedValueState<AAlign> {
+  late final _alignment = AnimatedValue(
+    widget.alignment,
+    tweenFactory: AlignmentTween.new,
+    vsync: this,
+  );
+  late final _heightFactor = OptionalAnimatedValue(
+    widget.heightFactor,
+    vsync: this,
+  );
+  late final _widthFactor = OptionalAnimatedValue(
+    widget.widthFactor,
+    vsync: this,
+  );
+
+  @override
+  void updateAnimatedValues() {
+    _alignment.value = widget.alignment;
+    _heightFactor.value = widget.heightFactor;
+    _widthFactor.value = widget.widthFactor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: _alignment.animatedValue,
+      widthFactor: _widthFactor.animatedValue,
+      heightFactor: _heightFactor.animatedValue,
       child: widget.child,
     );
   }

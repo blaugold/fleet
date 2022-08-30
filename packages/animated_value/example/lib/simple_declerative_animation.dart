@@ -2,6 +2,7 @@ import 'package:animated_value/animated_value.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  AnimatedValueBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -41,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: TextButton(
                   onPressed: () => setState(() => _expanded = !_expanded),
-                  style: TextButton.styleFrom(primary: Colors.white),
+                  style: TextButton.styleFrom(foregroundColor: Colors.white),
                   child: const Text('Toggle'),
                 ),
               ),

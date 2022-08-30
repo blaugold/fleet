@@ -1,4 +1,4 @@
-export 'src/animated_widgets.dart' show AColoredBox, ASizedBox;
+export 'src/animated_widgets.dart' show AAlign, AColoredBox, ASizedBox;
 export 'src/framework.dart'
     show
         Animated,
@@ -7,11 +7,11 @@ export 'src/framework.dart'
         AnimatedRect,
         AnimatedSize,
         AnimatedValue,
-        AnimatedValueObserver,
-        AnimatedValueObserverBuilder,
         AnimatedValueState,
         AnimatedValueStateMixin,
+        AnimatedValueBinding,
         AnimationSpec,
         OptionalAnimatedValue,
+        SetStateWithAnimationExtension,
         TweenFactory,
         withAnimation;
