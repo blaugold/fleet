@@ -27,8 +27,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with TickerProviderStateMixin, Diagnosticable {
-  late final color = AnimatedColor(Colors.blue, vsync: this);
-  late final size = AnimatedSize(const Size.square(200), vsync: this);
+  static const collapsedColor = Colors.blue;
+  static const expandedColor = Colors.green;
+  static const collapsedSize = Size.square(300);
+
+  late final color = AnimatedColor(collapsedColor, vsync: this);
+  late final size = AnimatedSize(collapsedSize, vsync: this);
 
   @override
   void dispose() {
@@ -37,18 +41,18 @@ class _MyHomePageState extends State<MyHomePage>
     super.dispose();
   }
 
-  void _animateToRed() {
+  void _collapse() {
     withAnimation(AnimationSpec.easeInOut(), () {
-      color.value = Colors.red;
-      size.value = const Size.square(250);
+      color.value = collapsedColor;
+      size.value = collapsedSize;
     });
   }
 
-  void _animateToGreen() {
+  void _expand() {
     withAnimation(
       AnimationSpec.curve(Curves.easeInOutExpo, const Duration(seconds: 1)),
       () {
-        color.value = Colors.green;
+        color.value = expandedColor;
         size.value = (context.findRenderObject()! as RenderBox).size;
       },
     );
@@ -73,15 +77,15 @@ class _MyHomePageState extends State<MyHomePage>
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextButton(
-                  onPressed: _animateToRed,
+                  onPressed: _collapse,
                   style: TextButton.styleFrom(primary: Colors.white),
-                  child: const Text('Red'),
+                  child: const Text('Collapsed'),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   style: TextButton.styleFrom(primary: Colors.white),
-                  onPressed: _animateToGreen,
-                  child: const Text('Green'),
+                  onPressed: _expand,
+                  child: const Text('Expanded'),
                 ),
               ],
             ),
@@ -89,12 +93,5 @@ class _MyHomePageState extends State<MyHomePage>
         ),
       ),
     );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('color', color));
-    properties.add(DiagnosticsProperty('size', size));
   }
 }
