@@ -1,8 +1,8 @@
 import 'package:animated_value/animated_value.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide AnimatedSize;
 
 void main() {
+  AnimatedValueBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -25,35 +25,27 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with TickerProviderStateMixin, Diagnosticable {
-  static const collapsedColor = Colors.blue;
-  static const expandedColor = Colors.green;
-  static const collapsedSize = Size.square(300);
+class _MyHomePageState extends State<MyHomePage> {
+  static const _collapsedColor = Colors.blue;
+  static const _expandedColor = Colors.green;
+  static const _collapsedSize = Size.square(300);
 
-  late final color = AnimatedColor(collapsedColor, vsync: this);
-  late final size = AnimatedSize(collapsedSize, vsync: this);
-
-  @override
-  void dispose() {
-    color.dispose();
-    size.dispose();
-    super.dispose();
-  }
+  var _color = _collapsedColor;
+  var _size = _collapsedSize;
 
   void _collapse() {
-    withAnimation(AnimationSpec.easeInOut(), () {
-      color.value = collapsedColor;
-      size.value = collapsedSize;
+    setStateWithAnimation(AnimationSpec.easeInOut(), () {
+      _color = _collapsedColor;
+      _size = _collapsedSize;
     });
   }
 
   void _expand() {
-    withAnimation(
+    setStateWithAnimation(
       AnimationSpec.curve(Curves.easeInOutExpo, const Duration(seconds: 1)),
       () {
-        color.value = expandedColor;
-        size.value = (context.findRenderObject()! as RenderBox).size;
+        _color = _expandedColor;
+        _size = (context.findRenderObject()! as RenderBox).size;
       },
     );
   }
@@ -62,32 +54,27 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: AnimatedValueObserver(
-          builder: (context, child) {
-            return SizedBox.fromSize(
-              size: size.animatedValue,
-              child: ColoredBox(
-                color: color.animatedValue,
-                child: child,
+        child: ASizedBox.fromSize(
+          size: _size,
+          child: AColoredBox(
+            color: _color,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: _collapse,
+                    style: TextButton.styleFrom(foregroundColor: Colors.white),
+                    child: const Text('Collapsed'),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    style: TextButton.styleFrom(foregroundColor: Colors.white),
+                    onPressed: _expand,
+                    child: const Text('Expanded'),
+                  ),
+                ],
               ),
-            );
-          },
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  onPressed: _collapse,
-                  style: TextButton.styleFrom(primary: Colors.white),
-                  child: const Text('Collapsed'),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  style: TextButton.styleFrom(primary: Colors.white),
-                  onPressed: _expand,
-                  child: const Text('Expanded'),
-                ),
-              ],
             ),
           ),
         ),

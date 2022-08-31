@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'framework.dart';
+import 'animate.dart';
+import 'animated_widget.dart';
 
 /// A version of [SizedBox] that supports state-based animation with [Animated].
 class ASizedBox extends StatefulWidget {
@@ -36,9 +37,9 @@ class ASizedBox extends StatefulWidget {
   State<ASizedBox> createState() => _ASizedBoxState();
 }
 
-class _ASizedBoxState extends AnimatedValueState<ASizedBox> {
-  late final _height = OptionalAnimatedValue(widget.height, vsync: this);
-  late final _width = OptionalAnimatedValue(widget.width, vsync: this);
+class _ASizedBoxState extends AnimatedWidgetState<ASizedBox> {
+  late final _height = OptionalAnimatedParameter(widget.height, widget: this);
+  late final _width = OptionalAnimatedParameter(widget.width, widget: this);
 
   @override
   void updateAnimatedValues() {
@@ -47,7 +48,7 @@ class _ASizedBoxState extends AnimatedValueState<ASizedBox> {
   }
 
   @override
-  Widget buildWithAnimatedValues(BuildContext context) {
+  Widget build(BuildContext context) {
     return SizedBox(
       height: _height.animatedValue,
       width: _width.animatedValue,
@@ -73,8 +74,8 @@ class AColoredBox extends StatefulWidget {
   State<AColoredBox> createState() => _AColoredBoxState();
 }
 
-class _AColoredBoxState extends AnimatedValueState<AColoredBox> {
-  late final _color = AnimatedColor(widget.color, vsync: this);
+class _AColoredBoxState extends AnimatedWidgetState<AColoredBox> {
+  late final _color = AnimatedColor(widget.color, widget: this);
 
   @override
   void updateAnimatedValues() {
@@ -82,9 +83,69 @@ class _AColoredBoxState extends AnimatedValueState<AColoredBox> {
   }
 
   @override
-  Widget buildWithAnimatedValues(BuildContext context) {
+  Widget build(BuildContext context) {
     return ColoredBox(
       color: _color.animatedValue,
+      child: widget.child,
+    );
+  }
+}
+
+/// A version of [Align] that supports state-based animation with [Animated].
+class AAlign extends StatefulWidget {
+  /// Creates a version of [Align] that supports state-based animation with
+  /// [Animated].
+  const AAlign({
+    super.key,
+    this.alignment = Alignment.center,
+    this.widthFactor,
+    this.heightFactor,
+    this.child,
+  });
+
+  /// See [Align.alignment].
+  final AlignmentGeometry alignment;
+
+  /// See [Align.widthFactor].
+  final double? widthFactor;
+
+  /// See [Align.heightFactor].
+  final double? heightFactor;
+
+  /// See [ProxyWidget.child].
+  final Widget? child;
+
+  @override
+  State<AAlign> createState() => _AAlignState();
+}
+
+class _AAlignState extends AnimatedWidgetState<AAlign> {
+  late final _alignment = AnimatedAlignmentGeometry(
+    widget.alignment,
+    widget: this,
+  );
+  late final _heightFactor = OptionalAnimatedParameter(
+    widget.heightFactor,
+    widget: this,
+  );
+  late final _widthFactor = OptionalAnimatedParameter(
+    widget.widthFactor,
+    widget: this,
+  );
+
+  @override
+  void updateAnimatedValues() {
+    _alignment.value = widget.alignment;
+    _heightFactor.value = widget.heightFactor;
+    _widthFactor.value = widget.widthFactor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: _alignment.animatedValue,
+      widthFactor: _widthFactor.animatedValue,
+      heightFactor: _heightFactor.animatedValue,
       child: widget.child,
     );
   }
