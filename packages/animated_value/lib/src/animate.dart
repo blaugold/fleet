@@ -90,8 +90,8 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
       _debugDidWarnGlobalTransactionsBindingIsNotInitialized = true;
       debugPrint(
         'GlobalTransactionBinding has not been initialized. Without it, '
-        'withAnimation and setStateWithAnimation cannot apply the provided '
-        'animation. Make sure you have called '
+        'withAnimation, setStateWithAnimation and Animate cannot apply the '
+        'provided animation. Make sure you have called '
         'AnimatedValueBinding.ensureInitialized() before runApp.',
       );
     }
