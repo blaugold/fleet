@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'framework.dart';
+import 'animate.dart';
+import 'animated_widget.dart';
 
 /// A version of [SizedBox] that supports state-based animation with [Animated].
 class ASizedBox extends StatefulWidget {
@@ -36,9 +37,9 @@ class ASizedBox extends StatefulWidget {
   State<ASizedBox> createState() => _ASizedBoxState();
 }
 
-class _ASizedBoxState extends AnimatedValueState<ASizedBox> {
-  late final _height = OptionalAnimatedValue(widget.height, vsync: this);
-  late final _width = OptionalAnimatedValue(widget.width, vsync: this);
+class _ASizedBoxState extends AnimatedWidgetState<ASizedBox> {
+  late final _height = OptionalAnimatedParameter(widget.height, widget: this);
+  late final _width = OptionalAnimatedParameter(widget.width, widget: this);
 
   @override
   void updateAnimatedValues() {
@@ -73,8 +74,8 @@ class AColoredBox extends StatefulWidget {
   State<AColoredBox> createState() => _AColoredBoxState();
 }
 
-class _AColoredBoxState extends AnimatedValueState<AColoredBox> {
-  late final _color = AnimatedColor(widget.color, vsync: this);
+class _AColoredBoxState extends AnimatedWidgetState<AColoredBox> {
+  late final _color = AnimatedColor(widget.color, widget: this);
 
   @override
   void updateAnimatedValues() {
@@ -118,19 +119,18 @@ class AAlign extends StatefulWidget {
   State<AAlign> createState() => _AAlignState();
 }
 
-class _AAlignState extends AnimatedValueState<AAlign> {
-  late final _alignment = AnimatedValue(
+class _AAlignState extends AnimatedWidgetState<AAlign> {
+  late final _alignment = AnimatedAlignmentGeometry(
     widget.alignment,
-    tweenFactory: AlignmentTween.new,
-    vsync: this,
+    widget: this,
   );
-  late final _heightFactor = OptionalAnimatedValue(
+  late final _heightFactor = OptionalAnimatedParameter(
     widget.heightFactor,
-    vsync: this,
+    widget: this,
   );
-  late final _widthFactor = OptionalAnimatedValue(
+  late final _widthFactor = OptionalAnimatedParameter(
     widget.widthFactor,
-    vsync: this,
+    widget: this,
   );
 
   @override
