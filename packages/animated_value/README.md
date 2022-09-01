@@ -38,7 +38,7 @@ class _MyWidgetState extends State<MyWidget> {
 }
 ```
 
-Now lets animate the color change:
+Now lets animate the state change:
 
 ```diff
  class _MyWidgetState extends State<MyWidget> {
