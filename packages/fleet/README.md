@@ -1,3 +1,9 @@
+[![CI](https://github.com/blaugold/fleet/actions/workflows/CI.yaml/badge.svg)](https://github.com/blaugold/fleet/actions/workflows/CI.yaml)
+[![pub.dev](https://img.shields.io/pub/v/fleet)](https://pub.dev/packages/fleet)
+
+> ⚠️ This package is in an early state of development. If you find any bugs or
+> have any suggestions, please open an [issue][issues].
+
 `fleet` is an animation framework that animates state changes instead of
 individual values.
 
@@ -118,5 +124,6 @@ jump to their final value.
 
 Now you're ready to use `fleet` in your Flutter app.
 
+[issues]: https://github.com/blaugold/fleet/issues
 [swiftui animation framework]:
   https://developer.apple.com/documentation/swiftui/animations
