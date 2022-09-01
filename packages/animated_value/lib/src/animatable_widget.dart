@@ -380,8 +380,7 @@ class OptionalAnimatableSize extends AnimatableParameter<Size?> {
 ///
 /// class _SquareState extends State<Square>
 ///     with TickerProviderStateMixin, AnimatableStateMixin {
-///   late final _dimension =
-///       AnimatableDouble(widget.dimension, state: this);
+///   late final _dimension = AnimatableDouble(widget.dimension, state: this);
 ///
 ///   @override
 ///   void updateAnimatableParameters() {

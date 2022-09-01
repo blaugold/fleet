@@ -1,5 +1,4 @@
 import 'package:animated_value/animated_value.dart';
-import 'package:animated_value/src/animatable_widget.dart';
 import 'package:animated_value/src/animation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
@@ -23,7 +22,7 @@ void main() {
         await tester.pump(d500ms);
         await tester.pumpAndSettle();
 
-        expect(state.history, [0, 1]);
+        expect(state.animationChanges, isEmpty);
       },
     );
   });
@@ -45,7 +44,7 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        expect(state.history, [0, .5, 2]);
+        expect(state.animationChanges, [.5]);
       },
     );
 
@@ -66,7 +65,7 @@ void main() {
         await tester.pump(d500ms); // 1
         await tester.pumpAndSettle();
 
-        expect(state.history, [0, .5, 1]);
+        expect(state.animationChanges, [.5, 1]);
       },
     );
   });
@@ -82,7 +81,7 @@ void main() {
       await tester.pump(d500ms); // 1
       await tester.pumpAndSettle();
 
-      expect(state.history, [0, .5, 1]);
+      expect(state.animationChanges, [.5, 1]);
     });
 
     testWidgets('interrupt current animation with new one', (tester) async {
@@ -99,7 +98,7 @@ void main() {
       await tester.pump(d500ms); // 2
       await tester.pumpAndSettle();
 
-      expect(state.history, [0, .5, 1.25, 2]);
+      expect(state.animationChanges, [.5, 1.25, 2]);
     });
 
     testWidgets('delay', (tester) async {
@@ -116,7 +115,7 @@ void main() {
       await tester.pump(d500ms); // 1
       await tester.pumpAndSettle();
 
-      expect(state.history, [0, .5, 1]);
+      expect(state.animationChanges, [.5, 1]);
     });
 
     group('speed', () {
@@ -135,7 +134,7 @@ void main() {
         await tester.pump(d500ms); // 1
         await tester.pumpAndSettle();
 
-        expect(state.history, [0, .25, .5, .75, 1]);
+        expect(state.animationChanges, [.25, .5, .75, 1]);
       });
 
       testWidgets('2x', (tester) async {
@@ -151,7 +150,7 @@ void main() {
         await tester.pump(d250ms); // .1
         await tester.pumpAndSettle();
 
-        expect(state.history, [0, .5, 1]);
+        expect(state.animationChanges, [.5, 1]);
       });
     });
 
@@ -171,7 +170,7 @@ void main() {
         await tester.pump(d500ms); // 1
         await tester.pumpAndSettle();
 
-        expect(state.history, [0, .5, 1, .5, 1]);
+        expect(state.animationChanges, [.5, 1, .5, 1]);
       });
 
       group('reverse', () {
@@ -190,7 +189,7 @@ void main() {
           await tester.pump(d500ms); // 0
           await tester.pumpAndSettle();
 
-          expect(state.history, [0, .5, 1, .5, 0]);
+          expect(state.animationChanges, [.5, 1, .5, 0]);
         });
 
         testWidgets('3 times', (tester) async {
@@ -210,7 +209,7 @@ void main() {
           await tester.pump(d500ms); // 1
           await tester.pumpAndSettle();
 
-          expect(state.history, [0, .5, 1, .5, 0, .5, 1]);
+          expect(state.animationChanges, [.5, 1, .5, 0, .5, 1]);
         });
       });
     });
@@ -238,17 +237,16 @@ class TestState implements AnimatableStateMixin {
 
   final WidgetTester tester;
   late final AnimatableParameter<Object?> parameter;
-  final history = <Object?>[];
+  final animationChanges = <Object?>[];
 
   @override
   void registerParameter(AnimatableParameter<Object?> parameter) {
     this.parameter = parameter;
-    history.add(parameter.value);
   }
 
   @override
   void parameterChanged() {
-    history.add(parameter.animatedValue);
+    animationChanges.add(parameter.animatedValue);
   }
 
   @override
