@@ -2,7 +2,7 @@
 of individual values.
 
 This framework has been heavily inspired by the animation framework of
-[SwiftUI](swiftui animation framework). If you are familiar with it, you will
+[SwiftUI][swiftui animation framework]. If you are familiar with it, you will
 find most concepts familiar.
 
 To give you an idea of using this framework, I'm going to show you how to add a
