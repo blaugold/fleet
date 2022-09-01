@@ -6,9 +6,6 @@ import 'package:flutter/widgets.dart' hide Animation;
 import 'animation.dart';
 import 'transaction.dart';
 
-/// A function that creates a new [Tween] for values of type [T].
-typedef TweenFactory<T> = Tween<T> Function();
-
 /// A wrapper around an animatable parameter of a widget that supports
 /// state-based animation.
 ///
@@ -384,7 +381,7 @@ class OptionalAnimatableSize extends AnimatableParameter<Size?> {
 /// class _SquareState extends State<Square>
 ///     with TickerProviderStateMixin, AnimatableStateMixin {
 ///   late final _dimension =
-///       AnimatableParameter(widget.dimension, state: this);
+///       AnimatableDouble(widget.dimension, state: this);
 ///
 ///   @override
 ///   void updateAnimatableParameters() {
