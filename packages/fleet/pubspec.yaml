@@ -2,7 +2,7 @@ name: fleet
 description:
   State-based animation framework that animates state changes instead of
   individual values.
-version: 0.0.0
+version: 0.1.0
 issue_tracker: https://github.com/blaugold/fleet/issues
 homepage: https://github.com/blaugold/fleet/tree/main/packages/fleet
 repository: https://github.com/blaugold/fleet
