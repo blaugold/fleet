@@ -85,7 +85,7 @@ difference.
 
 The `AnimationSpec` that we pass to `setStateWithAnimation` specifies how to
 animate from the old to the new state. `const AnimationSpec()` is the default
-animation spec that uses `Curves.linear` and animations for 200ms.
+animation spec, which uses `Curves.linear` and animates for 200ms.
 
 # Getting started
 

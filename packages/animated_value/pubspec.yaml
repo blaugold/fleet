@@ -1,7 +1,7 @@
 name: animated_value
 description:
-  State-based animation framework, which makes animating as easy as setting a
-  new value.
+  State-based animation framework that animates state changes instead of
+  individual values.
 version: 0.0.0
 issue_tracker: https://github.com/blaugold/animated_value/issues
 homepage: https://github.com/blaugold/animated_value/tree/main/packages/animated_value
