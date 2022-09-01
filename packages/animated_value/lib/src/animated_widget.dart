@@ -24,24 +24,24 @@ typedef TweenFactory<T> = Tween<T> Function();
 /// needed. Also see [OptionalAnimatedParameter] for an [AnimatedParameter] that
 /// handles `null` values for optional animated values.
 class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
-  /// Creates a wrapper around an animatable parameter of a [widget] that
-  /// supports state-based animation.
+  /// Creates a wrapper around an animatable parameter of a widget that supports
+  /// state-based animation.
   ///
   /// It uses the provided [tweenFactory] to creates [Tween]s to interpolate
   /// between an old and a new value.
   AnimatedParameter(
     T value, {
     TweenFactory<T?>? tweenFactory,
-    required AnimatedWidgetStateMixin widget,
+    required AnimatedWidgetStateMixin state,
   })  : _value = value,
         _animatedValue = value,
         _tweenFactory = tweenFactory ?? Tween.new,
-        _vsync = widget {
-    widget.registerValue(this);
+        _state = state {
+    state.registerParameter(this);
   }
 
   final TweenFactory<T?> _tweenFactory;
-  final TickerProvider _vsync;
+  final AnimatedWidgetStateMixin _state;
   AnimationImpl<T>? _animationImpl;
 
   /// Callback that is called when [animatedValue] changes.
@@ -61,16 +61,7 @@ class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
   set value(T value) {
     final animationSpec = currentAnimation;
 
-    if (_value == value) {
-      if (animationSpec == null) {
-        // We let any running animation continue.
-        return;
-      } else {
-        // Start a new animation from the current _animatedValue to _value
-        // with the currently active spec.
-        _updateWithAnimation(animationSpec);
-      }
-    } else {
+    if (_value != value) {
       _value = value;
 
       if (animationSpec == null ||
@@ -100,7 +91,7 @@ class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
   Tween<T?> createTween() => _tweenFactory();
 
   @override
-  Ticker createTicker(TickerCallback onTick) => _vsync.createTicker(onTick);
+  Ticker createTicker(TickerCallback onTick) => _state.createTicker(onTick);
 
   void _onAnimationDone(AnimationImpl<T> animationImpl) {
     if (_animationImpl == animationImpl) {
@@ -160,7 +151,7 @@ class OptionalAnimatedParameter<T> extends AnimatedParameter<T?> {
   OptionalAnimatedParameter(
     super.value, {
     TweenFactory<T?>? tweenFactory,
-    required super.widget,
+    required super.state,
   }) : super(
           tweenFactory:
               _optionalValueTweenFactory<T?>(tweenFactory ?? Tween.new),
@@ -204,7 +195,7 @@ class _OptionalValueTween<T> extends Tween<T?> {
 class AnimatedInt extends AnimatedParameter<int> {
   /// Creates an [AnimatedParameter] that animates changes to an [int] through
   /// an [IntTween].
-  AnimatedInt(super.value, {required super.widget})
+  AnimatedInt(super.value, {required super.state})
       : super(tweenFactory: IntTween.new);
 }
 
@@ -213,7 +204,7 @@ class AnimatedInt extends AnimatedParameter<int> {
 class AnimatedColor extends AnimatedParameter<Color> {
   /// Creates an [AnimatedParameter] that animates changes to a [Color] through
   /// a [ColorTween].
-  AnimatedColor(super.value, {required super.widget})
+  AnimatedColor(super.value, {required super.state})
       : super(tweenFactory: ColorTween.new);
 }
 
@@ -222,7 +213,7 @@ class AnimatedColor extends AnimatedParameter<Color> {
 class AnimatedSize extends AnimatedParameter<Size> {
   /// Creates an [AnimatedParameter] that animates changes to a [Size] through a
   /// [SizeTween].
-  AnimatedSize(super.value, {required super.widget})
+  AnimatedSize(super.value, {required super.state})
       : super(tweenFactory: SizeTween.new);
 }
 
@@ -231,7 +222,7 @@ class AnimatedSize extends AnimatedParameter<Size> {
 class AnimatedRect extends AnimatedParameter<Rect> {
   /// Creates an [AnimatedParameter] that animates changes to a [Rect] through a
   /// [RectTween].
-  AnimatedRect(super.value, {required super.widget})
+  AnimatedRect(super.value, {required super.state})
       : super(tweenFactory: RectTween.new);
 }
 
@@ -240,7 +231,7 @@ class AnimatedRect extends AnimatedParameter<Rect> {
 class AnimatedAlignmentGeometry extends AnimatedParameter<AlignmentGeometry> {
   /// Creates an [AnimatedParameter] that animates changes to an
   /// [AlignmentGeometry] through an [AlignmentGeometryTween].
-  AnimatedAlignmentGeometry(super.value, {required super.widget})
+  AnimatedAlignmentGeometry(super.value, {required super.state})
       : super(tweenFactory: AlignmentGeometryTween.new);
 }
 
@@ -265,7 +256,7 @@ class AnimatedAlignmentGeometry extends AnimatedParameter<AlignmentGeometry> {
 ///
 /// class _SquareState extends State<Square>
 ///     with TickerProviderStateMixin, AnimatedWidgetStateMixin {
-///   late final _dimension = AnimatedParameter(widget.dimension, widget: this);
+///   late final _dimension = AnimatedParameter(widget.dimension, state: this);
 ///
 ///   @override
 ///   void updateAnimatedValues() {
@@ -297,7 +288,7 @@ mixin AnimatedWidgetStateMixin<T extends StatefulWidget>
 
   /// Registers an animatable [parameter] of the widget.
   @visibleForTesting
-  void registerValue(AnimatedParameter<void> parameter) {
+  void registerParameter(AnimatedParameter<void> parameter) {
     assert(!_parameters.contains(parameter));
     assert(parameter.onChange == null);
     _parameters.add(parameter);

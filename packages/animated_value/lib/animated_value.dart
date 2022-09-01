@@ -15,5 +15,6 @@ export 'src/animated_widget.dart'
         OptionalAnimatedParameter,
         AnimatedWidgetStateMixin,
         TweenFactory;
-export 'src/animated_widgets.dart' show AAlign, AColoredBox, ASizedBox;
+export 'src/animated_widgets.dart'
+    show AAlign, AColoredBox, AContainer, ASizedBox;
 export 'src/animation.dart' show AnimationSpec;
