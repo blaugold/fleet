@@ -20,27 +20,29 @@ class MyWidget extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MyWidget> {
-  var _color = Colors.green;
+  var _active = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _color = Colors.red;
+          _active = !_active;
         });
       },
-      child: ColoredBox(color: _color),
+      child: ColoredBox(
+        color: _active ? Colors.blue : Colors.grey,
+      ),
     );
   }
 }
 ```
 
-Lets animate the color change:
+Now wets animate the color change:
 
 ```diff
  class _MyWidgetState extends State<MyWidget> {
-   var _color = Colors.green;
+   var _active = false;
 
    @override
    Widget build(BuildContext context) {
@@ -48,11 +50,13 @@ Lets animate the color change:
        onTap: () {
 -        setState(() {
 +        setStateWithAnimation(const AnimationSpec(), () {
-           _color = Colors.red;
+           _active = !_active;
          });
        },
--      child: ColoredBox(color: _color),
-+      child: AColoredBox(color: _color),
+-      child: ColoredBox(
++      child: AColoredBox(
+         color: _active ? Colors.blue : Colors.grey,
+       ),
      );
    }
  }
@@ -62,24 +66,26 @@ All we did was replace `ColoredBox` with `AColoredBox` and use
 `setStateWithAnimation` instead of `setState`.
 
 The `AColoredBox` widget is a drop-in replacement for `ColoredBox` that supports
-**state-based animation**. Any widget whose visual appearance you want to
-animated through `animated_value` needs to support state-base animation. These
-widgets don't have any special parameters related to animation and can be just
-as well used without animation.
+**state-based animation**. Any widget you want to animate through
+`animated_value` needs to support state-based animation. These widgets don't
+have any special parameters related to animation and can be just as well used
+without animation.
 
 `animated_value` provides drop-in replacements for a number of generally useful
 Flutter framework widgets (all with the prefix `A`). Any widget can be made to
 support state-based animation through components provided by `animated_value`
-(see `AnimatableStateMixin`). PRs are welcome to add support for more widgets.
+(see `AnimatableStateMixin`). Issues or PRs for adding support for more widgets
+are welcome!
 
 `setStateWithAnimation` is from an extension on `State`. All state changes
-caused by the executing the callback will be animated. Note that the callback is
-not immediately executed like it is the case for `setState`. Instead, it is
-executed as part of building the next frame.
+caused by executing the callback will be animated. Note that the callback is not
+immediately executed like it is the case for `setState`. Instead, it is executed
+as part of building the next frame. In practice this seldomly makes a
+difference.
 
-The provided `AnimationSpec` specifies how the animation from the old to the new
-state will be performed. `const AnimationSpec()` is the default animation spec
-that uses `Curves.linear` and animations for 200ms.
+The `AnimationSpec` that we pass to `setStateWithAnimation` specifies how to
+animate from the old to the new state. `const AnimationSpec()` is the default
+animation spec that uses `Curves.linear` and animations for 200ms.
 
 # Getting started
 
