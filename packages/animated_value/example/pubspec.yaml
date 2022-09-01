@@ -1,4 +1,4 @@
-name: animated_value_example
+name: fleet_example
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -6,9 +6,9 @@ environment:
   sdk: '>=2.17.6 <3.0.0'
 
 dependencies:
-  animated_value:
-    path: ..
   cupertino_icons: ^1.0.2
+  fleet:
+    path: ..
   flutter:
     sdk: flutter
 

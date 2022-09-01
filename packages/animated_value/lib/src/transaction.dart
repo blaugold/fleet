@@ -252,7 +252,7 @@ mixin TransactionBinding on BindingBase, RendererBinding {
         FlutterErrorDetails(
           exception: exception,
           stack: stack,
-          library: 'animated_value library',
+          library: 'fleet library',
           context: ErrorDescription('while executing transaction'),
           informationCollector: () => [
             DiagnosticsProperty<Object>(

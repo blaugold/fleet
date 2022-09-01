@@ -1,1 +1,1 @@
-Example app to demonstrate use of `animated_value` package.
+Example app to demonstrate use of the `fleet` package.

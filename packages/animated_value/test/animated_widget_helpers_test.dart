@@ -1,5 +1,5 @@
-import 'package:animated_value/animated_value.dart';
-import 'package:animated_value/src/animation.dart';
+import 'package:fleet/fleet.dart';
+import 'package:fleet/src/animation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
