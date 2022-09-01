@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'animated_widget.dart';
+import 'animatable_widget.dart';
 
 /// Animatable version of [Align].
 class AAlign extends StatefulWidget {
@@ -29,22 +29,22 @@ class AAlign extends StatefulWidget {
   State<AAlign> createState() => _AAlignState();
 }
 
-class _AAlignState extends AnimatedWidgetState<AAlign> {
-  late final _alignment = AnimatedAlignmentGeometry(
+class _AAlignState extends AnimatableState<AAlign> {
+  late final _alignment = AnimatableAlignmentGeometry(
     widget.alignment,
     state: this,
   );
-  late final _heightFactor = OptionalAnimatedParameter(
+  late final _heightFactor = OptionalAnimatableParameter(
     widget.heightFactor,
     state: this,
   );
-  late final _widthFactor = OptionalAnimatedParameter(
+  late final _widthFactor = OptionalAnimatableParameter(
     widget.widthFactor,
     state: this,
   );
 
   @override
-  void updateAnimatedValues() {
+  void updateAnimatableParameters() {
     _alignment.value = widget.alignment;
     _heightFactor.value = widget.heightFactor;
     _widthFactor.value = widget.widthFactor;
@@ -76,11 +76,11 @@ class AColoredBox extends StatefulWidget {
   State<AColoredBox> createState() => _AColoredBoxState();
 }
 
-class _AColoredBoxState extends AnimatedWidgetState<AColoredBox> {
-  late final _color = AnimatedColor(widget.color, state: this);
+class _AColoredBoxState extends AnimatableState<AColoredBox> {
+  late final _color = AnimatableColor(widget.color, state: this);
 
   @override
-  void updateAnimatedValues() {
+  void updateAnimatableParameters() {
     _color.value = widget.color;
   }
 
@@ -153,55 +153,55 @@ class AContainer extends StatefulWidget {
   State<AContainer> createState() => _AContainerState();
 }
 
-class _AContainerState extends AnimatedWidgetState<AContainer> {
-  late final _alignment = OptionalAnimatedParameter(
+class _AContainerState extends AnimatableState<AContainer> {
+  late final _alignment = OptionalAnimatableParameter(
     widget.alignment,
     tweenFactory: AlignmentGeometryTween.new,
     state: this,
   );
-  late final _padding = OptionalAnimatedParameter(
+  late final _padding = OptionalAnimatableParameter(
     widget.padding,
     tweenFactory: EdgeInsetsGeometryTween.new,
     state: this,
   );
-  late final _color = OptionalAnimatedParameter(
+  late final _color = OptionalAnimatableParameter(
     widget.color,
     tweenFactory: ColorTween.new,
     state: this,
   );
-  late final _decoration = OptionalAnimatedParameter(
+  late final _decoration = OptionalAnimatableParameter(
     widget.decoration,
     tweenFactory: DecorationTween.new,
     state: this,
   );
-  late final _foregroundDecoration = OptionalAnimatedParameter(
+  late final _foregroundDecoration = OptionalAnimatableParameter(
     widget.foregroundDecoration,
     tweenFactory: DecorationTween.new,
     state: this,
   );
-  late final _constraints = OptionalAnimatedParameter(
+  late final _constraints = OptionalAnimatableParameter(
     widget.constraints,
     tweenFactory: BoxConstraintsTween.new,
     state: this,
   );
-  late final _margin = OptionalAnimatedParameter(
+  late final _margin = OptionalAnimatableParameter(
     widget.margin,
     tweenFactory: EdgeInsetsGeometryTween.new,
     state: this,
   );
-  late final _transform = OptionalAnimatedParameter(
+  late final _transform = OptionalAnimatableParameter(
     widget.transform,
     tweenFactory: Matrix4Tween.new,
     state: this,
   );
-  late final _transformAlignment = OptionalAnimatedParameter(
+  late final _transformAlignment = OptionalAnimatableParameter(
     widget.transformAlignment,
     tweenFactory: AlignmentGeometryTween.new,
     state: this,
   );
 
   @override
-  void updateAnimatedValues() {
+  void updateAnimatableParameters() {
     _alignment.value = widget.alignment;
     _padding.value = widget.padding;
     _color.value = widget.color;
@@ -264,12 +264,12 @@ class ASizedBox extends StatefulWidget {
   State<ASizedBox> createState() => _ASizedBoxState();
 }
 
-class _ASizedBoxState extends AnimatedWidgetState<ASizedBox> {
-  late final _height = OptionalAnimatedParameter(widget.height, state: this);
-  late final _width = OptionalAnimatedParameter(widget.width, state: this);
+class _ASizedBoxState extends AnimatableState<ASizedBox> {
+  late final _height = OptionalAnimatableParameter(widget.height, state: this);
+  late final _width = OptionalAnimatableParameter(widget.width, state: this);
 
   @override
-  void updateAnimatedValues() {
+  void updateAnimatableParameters() {
     _height.value = widget.height;
     _width.value = widget.width;
   }

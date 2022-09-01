@@ -16,23 +16,23 @@ typedef TweenFactory<T> = Tween<T> Function();
 /// reflects the new value. [animatedValue] is animated and changes over time to
 /// the new [value].
 ///
-/// A [AnimatedParameter] uses the [AnimationSpec] that is active when a new
+/// An [AnimatableParameter] uses the [AnimationSpec] that is active when a new
 /// value is set to animate the change.
 ///
 /// By default [Tween.new] is used as a [TweenFactory] to create [Tween]s to
 /// interpolate values of type [T]. See [Tween] for when a custom [Tween] is
-/// needed. Also see [OptionalAnimatedParameter] for an [AnimatedParameter] that
-/// handles `null` values for optional animated values.
-class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
+/// needed. Also see [OptionalAnimatableParameter] for an [AnimatableParameter]
+/// that handles `null` values for optional animated values.
+class AnimatableParameter<T> with Diagnosticable implements AnimatableValue<T> {
   /// Creates a wrapper around an animatable parameter of a widget that supports
   /// state-based animation.
   ///
   /// It uses the provided [tweenFactory] to creates [Tween]s to interpolate
   /// between an old and a new value.
-  AnimatedParameter(
+  AnimatableParameter(
     T value, {
     TweenFactory<T?>? tweenFactory,
-    required AnimatedWidgetStateMixin state,
+    required AnimatableStateMixin state,
   })  : _value = value,
         _animatedValue = value,
         _tweenFactory = tweenFactory ?? Tween.new,
@@ -41,7 +41,7 @@ class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
   }
 
   final TweenFactory<T?> _tweenFactory;
-  final AnimatedWidgetStateMixin _state;
+  final AnimatableStateMixin _state;
   AnimationImpl<T>? _animationImpl;
 
   /// Callback that is called when [animatedValue] changes.
@@ -136,7 +136,7 @@ class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
   }
 }
 
-/// An [AnimatedParameter] that supports `null` values.
+/// An [AnimatableParameter] that supports `null` values.
 ///
 /// [Tween]s returned by the provided [TweenFactory] will never be used with
 /// `null` values.
@@ -146,9 +146,9 @@ class AnimatedParameter<T> with Diagnosticable implements AnimatableValue<T> {
 ///
 /// When animating from a non-null value to `null`, the animation will
 /// immediately jump to `null`.
-class OptionalAnimatedParameter<T> extends AnimatedParameter<T?> {
-  /// An [AnimatedParameter] that supports `null` values.
-  OptionalAnimatedParameter(
+class OptionalAnimatableParameter<T> extends AnimatableParameter<T?> {
+  /// Creates an [AnimatableParameter] that supports `null` values.
+  OptionalAnimatableParameter(
     super.value, {
     TweenFactory<T?>? tweenFactory,
     required super.state,
@@ -190,56 +190,57 @@ class _OptionalValueTween<T> extends Tween<T?> {
   }
 }
 
-/// An [AnimatedParameter] that animates changes to an [int] through an
+/// An [AnimatableParameter] that animates changes to an [int] through an
 /// [IntTween].
-class AnimatedInt extends AnimatedParameter<int> {
-  /// Creates an [AnimatedParameter] that animates changes to an [int] through
+class AnimatableInt extends AnimatableParameter<int> {
+  /// Creates an [AnimatableParameter] that animates changes to an [int] through
   /// an [IntTween].
-  AnimatedInt(super.value, {required super.state})
+  AnimatableInt(super.value, {required super.state})
       : super(tweenFactory: IntTween.new);
 }
 
-/// An [AnimatedParameter] that animates changes to a [Color] through a
+/// An [AnimatableParameter] that animates changes to a [Color] through a
 /// [ColorTween].
-class AnimatedColor extends AnimatedParameter<Color> {
-  /// Creates an [AnimatedParameter] that animates changes to a [Color] through
-  /// a [ColorTween].
-  AnimatedColor(super.value, {required super.state})
+class AnimatableColor extends AnimatableParameter<Color> {
+  /// Creates an [AnimatableParameter] that animates changes to a [Color]
+  /// through a [ColorTween].
+  AnimatableColor(super.value, {required super.state})
       : super(tweenFactory: ColorTween.new);
 }
 
-/// An [AnimatedParameter] that animates changes to a [Size] through a
+/// An [AnimatableParameter] that animates changes to a [Size] through a
 /// [SizeTween].
-class AnimatedSize extends AnimatedParameter<Size> {
-  /// Creates an [AnimatedParameter] that animates changes to a [Size] through a
-  /// [SizeTween].
-  AnimatedSize(super.value, {required super.state})
+class AnimatableSize extends AnimatableParameter<Size> {
+  /// Creates an [AnimatableParameter] that animates changes to a [Size] through
+  /// a [SizeTween].
+  AnimatableSize(super.value, {required super.state})
       : super(tweenFactory: SizeTween.new);
 }
 
-/// An [AnimatedParameter] that animates changes to a [Rect] through a
+/// An [AnimatableParameter] that animates changes to a [Rect] through a
 /// [RectTween].
-class AnimatedRect extends AnimatedParameter<Rect> {
-  /// Creates an [AnimatedParameter] that animates changes to a [Rect] through a
-  /// [RectTween].
-  AnimatedRect(super.value, {required super.state})
+class AnimatableRect extends AnimatableParameter<Rect> {
+  /// Creates an [AnimatableParameter] that animates changes to a [Rect] through
+  /// a [RectTween].
+  AnimatableRect(super.value, {required super.state})
       : super(tweenFactory: RectTween.new);
 }
 
-/// An [AnimatedParameter] that animates changes to an [AlignmentGeometry]
+/// An [AnimatableParameter] that animates changes to an [AlignmentGeometry]
 /// through an [AlignmentGeometryTween].
-class AnimatedAlignmentGeometry extends AnimatedParameter<AlignmentGeometry> {
-  /// Creates an [AnimatedParameter] that animates changes to an
+class AnimatableAlignmentGeometry
+    extends AnimatableParameter<AlignmentGeometry> {
+  /// Creates an [AnimatableParameter] that animates changes to an
   /// [AlignmentGeometry] through an [AlignmentGeometryTween].
-  AnimatedAlignmentGeometry(super.value, {required super.state})
+  AnimatableAlignmentGeometry(super.value, {required super.state})
       : super(tweenFactory: AlignmentGeometryTween.new);
 }
 
 /// Mixin for widgets that support state-based animation of parameters.
 ///
-/// Implementers must implement [updateAnimatedValues] to update the
-/// [AnimatedParameter]s when the widget changes and use
-/// [AnimatedParameter.animatedValue] in their [build] methods.
+/// Implementers must implement [updateAnimatableParameters] to update the
+/// [AnimatableParameter]s when the widget changes and use
+/// [AnimatableParameter.animatedValue] in their [build] methods.
 ///
 /// ```dart
 /// import 'package:flutter/widgets.dart';
@@ -255,11 +256,12 @@ class AnimatedAlignmentGeometry extends AnimatedParameter<AlignmentGeometry> {
 /// }
 ///
 /// class _SquareState extends State<Square>
-///     with TickerProviderStateMixin, AnimatedWidgetStateMixin {
-///   late final _dimension = AnimatedParameter(widget.dimension, state: this);
+///     with TickerProviderStateMixin, AnimatableStateMixin {
+///   late final _dimension =
+///       AnimatableParameter(widget.dimension, state: this);
 ///
 ///   @override
-///   void updateAnimatedValues() {
+///   void updateAnimatableParameters() {
 ///     _dimension.value = widget.dimension;
 ///   }
 ///
@@ -275,20 +277,20 @@ class AnimatedAlignmentGeometry extends AnimatedParameter<AlignmentGeometry> {
 ///
 /// See also:
 ///
-/// - [AnimatedWidgetState] for a [State] class that already mixes in
-///   [AnimatedWidgetStateMixin] and [TickerProviderStateMixin].
-mixin AnimatedWidgetStateMixin<T extends StatefulWidget>
+/// - [AnimatableState] for a [State] class that already mixes in
+///   [AnimatableStateMixin] and [TickerProviderStateMixin].
+mixin AnimatableStateMixin<T extends StatefulWidget>
     on State<T>, TickerProvider {
-  final _parameters = <AnimatedParameter<void>>[];
+  final _parameters = <AnimatableParameter<void>>[];
 
   /// This method is called from [didUpdateWidget] and implementations must
-  /// update their [AnimatedParameter]s from the new [widget] instance.
+  /// update their [AnimatableParameter]s from the new [widget] instance.
   @protected
-  void updateAnimatedValues();
+  void updateAnimatableParameters();
 
   /// Registers an animatable [parameter] of the widget.
   @visibleForTesting
-  void registerParameter(AnimatedParameter<void> parameter) {
+  void registerParameter(AnimatableParameter<void> parameter) {
     assert(!_parameters.contains(parameter));
     assert(parameter.onChange == null);
     _parameters.add(parameter);
@@ -304,9 +306,9 @@ mixin AnimatedWidgetStateMixin<T extends StatefulWidget>
 
     final transaction = Transaction.of(context);
     if (transaction is AnimationSpec) {
-      runWithAnimation(transaction, updateAnimatedValues);
+      runWithAnimation(transaction, updateAnimatableParameters);
     } else {
-      updateAnimatedValues();
+      updateAnimatableParameters();
     }
   }
 
@@ -319,10 +321,10 @@ mixin AnimatedWidgetStateMixin<T extends StatefulWidget>
   }
 }
 
-/// Convenience [State] base class for widgets that use [AnimatedParameter]s to
-/// transparently animate parameters.
+/// Convenience [State] base class for widgets that use [AnimatableParameter]s
+/// to transparently animate their parameters.
 ///
 /// Extend your state class from this class instead of from [State], with
-/// [TickerProviderStateMixin] and [AnimatedWidgetStateMixin] mixed in.
-abstract class AnimatedWidgetState<T extends StatefulWidget> extends State<T>
-    with TickerProviderStateMixin, AnimatedWidgetStateMixin {}
+/// [TickerProviderStateMixin] and [AnimatableStateMixin] mixed in.
+abstract class AnimatableState<T extends StatefulWidget> extends State<T>
+    with TickerProviderStateMixin, AnimatableStateMixin {}

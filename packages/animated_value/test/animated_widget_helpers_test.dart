@@ -14,7 +14,7 @@ void main() {
           debugSemanticsDisableAnimations = false;
         });
 
-        final value = AnimatedParameter<double>(0, state: TestState(tester));
+        final value = AnimatableParameter<double>(0, state: TestState(tester));
         final history = valueHistory(value);
 
         await tester.withAnimation(linear1sCurve, () => value.value = 1);
@@ -31,7 +31,7 @@ void main() {
     testWidgets(
       'different value stops running animation',
       (tester) async {
-        final value = AnimatedParameter<double>(0, state: TestState(tester));
+        final value = AnimatableParameter<double>(0, state: TestState(tester));
         final history = valueHistory(value);
 
         await tester.withAnimation(linear1sCurve, () => value.value = 1);
@@ -51,7 +51,7 @@ void main() {
     testWidgets(
       'same value allows running animation to continue',
       (tester) async {
-        final value = AnimatedParameter<double>(0, state: TestState(tester));
+        final value = AnimatableParameter<double>(0, state: TestState(tester));
         final history = valueHistory(value);
 
         await tester.withAnimation(linear1sCurve, () => value.value = 1);
@@ -72,7 +72,7 @@ void main() {
 
   group('curve', () {
     testWidgets('simple', (tester) async {
-      final value = AnimatedParameter<double>(0, state: TestState(tester));
+      final value = AnimatableParameter<double>(0, state: TestState(tester));
       final history = valueHistory(value);
 
       await tester.withAnimation(linear1sCurve, () => value.value = 1);
@@ -85,7 +85,7 @@ void main() {
     });
 
     testWidgets('interrupt current animation with new one', (tester) async {
-      final value = AnimatedParameter<double>(0, state: TestState(tester));
+      final value = AnimatableParameter<double>(0, state: TestState(tester));
       final history = valueHistory(value);
 
       await tester.withAnimation(linear1sCurve, () => value.value = 1);
@@ -102,7 +102,7 @@ void main() {
     });
 
     testWidgets('delay', (tester) async {
-      final value = AnimatedParameter<double>(0, state: TestState(tester));
+      final value = AnimatableParameter<double>(0, state: TestState(tester));
       final history = valueHistory(value);
 
       await tester.withAnimation(
@@ -120,7 +120,7 @@ void main() {
 
     group('speed', () {
       testWidgets('.5x', (tester) async {
-        final value = AnimatedParameter<double>(0, state: TestState(tester));
+        final value = AnimatableParameter<double>(0, state: TestState(tester));
         final history = valueHistory(value);
 
         await tester.withAnimation(
@@ -138,7 +138,7 @@ void main() {
       });
 
       testWidgets('2x', (tester) async {
-        final value = AnimatedParameter<double>(0, state: TestState(tester));
+        final value = AnimatableParameter<double>(0, state: TestState(tester));
         final history = valueHistory(value);
 
         await tester.withAnimation(
@@ -156,7 +156,7 @@ void main() {
 
     group('repeat', () {
       testWidgets('2 times', (tester) async {
-        final value = AnimatedParameter<double>(0, state: TestState(tester));
+        final value = AnimatableParameter<double>(0, state: TestState(tester));
         final history = valueHistory(value);
 
         await tester.withAnimation(
@@ -175,7 +175,8 @@ void main() {
 
       group('reverse', () {
         testWidgets('2 times', (tester) async {
-          final value = AnimatedParameter<double>(0, state: TestState(tester));
+          final value =
+              AnimatableParameter<double>(0, state: TestState(tester));
           final history = valueHistory(value);
 
           await tester.withAnimation(
@@ -193,7 +194,8 @@ void main() {
         });
 
         testWidgets('3 times', (tester) async {
-          final value = AnimatedParameter<double>(0, state: TestState(tester));
+          final value =
+              AnimatableParameter<double>(0, state: TestState(tester));
           final history = valueHistory(value);
 
           await tester.withAnimation(
@@ -221,7 +223,7 @@ const d500ms = Duration(milliseconds: 500);
 
 final linear1sCurve = AnimationSpec.linear(const Duration(seconds: 1));
 
-List<T> valueHistory<T>(AnimatedParameter<T> value) {
+List<T> valueHistory<T>(AnimatableParameter<T> value) {
   final history = <T>[value.value];
   value.onChange = () => history.add(value.animatedValue);
   return history;
@@ -238,13 +240,13 @@ extension on WidgetTester {
   }
 }
 
-class TestState implements AnimatedWidgetStateMixin {
+class TestState implements AnimatableStateMixin {
   TestState(this.tester);
 
   final WidgetTester tester;
 
   @override
-  void registerParameter(AnimatedParameter<void> parameter) {}
+  void registerParameter(AnimatableParameter<void> parameter) {}
 
   @override
   Ticker createTicker(TickerCallback onTick) {
