@@ -34,11 +34,11 @@ class _AAlignState extends AnimatableState<AAlign> {
     widget.alignment,
     state: this,
   );
-  late final _heightFactor = OptionalAnimatableParameter(
+  late final _heightFactor = OptionalAnimatableDouble(
     widget.heightFactor,
     state: this,
   );
-  late final _widthFactor = OptionalAnimatableParameter(
+  late final _widthFactor = OptionalAnimatableDouble(
     widget.widthFactor,
     state: this,
   );
@@ -154,49 +154,40 @@ class AContainer extends StatefulWidget {
 }
 
 class _AContainerState extends AnimatableState<AContainer> {
-  late final _alignment = OptionalAnimatableParameter(
+  late final _alignment = OptionalAnimatableAlignmentGeometry(
     widget.alignment,
-    tweenFactory: AlignmentGeometryTween.new,
     state: this,
   );
-  late final _padding = OptionalAnimatableParameter(
+  late final _padding = OptionalAnimatableEdgeInsetsGeometry(
     widget.padding,
-    tweenFactory: EdgeInsetsGeometryTween.new,
     state: this,
   );
-  late final _color = OptionalAnimatableParameter(
+  late final _color = OptionalAnimatableColor(
     widget.color,
-    tweenFactory: ColorTween.new,
     state: this,
   );
-  late final _decoration = OptionalAnimatableParameter(
+  late final _decoration = OptionalAnimatableDecoration(
     widget.decoration,
-    tweenFactory: DecorationTween.new,
     state: this,
   );
-  late final _foregroundDecoration = OptionalAnimatableParameter(
+  late final _foregroundDecoration = OptionalAnimatableDecoration(
     widget.foregroundDecoration,
-    tweenFactory: DecorationTween.new,
     state: this,
   );
-  late final _constraints = OptionalAnimatableParameter(
+  late final _constraints = OptionalAnimatableBoxConstraints(
     widget.constraints,
-    tweenFactory: BoxConstraintsTween.new,
     state: this,
   );
-  late final _margin = OptionalAnimatableParameter(
+  late final _margin = OptionalAnimatableEdgeInsetsGeometry(
     widget.margin,
-    tweenFactory: EdgeInsetsGeometryTween.new,
     state: this,
   );
-  late final _transform = OptionalAnimatableParameter(
+  late final _transform = OptionalAnimatableMatrix4(
     widget.transform,
-    tweenFactory: Matrix4Tween.new,
     state: this,
   );
-  late final _transformAlignment = OptionalAnimatableParameter(
+  late final _transformAlignment = OptionalAnimatableAlignmentGeometry(
     widget.transformAlignment,
-    tweenFactory: AlignmentGeometryTween.new,
     state: this,
   );
 
@@ -265,8 +256,8 @@ class ASizedBox extends StatefulWidget {
 }
 
 class _ASizedBoxState extends AnimatableState<ASizedBox> {
-  late final _height = OptionalAnimatableParameter(widget.height, state: this);
-  late final _width = OptionalAnimatableParameter(widget.width, state: this);
+  late final _height = OptionalAnimatableDouble(widget.height, state: this);
+  late final _width = OptionalAnimatableDouble(widget.width, state: this);
 
   @override
   void updateAnimatableParameters() {

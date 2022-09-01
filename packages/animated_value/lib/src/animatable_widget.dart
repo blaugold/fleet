@@ -18,35 +18,20 @@ typedef TweenFactory<T> = Tween<T> Function();
 ///
 /// An [AnimatableParameter] uses the [AnimationSpec] that is active when a new
 /// value is set to animate the change.
-///
-/// By default [Tween.new] is used as a [TweenFactory] to create [Tween]s to
-/// interpolate values of type [T]. See [Tween] for when a custom [Tween] is
-/// needed. Also see [OptionalAnimatableParameter] for an [AnimatableParameter]
-/// that handles `null` values for optional animated values.
-class AnimatableParameter<T> with Diagnosticable implements AnimatableValue<T> {
+abstract class AnimatableParameter<T>
+    with Diagnosticable
+    implements AnimatableValue<T> {
   /// Creates a wrapper around an animatable parameter of a widget that supports
   /// state-based animation.
-  ///
-  /// It uses the provided [tweenFactory] to creates [Tween]s to interpolate
-  /// between an old and a new value.
-  AnimatableParameter(
-    T value, {
-    TweenFactory<T?>? tweenFactory,
-    required AnimatableStateMixin state,
-  })  : _value = value,
+  AnimatableParameter(T value, {required AnimatableStateMixin state})
+      : _value = value,
         _animatedValue = value,
-        _tweenFactory = tweenFactory ?? Tween.new,
         _state = state {
     state.registerParameter(this);
   }
 
-  final TweenFactory<T?> _tweenFactory;
   final AnimatableStateMixin _state;
   AnimationImpl<T>? _animationImpl;
-
-  /// Callback that is called when [animatedValue] changes.
-  @visibleForTesting
-  VoidCallback? onChange;
 
   /// Disposes this parameter and stops any running animation.
   @visibleForTesting
@@ -80,18 +65,15 @@ class AnimatableParameter<T> with Diagnosticable implements AnimatableValue<T> {
   T get animatedValue => _animatedValue;
   T _animatedValue;
 
-  void _setAnimatedValue(T value) {
-    if (_animatedValue != value) {
-      _animatedValue = value;
-      onChange?.call();
-    }
-  }
-
-  @override
-  Tween<T?> createTween() => _tweenFactory();
-
   @override
   Ticker createTicker(TickerCallback onTick) => _state.createTicker(onTick);
+
+  void _onAnimatedValueChanged(T value) {
+    if (_animatedValue != value) {
+      _animatedValue = value;
+      _state.parameterChanged();
+    }
+  }
 
   void _onAnimationDone(AnimationImpl<T> animationImpl) {
     if (_animationImpl == animationImpl) {
@@ -101,11 +83,18 @@ class AnimatableParameter<T> with Diagnosticable implements AnimatableValue<T> {
 
   void _updateWithoutAnimation() {
     _animationImpl?.stop();
-    _setAnimatedValue(_value);
+    // We don't need to notify _state because this only happens when
+    // the state is rebuilding anyway.
+    _animatedValue = _value;
   }
 
   void _updateWithAnimation(AnimationSpec animationSpec) {
     if (_animationImpl == null && _value == _animatedValue) {
+      // There is no difference between _value and _animatedValue that we can
+      // interpolate, so there is no point in starting an animation.
+      //
+      // If another animation is currently running we allow the new
+      // animation to decide how to proceed.
       return;
     }
 
@@ -113,7 +102,7 @@ class AnimatableParameter<T> with Diagnosticable implements AnimatableValue<T> {
         .createAnimation(animationSpec, this, _animationImpl);
 
     animationImpl
-      ..onChange = (() => _setAnimatedValue(animationImpl.currentValue))
+      ..onChange = (() => _onAnimatedValueChanged(animationImpl.currentValue))
       ..onDone = (() => _onAnimationDone(animationImpl))
       ..start();
 
@@ -136,33 +125,8 @@ class AnimatableParameter<T> with Diagnosticable implements AnimatableValue<T> {
   }
 }
 
-/// An [AnimatableParameter] that supports `null` values.
-///
-/// [Tween]s returned by the provided [TweenFactory] will never be used with
-/// `null` values.
-///
-/// When animating from `null` to a non-null value, the animation will
-/// immediately jump to the non-null value.
-///
-/// When animating from a non-null value to `null`, the animation will
-/// immediately jump to `null`.
-class OptionalAnimatableParameter<T> extends AnimatableParameter<T?> {
-  /// Creates an [AnimatableParameter] that supports `null` values.
-  OptionalAnimatableParameter(
-    super.value, {
-    TweenFactory<T?>? tweenFactory,
-    required super.state,
-  }) : super(
-          tweenFactory:
-              _optionalValueTweenFactory<T?>(tweenFactory ?? Tween.new),
-        );
-}
-
-TweenFactory<T?> _optionalValueTweenFactory<T>(TweenFactory<T> factory) =>
-    () => _OptionalValueTween(factory());
-
-class _OptionalValueTween<T> extends Tween<T?> {
-  _OptionalValueTween(this._inner);
+class _OptionalTween<T> extends Tween<T?> {
+  _OptionalTween(this._inner);
 
   final Tween<T?> _inner;
 
@@ -190,13 +154,48 @@ class _OptionalValueTween<T> extends Tween<T?> {
   }
 }
 
-/// An [AnimatableParameter] that animates changes to an [int] through an
-/// [IntTween].
-class AnimatableInt extends AnimatableParameter<int> {
-  /// Creates an [AnimatableParameter] that animates changes to an [int] through
-  /// an [IntTween].
-  AnimatableInt(super.value, {required super.state})
-      : super(tweenFactory: IntTween.new);
+/// An [AnimatableParameter] that animates changes to an [AlignmentGeometry]
+/// through an [AlignmentGeometryTween].
+class AnimatableAlignmentGeometry
+    extends AnimatableParameter<AlignmentGeometry> {
+  /// Creates an [AnimatableParameter] that animates changes to an
+  /// [AlignmentGeometry] through an [AlignmentGeometryTween].
+  AnimatableAlignmentGeometry(super.value, {required super.state});
+
+  @override
+  Tween<AlignmentGeometry?> createTween() => AlignmentGeometryTween();
+}
+
+/// Version of [AnimatableAlignmentGeometry] for optional parameters.
+class OptionalAnimatableAlignmentGeometry
+    extends AnimatableParameter<AlignmentGeometry?> {
+  /// Creates a version of [AnimatableAlignmentGeometry] for optional
+  /// parameters.
+  OptionalAnimatableAlignmentGeometry(super.value, {required super.state});
+
+  @override
+  Tween<AlignmentGeometry?> createTween() =>
+      _OptionalTween(AlignmentGeometryTween());
+}
+
+/// An [AnimatableParameter] that animates changes to a [BoxConstraints] through
+/// a [BoxConstraintsTween].
+class AnimatableBoxConstraints extends AnimatableParameter<BoxConstraints> {
+  /// Creates an [AnimatableParameter] that animates changes to a
+  /// [BoxConstraints] through a [BoxConstraintsTween].
+  AnimatableBoxConstraints(super.value, {required super.state});
+
+  @override
+  Tween<BoxConstraints?> createTween() => BoxConstraintsTween();
+}
+
+/// Version of [AnimatableBoxConstraints] for optional parameters.
+class OptionalAnimatableBoxConstraints
+    extends AnimatableParameter<BoxConstraints?> {
+  /// Creates a version of [AnimatableBoxConstraints] for optional parameters.
+  OptionalAnimatableBoxConstraints(super.value, {required super.state});
+  @override
+  Tween<BoxConstraints?> createTween() => _OptionalTween(BoxConstraintsTween());
 }
 
 /// An [AnimatableParameter] that animates changes to a [Color] through a
@@ -204,17 +203,123 @@ class AnimatableInt extends AnimatableParameter<int> {
 class AnimatableColor extends AnimatableParameter<Color> {
   /// Creates an [AnimatableParameter] that animates changes to a [Color]
   /// through a [ColorTween].
-  AnimatableColor(super.value, {required super.state})
-      : super(tweenFactory: ColorTween.new);
+  AnimatableColor(super.value, {required super.state});
+
+  @override
+  Tween<Color?> createTween() => ColorTween();
 }
 
-/// An [AnimatableParameter] that animates changes to a [Size] through a
-/// [SizeTween].
-class AnimatableSize extends AnimatableParameter<Size> {
-  /// Creates an [AnimatableParameter] that animates changes to a [Size] through
-  /// a [SizeTween].
-  AnimatableSize(super.value, {required super.state})
-      : super(tweenFactory: SizeTween.new);
+/// Version of [AnimatableColor] for optional parameters.
+class OptionalAnimatableColor extends AnimatableParameter<Color?> {
+  /// Creates a version of [AnimatableColor] for optional parameters.
+  OptionalAnimatableColor(super.value, {required super.state});
+
+  @override
+  Tween<Color?> createTween() => _OptionalTween(ColorTween());
+}
+
+/// An [AnimatableParameter] that animates changes to a [Decoration] through a
+/// [DecorationTween].
+class AnimatableDecoration extends AnimatableParameter<Decoration> {
+  /// Creates an [AnimatableParameter] that animates changes to a [Decoration]
+  /// through a [DecorationTween].
+  AnimatableDecoration(super.value, {required super.state});
+
+  @override
+  Tween<Decoration?> createTween() => DecorationTween();
+}
+
+/// Version of [AnimatableDecoration] for optional parameters.
+class OptionalAnimatableDecoration extends AnimatableParameter<Decoration?> {
+  /// Creates a version of [AnimatableDecoration] for optional parameters.
+  OptionalAnimatableDecoration(super.value, {required super.state});
+
+  @override
+  Tween<Decoration?> createTween() => _OptionalTween(DecorationTween());
+}
+
+/// An [AnimatableParameter] that animates changes to a [double] through a
+/// [Tween].
+class AnimatableDouble extends AnimatableParameter<double> {
+  /// Creates an [AnimatableParameter] that animates changes to a [double]
+  /// through a [Tween].
+  AnimatableDouble(super.value, {required super.state});
+
+  @override
+  Tween<double?> createTween() => Tween();
+}
+
+/// Version of [AnimatableDouble] for optional parameters.
+class OptionalAnimatableDouble extends AnimatableParameter<double?> {
+  /// Creates a version of [AnimatableDouble] for optional parameters.
+  OptionalAnimatableDouble(super.value, {required super.state});
+
+  @override
+  Tween<double?> createTween() => _OptionalTween(Tween());
+}
+
+/// An [AnimatableParameter] that animates changes to an [EdgeInsetsGeometry]
+/// through an [EdgeInsetsGeometryTween].
+class AnimatableEdgeInsetsGeometry
+    extends AnimatableParameter<EdgeInsetsGeometry> {
+  /// Creates an [AnimatableParameter] that animates changes to an
+  /// [EdgeInsetsGeometry] through an [EdgeInsetsGeometryTween].
+  AnimatableEdgeInsetsGeometry(super.value, {required super.state});
+
+  @override
+  Tween<EdgeInsetsGeometry?> createTween() => EdgeInsetsGeometryTween();
+}
+
+/// Version of [AnimatableEdgeInsetsGeometry] for optional parameters.
+class OptionalAnimatableEdgeInsetsGeometry
+    extends AnimatableParameter<EdgeInsetsGeometry?> {
+  /// Creates a version of [AnimatableEdgeInsetsGeometry] for optional
+  /// parameters.
+  OptionalAnimatableEdgeInsetsGeometry(super.value, {required super.state});
+
+  @override
+  Tween<EdgeInsetsGeometry?> createTween() =>
+      _OptionalTween(EdgeInsetsGeometryTween());
+}
+
+/// An [AnimatableParameter] that animates changes to an [int] through an
+/// [IntTween].
+class AnimatableInt extends AnimatableParameter<int> {
+  /// Creates an [AnimatableParameter] that animates changes to an [int] through
+  /// an [IntTween].
+  AnimatableInt(super.value, {required super.state});
+
+  @override
+  Tween<int?> createTween() => IntTween();
+}
+
+/// Version of [AnimatableInt] for optional parameters.
+class OptionalAnimatableInt extends AnimatableParameter<int?> {
+  /// Creates a version of [AnimatableInt] that for optional parameters.
+  OptionalAnimatableInt(super.value, {required super.state});
+
+  @override
+  Tween<int?> createTween() => _OptionalTween(IntTween());
+}
+
+/// An [AnimatableParameter] that animates changes to a [Matrix4] through a
+/// [Matrix4Tween].
+class AnimatableMatrix4 extends AnimatableParameter<Matrix4> {
+  /// Creates an [AnimatableParameter] that animates changes to a [Matrix4]
+  /// through a [Matrix4Tween].
+  AnimatableMatrix4(super.value, {required super.state});
+
+  @override
+  Tween<Matrix4?> createTween() => Matrix4Tween();
+}
+
+/// Version of [AnimatableMatrix4] for optional parameters.
+class OptionalAnimatableMatrix4 extends AnimatableParameter<Matrix4?> {
+  /// Creates a version of [AnimatableMatrix4] for optional parameters.
+  OptionalAnimatableMatrix4(super.value, {required super.state});
+
+  @override
+  Tween<Matrix4?> createTween() => _OptionalTween(Matrix4Tween());
 }
 
 /// An [AnimatableParameter] that animates changes to a [Rect] through a
@@ -222,18 +327,39 @@ class AnimatableSize extends AnimatableParameter<Size> {
 class AnimatableRect extends AnimatableParameter<Rect> {
   /// Creates an [AnimatableParameter] that animates changes to a [Rect] through
   /// a [RectTween].
-  AnimatableRect(super.value, {required super.state})
-      : super(tweenFactory: RectTween.new);
+  AnimatableRect(super.value, {required super.state});
+
+  @override
+  Tween<Rect?> createTween() => RectTween();
 }
 
-/// An [AnimatableParameter] that animates changes to an [AlignmentGeometry]
-/// through an [AlignmentGeometryTween].
-class AnimatableAlignmentGeometry
-    extends AnimatableParameter<AlignmentGeometry> {
-  /// Creates an [AnimatableParameter] that animates changes to an
-  /// [AlignmentGeometry] through an [AlignmentGeometryTween].
-  AnimatableAlignmentGeometry(super.value, {required super.state})
-      : super(tweenFactory: AlignmentGeometryTween.new);
+/// Version of [AnimatableRect] for optional parameters.
+class OptionalAnimatableRect extends AnimatableParameter<Rect?> {
+  /// Creates a version of [AnimatableRect] for optional parameters.
+  OptionalAnimatableRect(super.value, {required super.state});
+
+  @override
+  Tween<Rect?> createTween() => _OptionalTween(RectTween());
+}
+
+/// An [AnimatableParameter] that animates changes to a [Size] through a
+/// [SizeTween].
+class AnimatableSize extends AnimatableParameter<Size> {
+  /// Creates an [AnimatableParameter] that animates changes to a [Size] through
+  /// a [SizeTween].
+  AnimatableSize(super.value, {required super.state});
+
+  @override
+  Tween<Size?> createTween() => SizeTween();
+}
+
+/// Version of [AnimatableSize] for optional parameters.
+class OptionalAnimatableSize extends AnimatableParameter<Size?> {
+  /// Creates a version of [AnimatableSize] for optional parameters.
+  OptionalAnimatableSize(super.value, {required super.state});
+
+  @override
+  Tween<Size?> createTween() => _OptionalTween(SizeTween());
 }
 
 /// Mixin for widgets that support state-based animation of parameters.
@@ -292,13 +418,13 @@ mixin AnimatableStateMixin<T extends StatefulWidget>
   @visibleForTesting
   void registerParameter(AnimatableParameter<void> parameter) {
     assert(!_parameters.contains(parameter));
-    assert(parameter.onChange == null);
     _parameters.add(parameter);
-    parameter.onChange = _update;
   }
 
+  /// Notifies this [State] that one of its [AnimatableParameter]s has changed.
   @protected
-  void _update() => setState(() {});
+  @visibleForTesting
+  void parameterChanged() => setState(() {});
 
   @override
   void didUpdateWidget(covariant T oldWidget) {
