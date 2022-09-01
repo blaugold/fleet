@@ -124,6 +124,13 @@ jump to their final value.
 
 Now you're ready to use `fleet` in your Flutter app.
 
+---
+
+**Gabriel Terwesten** &bullet; **GitHub**
+**[@blaugold](https://github.com/blaugold)** &bullet; **Twitter**
+**[@GTerwesten](https://twitter.com/GTerwesten)** &bullet; **Medium**
+**[@gabriel.terwesten](https://medium.com/@gabriel.terwesten)**
+
 [issues]: https://github.com/blaugold/fleet/issues
 [swiftui animation framework]:
   https://developer.apple.com/documentation/swiftui/animations
