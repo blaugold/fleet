@@ -31,3 +31,10 @@ scripts:
     exec: flutter test
     select-package:
       dir-exists: test
+
+  presubmit:
+    run: |
+      melos format:check && \
+      melos analyze && \
+      melos analyze:doc_comments && \
+      melos test:unit

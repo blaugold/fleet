@@ -5,8 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Animation;
 
-import 'animated_widget.dart';
-import 'animated_widgets.dart';
+import 'animatable_widget.dart';
+import 'animatable_widgets.dart';
 import 'animation.dart';
 import 'transaction.dart';
 
@@ -154,7 +154,7 @@ extension SetStateWithAnimationExtension on State {
 ///
 /// Only widgets which participate in state-based animation of parameters will
 /// animate changes. To implement support for this in your own widgets use
-/// [AnimatedWidgetStateMixin] or [AnimatedWidgetState].
+/// [AnimatableStateMixin] or [AnimatableState].
 ///
 /// The following provided widgets support state-based animation of parameters:
 ///
