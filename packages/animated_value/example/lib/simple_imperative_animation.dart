@@ -1,8 +1,8 @@
-import 'package:animated_value/animated_value.dart';
+import 'package:fleet/fleet.dart';
 import 'package:flutter/material.dart' hide AnimatedSize;
 
 void main() {
-  AnimatedValueBinding.ensureInitialized();
+  FleetBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

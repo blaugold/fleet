@@ -1,7 +1,7 @@
-name: animated_value
+name: fleet
 packages:
   - packages/**
-repository: https://github.com/blaugold/animated_value
+repository: https://github.com/blaugold/fleet
 
 ide:
   intellij: false

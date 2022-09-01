@@ -11,8 +11,8 @@ import 'animation.dart';
 import 'transaction.dart';
 
 /// A concrete binding for applications based on the Widgets framework that use
-/// the `animated_value` package.
-class AnimatedValueBinding extends BindingBase
+/// the `fleet` package.
+class FleetBinding extends BindingBase
     with
         GestureBinding,
         SchedulerBinding,
@@ -22,12 +22,12 @@ class AnimatedValueBinding extends BindingBase
         RendererBinding,
         TransactionBinding,
         WidgetsBinding {
-  static AnimatedValueBinding? _instance;
+  static FleetBinding? _instance;
 
-  /// Ensures that the [AnimatedValueBinding] is initialized and returns it.
+  /// Ensures that the [FleetBinding] is initialized and returns it.
   static WidgetsBinding ensureInitialized() {
-    if (AnimatedValueBinding._instance == null) {
-      AnimatedValueBinding();
+    if (FleetBinding._instance == null) {
+      FleetBinding();
     }
     return WidgetsBinding.instance;
   }
@@ -39,7 +39,7 @@ class AnimatedValueBinding extends BindingBase
 /// animatable values that result from its execution, will be animated with
 /// [animation].
 ///
-/// {@macro animated_value.Animated.widgets}
+/// {@macro fleet.Animated.widgets}
 ///
 /// # Example
 ///
@@ -94,7 +94,7 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
         'GlobalTransactionBinding has not been initialized. Without it, '
         'withAnimation, setStateWithAnimation and Animate cannot apply the '
         'provided animation. Make sure you have called '
-        'AnimatedValueBinding.ensureInitialized() before runApp.',
+        'FleetBinding.ensureInitialized() before runApp.',
       );
     }
     return true;
@@ -111,7 +111,7 @@ extension SetStateWithAnimationExtension on State {
   /// changes of animatable values that result from its execution, will be
   /// animated with [animation].
   ///
-  /// {@macro animated_value.Animated.widgets}
+  /// {@macro fleet.Animated.widgets}
   ///
   /// # Example
   ///
@@ -150,7 +150,7 @@ extension SetStateWithAnimationExtension on State {
 
 /// Widget that animates changes in its widget subtree.
 ///
-/// {@template animated_value.Animated.widgets}
+/// {@template fleet.Animated.widgets}
 ///
 /// Only widgets which participate in state-based animation of parameters will
 /// animate changes. To implement support for this in your own widgets use
