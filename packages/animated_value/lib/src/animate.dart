@@ -39,6 +39,8 @@ class AnimatedValueBinding extends BindingBase
 /// animatable values that result from its execution, will be animated with
 /// [animation].
 ///
+/// {@macro animated_value.Animated.widgets}
+///
 /// # Example
 ///
 /// ```dart
@@ -109,6 +111,8 @@ extension SetStateWithAnimationExtension on State {
   /// changes of animatable values that result from its execution, will be
   /// animated with [animation].
   ///
+  /// {@macro animated_value.Animated.widgets}
+  ///
   /// # Example
   ///
   /// ```dart
@@ -146,15 +150,20 @@ extension SetStateWithAnimationExtension on State {
 
 /// Widget that animates changes in its widget subtree.
 ///
-/// **Important**: Only widgets which participate in state-based animation of
-/// parameters will animate changes. To implement support for this in your own
-/// widgets use [AnimatedWidgetStateMixin] or [AnimatedWidgetState].
+/// {@template animated_value.Animated.widgets}
+///
+/// Only widgets which participate in state-based animation of parameters will
+/// animate changes. To implement support for this in your own widgets use
+/// [AnimatedWidgetStateMixin] or [AnimatedWidgetState].
 ///
 /// The following provided widgets support state-based animation of parameters:
 ///
-/// - [AColoredBox]
-/// - [ASizedBox]
 /// - [AAlign]
+/// - [AColoredBox]
+/// - [AContainer]
+/// - [ASizedBox]
+///
+/// {@endtemplate}
 ///
 /// Changes in this widgets subtree will be animated with the [animation] at the
 /// time of the build in which the state change is detected.
