@@ -41,13 +41,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _expand() {
-    setStateWithAnimation(
-      AnimationSpec.curve(Curves.easeInOutExpo, const Duration(seconds: 1)),
-      () {
-        _color = _expandedColor;
-        _size = (context.findRenderObject()! as RenderBox).size;
-      },
-    );
+    setStateWithAnimation(AnimationSpec.curve(Curves.easeInOutExpo, 1.s), () {
+      _color = _expandedColor;
+      _size = (context.findRenderObject()! as RenderBox).size;
+    });
   }
 
   @override

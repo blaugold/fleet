@@ -52,11 +52,8 @@ class StackElement extends StatelessWidget {
   final bool left;
 
   AnimationSpec _buildAnimation() {
-    return AnimationSpec.curve(
-      Curves.easeInOutCubic,
-      const Duration(milliseconds: 500) -
-          const Duration(milliseconds: 25) * index,
-    ).delay(const Duration(milliseconds: 50) * index);
+    return AnimationSpec.curve(Curves.easeInOutCubic, 500.ms - 25.ms * index)
+        .delay(50.ms * index);
   }
 
   Color _buildColor() =>

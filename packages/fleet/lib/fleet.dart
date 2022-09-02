@@ -27,4 +27,5 @@ export 'src/animatable_widgets.dart'
     show AAlign, AColoredBox, AContainer, ASizedBox;
 export 'src/animate.dart'
     show Animated, FleetBinding, withAnimation, SetStateWithAnimationExtension;
-export 'src/animation.dart' show AnimationSpec;
+export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
+export 'src/duration.dart' show DurationFromIntExtension;

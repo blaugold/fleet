@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Center(
         child: Animated(
-          animation: AnimationSpec.ease(const Duration(seconds: 1)),
+          animation: AnimationSpec.ease(1.s),
           value: _expanded,
           child: ASizedBox.fromSize(
             size: _expanded ? const Size.square(400) : const Size.square(200),

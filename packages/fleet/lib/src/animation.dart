@@ -165,6 +165,22 @@ class AnimationSpec with Diagnosticable {
       _speed.hashCode;
 }
 
+/// Extension for creating [AnimationSpec]s from [Curve]s.
+///
+/// See also:
+///
+/// - [AnimationSpec.curve]
+extension AnimationFromCurveExtension on Curve {
+  /// Creates an [AnimationSpec] which uses this [Curve].
+  ///
+  /// See also:
+  ///
+  /// - [AnimationSpec.curve]
+  AnimationSpec animation([Duration duration = AnimationSpec.defaultDuration]) {
+    return AnimationSpec.curve(this, duration);
+  }
+}
+
 /// The current [AnimationSpec] that will be used to animated visual changes.
 AnimationSpec? get currentAnimation => _currentAnimation;
 AnimationSpec? _currentAnimation;
