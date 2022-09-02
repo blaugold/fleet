@@ -184,12 +184,13 @@ void main() {
           );
 
           await tester.pump(d500ms); // .5
-          await tester.pump(d500ms); // 1.
+          await tester.pump(d500ms); // 1
           await tester.pump(d500ms); // .5
-          await tester.pump(d500ms); // 0
+          await tester.pump(d250ms); // .25
+          await tester.pump(d250ms); // 1 (the last tick always goes to the end)
           await tester.pumpAndSettle();
 
-          expect(state.animationChanges, [.5, 1, .5, 0]);
+          expect(state.animationChanges, [.5, 1, .5, .25, 1]);
         });
 
         testWidgets('3 times', (tester) async {
@@ -202,7 +203,7 @@ void main() {
           );
 
           await tester.pump(d500ms); // .5
-          await tester.pump(d500ms); // 1.
+          await tester.pump(d500ms); // 1
           await tester.pump(d500ms); // .5
           await tester.pump(d500ms); // 0
           await tester.pump(d500ms); // .5
