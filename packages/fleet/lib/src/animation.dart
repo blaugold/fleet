@@ -293,7 +293,8 @@ abstract class AnimationImpl<T> with Diagnosticable {
   ///
   /// The returned [Duration] must be negative or zero and represents the
   /// difference between when the animation reached its end value and [elapsed].
-  Duration? _isDone(Duration elapsed);
+  @protected
+  Duration? isAtEnd(Duration elapsed);
 
   /// Returns the value of this animation at the given [elapsed] time.
   ///
@@ -303,7 +304,8 @@ abstract class AnimationImpl<T> with Diagnosticable {
   /// actually returned value must always be assignable to [T] (if [T] is
   /// nullable returning `null` is fine). See [AnimatableValue.createTween] for
   /// more information.
-  T? _valueAt(Duration elapsed);
+  @protected
+  T? valueAt(Duration elapsed);
 
   void _onTick(Duration elapsed) {
     var elapsedForAllRepeats = elapsed * _spec._speed;
@@ -319,7 +321,7 @@ abstract class AnimationImpl<T> with Diagnosticable {
     var elapsedForRepeat = elapsedForAllRepeats - _lastRepeatEnd;
 
     if (_forward) {
-      final endDelta = _isDone(elapsedForRepeat);
+      final endDelta = isAtEnd(elapsedForRepeat);
       if (endDelta != null) {
         assert(endDelta.isNegative || endDelta.inMicroseconds == 0);
         elapsedForRepeat = elapsedForRepeat + endDelta;
@@ -345,7 +347,15 @@ abstract class AnimationImpl<T> with Diagnosticable {
       }
     }
 
-    _currentValue = _valueAt(elapsedForRepeat) as T;
+    if (_isStopped) {
+      // On the last tick we need to be exactly at the end of the animation.
+      // If the animation is repeated and reversing it is possible that the
+      // last tick is at the beginning of the animation.
+      _currentValue = _tween.end as T;
+    } else {
+      _currentValue = valueAt(elapsedForRepeat) as T;
+    }
+
     onChange?.call();
   }
 
@@ -406,7 +416,7 @@ class _CurveAnimation<T> extends AnimationImpl<T> {
   final _CurveAnimationProvider _provider;
 
   @override
-  Duration? _isDone(Duration elapsed) {
+  Duration? isAtEnd(Duration elapsed) {
     if (elapsed >= _provider.duration) {
       return _provider.duration - elapsed;
     }
@@ -414,7 +424,7 @@ class _CurveAnimation<T> extends AnimationImpl<T> {
   }
 
   @override
-  T? _valueAt(Duration elapsed) {
+  T? valueAt(Duration elapsed) {
     var t = elapsed.inMicroseconds / _provider.duration.inMicroseconds;
     t = _provider.curve.transform(t);
     return _tween.transform(t);
