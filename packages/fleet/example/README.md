@@ -4,11 +4,11 @@ demonstrate the Fleet framework:
 - [interactive_box_fleet.dart] and [interactive_box_flutter.dart] implement the
   same interactive animation, one using the Fleet framework and the other using
   the standard components from the Flutter framework.
-- [simple_declarative_animation.dart] show how to use animate though a
+- [simple_declarative_animation.dart] shows how to animate though in a
   declarative style with `Animated`.
-- [simple_imperative_animation.dart] show how to use animate though a imperative
-  style with `setStateWithAnimation`.
-- [stack.dart] show how to stagger animations through `AnimatedSpec.delay`.
+- [simple_imperative_animation.dart] shows how to animate though in an
+  imperative style with `setStateWithAnimation`.
+- [stack.dart] shows how to stagger animations through `AnimatedSpec.delay`.
 
 [interactive_box_fleet.dart]:
   https://github.com/blaugold/fleet/blob/main/packages/fleet/example/lib/interactive_box_fleet.dart
