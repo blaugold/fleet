@@ -123,9 +123,9 @@ All we did was replace `ColoredBox` with [`AColoredBox`][acoloredbox] and use
 [`setStateWithAnimation`][setstatewithanimation] instead of `setState`.
 
 The `AColoredBox` widget is a drop-in replacement for `ColoredBox` that supports
-**state-based animation**. Any widget you want to animate through Fleet needs to
-support state-based animation. These widgets don't have any special parameters
-related to animation and can be just as well used without animation.
+animating with Fleet. Widgets that support animating with Fleet don't have any
+special parameters related to animation and can be used without animation, just
+as well.
 
 Fleet provides drop-in replacements for a number of generally useful Flutter
 framework widgets (all with the prefix `A`). Any widget can be made to support
@@ -157,7 +157,9 @@ for animating with Fleet:
 - AAlign
 - AColoredBox
 - AContainer
+- AOpacity
 - ASizedBox
+- ASliverOpacity
 
 ---
 

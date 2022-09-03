@@ -228,6 +228,49 @@ class _AContainerState extends AnimatableState<AContainer> {
   }
 }
 
+/// Animatable version of [Opacity].
+///
+/// {@category Animatable Flutter widget}
+class AOpacity extends StatefulWidget {
+  /// Creates an animatable version of [Opacity].
+  const AOpacity({
+    super.key,
+    required this.opacity,
+    this.alwaysIncludeSemantics = false,
+    this.child,
+  });
+
+  /// See [Opacity.opacity].
+  final double opacity;
+
+  /// See [Opacity.alwaysIncludeSemantics].
+  final bool alwaysIncludeSemantics;
+
+  /// See [ProxyWidget.child].
+  final Widget? child;
+
+  @override
+  State<AOpacity> createState() => _AOpacityState();
+}
+
+class _AOpacityState extends AnimatableState<AOpacity> {
+  late final _opacity = AnimatableDouble(widget.opacity, state: this);
+
+  @override
+  void updateAnimatableParameters() {
+    _opacity.value = widget.opacity;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: _opacity.animatedValue,
+      alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
+      child: widget.child,
+    );
+  }
+}
+
 /// Animatable version of [SizedBox].
 ///
 /// {@category Animatable Flutter widget}
@@ -279,6 +322,49 @@ class _ASizedBoxState extends AnimatableState<ASizedBox> {
       height: _height.animatedValue,
       width: _width.animatedValue,
       child: widget.child,
+    );
+  }
+}
+
+/// Animatable version of [SliverOpacity].
+///
+/// {@category Animatable Flutter widget}
+class ASliverOpacity extends StatefulWidget {
+  /// Creates an animatable version of [SliverOpacity].
+  const ASliverOpacity({
+    super.key,
+    required this.opacity,
+    this.alwaysIncludeSemantics = false,
+    this.sliver,
+  });
+
+  /// See [SliverOpacity.opacity].
+  final double opacity;
+
+  /// See [SliverOpacity.alwaysIncludeSemantics].
+  final bool alwaysIncludeSemantics;
+
+  /// See [ProxyWidget.child].
+  final Widget? sliver;
+
+  @override
+  State<ASliverOpacity> createState() => _ASliverOpacityState();
+}
+
+class _ASliverOpacityState extends AnimatableState<ASliverOpacity> {
+  late final _opacity = AnimatableDouble(widget.opacity, state: this);
+
+  @override
+  void updateAnimatableParameters() {
+    _opacity.value = widget.opacity;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverOpacity(
+      opacity: _opacity.animatedValue,
+      alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
+      sliver: widget.sliver,
     );
   }
 }

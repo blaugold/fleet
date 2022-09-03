@@ -1,5 +1,5 @@
 export 'src/animatable_flutter_widgets.dart'
-    show AAlign, AColoredBox, AContainer, ASizedBox;
+    show AAlign, AColoredBox, AContainer, AOpacity, ASizedBox;
 export 'src/animatable_widget.dart'
     show
         AnimatableAlignmentGeometry,
