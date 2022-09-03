@@ -165,7 +165,11 @@ extension SetStateWithAnimationExtension on State {
 /// - [AAlign]
 /// - [AColoredBox]
 /// - [AContainer]
+/// - [AOpacity]
+/// - [APadding]
 /// - [ASizedBox]
+/// - [ASliverOpacity]
+/// - [ASliverPadding]
 ///
 /// {@endtemplate}
 ///
