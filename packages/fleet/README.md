@@ -4,8 +4,22 @@
 > ⚠️ This package is in an early state of development. If you find any bugs or
 > have any suggestions, please open an [issue][issues].
 
-**Fleet** is an animation framework that animates state changes instead of
-individual values.
+**Fleet** is an animation framework for Flutter.
+
+- [**State-based**][animated]: Animate all visual changes that are the result of
+  a state change.
+- [**Declarative**][animationspec]: Describe an animation and apply it to a
+  state change. No need to manage `AnimationController`s or `Tween`s.
+- **Animatable widgets**: Comes out of the box with general purpose widgets that
+  support animating with Fleet.
+  - [**Extensible**][animatablestatemixin]: Any widget can be made to support
+    animating with Fleet.
+  - **Flexible**: Animatable widgets can be used with or without animations.
+  - **Composable**: Widgets that build on animatable widgets are automatically
+    animatable.
+  - **Animate parameters individually**: Animate parameters of animatable widget
+    individually, e.g. with different curves.
+- **User-friendly**: Add and change animations with little refactoring.
 
 # Getting started
 
@@ -92,7 +106,7 @@ Now lets animate the state change of `_active`:
      return GestureDetector(
        onTap: () {
 -        setState(() {
-+        setStateWithAnimation(const AnimationSpec(), () {
++        setStateWithAnimation(Curves.ease.animation(250.ms), () {
            _active = !_active;
          });
        },
@@ -125,10 +139,15 @@ immediately executed like it is the case for `setState`. Instead, it is executed
 as part of building the next frame. In practice this seldomly makes a
 difference.
 
-The [`AnimationSpec`][animationspec] that we pass to `setStateWithAnimation`
-specifies how to animate from the old to the new state. `const AnimationSpec()`
-is the default animation spec, which uses `Curves.linear` and animates for
-200ms.
+`Curves.ease.animation(250.ms)` creates an [`AnimationSpec`][animationspec] that
+we pass to `setStateWithAnimation` to specify how to animate from the old to the
+new state.
+
+`.animate` is an extension method on `Curve` that creates an
+[`AnimationSpec`][animationspec] form the curve. It optionally takes a
+`Duration`. For a nicer syntax for specifying `Duration`s, Fleet provides
+extensions on `int`, e.g `250.ms` is equivalent to
+`Duration(milliseconds: 250)`.
 
 # Animatable widgets
 
@@ -152,6 +171,8 @@ for animating with Fleet:
   https://developer.apple.com/documentation/swiftui/animations
 [example_app]:
   https://github.com/blaugold/fleet/tree/main/packages/fleet/example
+[withanimation]:
+  https://pub.dev/documentation/fleet/latest/fleet/withAnimation.html
 [setstatewithanimation]:
   https://pub.dev/documentation/fleet/latest/fleet/SetStateWithAnimationExtension/setStateWithAnimation.html
 [animatablestatemixin]:
@@ -160,3 +181,4 @@ for animating with Fleet:
   https://pub.dev/documentation/fleet/latest/fleet/AnimationSpec-class.html
 [acoloredbox]:
   https://pub.dev/documentation/fleet/latest/fleet/AColoredBox-class.html
+[animated]: https://pub.dev/documentation/fleet/latest/fleet/Animated-class.html
