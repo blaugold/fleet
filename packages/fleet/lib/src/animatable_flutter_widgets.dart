@@ -271,6 +271,43 @@ class _AOpacityState extends AnimatableState<AOpacity> {
   }
 }
 
+/// Animatable version of [Padding].
+///
+/// {@category Animatable Flutter widget}
+class APadding extends StatefulWidget {
+  /// Creates an animatable version of [Padding].
+  const APadding({super.key, required this.padding, this.child});
+
+  /// See [Padding.padding].
+  final EdgeInsetsGeometry padding;
+
+  /// See [ProxyWidget.child].
+  final Widget? child;
+
+  @override
+  State<APadding> createState() => _APaddingState();
+}
+
+class _APaddingState extends AnimatableState<APadding> {
+  late final _padding = AnimatableEdgeInsetsGeometry(
+    widget.padding,
+    state: this,
+  );
+
+  @override
+  void updateAnimatableParameters() {
+    _padding.value = widget.padding;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: _padding.animatedValue,
+      child: widget.child,
+    );
+  }
+}
+
 /// Animatable version of [SizedBox].
 ///
 /// {@category Animatable Flutter widget}
@@ -364,6 +401,43 @@ class _ASliverOpacityState extends AnimatableState<ASliverOpacity> {
     return SliverOpacity(
       opacity: _opacity.animatedValue,
       alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
+      sliver: widget.sliver,
+    );
+  }
+}
+
+/// Animatable version of [SliverPadding].
+///
+/// {@category Animatable Flutter widget}
+class ASliverPadding extends StatefulWidget {
+  /// Creates an animatable version of [SliverPadding].
+  const ASliverPadding({super.key, required this.padding, this.sliver});
+
+  /// See [SliverPadding.padding].
+  final EdgeInsetsGeometry padding;
+
+  /// See [ProxyWidget.child].
+  final Widget? sliver;
+
+  @override
+  State<ASliverPadding> createState() => _ASliverPaddingState();
+}
+
+class _ASliverPaddingState extends AnimatableState<ASliverPadding> {
+  late final _padding = AnimatableEdgeInsetsGeometry(
+    widget.padding,
+    state: this,
+  );
+
+  @override
+  void updateAnimatableParameters() {
+    _padding.value = widget.padding;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: _padding.animatedValue,
       sliver: widget.sliver,
     );
   }
