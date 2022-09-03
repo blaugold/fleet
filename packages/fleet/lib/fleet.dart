@@ -1,3 +1,5 @@
+export 'src/animatable_flutter_widgets.dart'
+    show AAlign, AColoredBox, AContainer, ASizedBox;
 export 'src/animatable_widget.dart'
     show
         AnimatableAlignmentGeometry,
@@ -23,8 +25,6 @@ export 'src/animatable_widget.dart'
         OptionalAnimatableMatrix4,
         OptionalAnimatableRect,
         OptionalAnimatableSize;
-export 'src/animatable_widgets.dart'
-    show AAlign, AColoredBox, AContainer, ASizedBox;
 export 'src/animate.dart'
     show Animated, FleetBinding, withAnimation, SetStateWithAnimationExtension;
 export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;

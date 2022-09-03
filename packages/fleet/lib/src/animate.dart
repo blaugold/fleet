@@ -5,8 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Animation;
 
+import 'animatable_flutter_widgets.dart';
 import 'animatable_widget.dart';
-import 'animatable_widgets.dart';
 import 'animation.dart';
 import 'transaction.dart';
 
@@ -33,11 +33,11 @@ class FleetBinding extends BindingBase
   }
 }
 
-/// Schedules an animated state change to be applied during the next frame.
-///
-/// During the next frame, [block] will be executed and all changes of
-/// animatable values that result from its execution, will be animated with
+/// Animates the state change caused by calling [block] with the provided
 /// [animation].
+///
+/// During the next frame, [block] will be called and all visual changes that
+/// result from its execution will be animated with [animation].
 ///
 /// {@macro fleet.Animated.widgets}
 ///
@@ -74,6 +74,8 @@ class FleetBinding extends BindingBase
 ///
 /// - [SetStateWithAnimationExtension.setStateWithAnimation] for animating state
 ///   changes in a [StatefulWidget]'s [State].
+///
+/// {@category Animate}
 void withAnimation(AnimationSpec animation, void Function() block) {
   final globalTransactionBinding = TransactionBinding.instance;
   if (globalTransactionBinding == null) {
@@ -103,13 +105,15 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
 
 /// Extension that adds a variant of [State.setState] that allows animating
 /// state changes.
+///
+/// {@category Animate}
 extension SetStateWithAnimationExtension on State {
-  /// Schedules an animated change of this [State] to be applied during the next
-  /// frame.
+  /// Animates the state change caused by calling [block] with the provided
+  /// [animation].
   ///
-  /// During the next frame, [block] will be executed within [setState] and all
-  /// changes of animatable values that result from its execution, will be
-  /// animated with [animation].
+  /// During the next frame, [block] will be called within [setState] and all
+  /// visual changes that result from its execution will be animated with
+  /// [animation].
   ///
   /// {@macro fleet.Animated.widgets}
   ///
@@ -152,11 +156,11 @@ extension SetStateWithAnimationExtension on State {
 ///
 /// {@template fleet.Animated.widgets}
 ///
-/// Only widgets which participate in state-based animation of parameters will
-/// animate changes. To implement support for this in your own widgets use
-/// [AnimatableStateMixin] or [AnimatableState].
+/// Only widgets that support animating with Fleet will animate changes. To
+/// implement support for this in your own widgets use [AnimatableStateMixin] or
+/// [AnimatableState].
 ///
-/// The following provided widgets support state-based animation of parameters:
+/// The following provided widgets support animating with Fleet:
 ///
 /// - [AAlign]
 /// - [AColoredBox]
@@ -176,6 +180,8 @@ extension SetStateWithAnimationExtension on State {
 /// taking precedence. To negate the effects of an enclosing [Animated] widget
 /// for part of the widget tree wrap it in an [Animated] widget, with
 /// [animation] set to `null`.
+///
+/// {@category Animate}
 class Animated extends StatefulWidget {
   /// Creates a widget that animates changes in its widget subtree.
   const Animated({

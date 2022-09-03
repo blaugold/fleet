@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
 /// Specification for animating visual changes.
+///
+/// {@category Animate}
 @immutable
 class AnimationSpec with Diagnosticable {
   /// Animation which uses [defaultCurve] and [defaultDuration].
@@ -170,6 +172,8 @@ class AnimationSpec with Diagnosticable {
 /// See also:
 ///
 /// - [AnimationSpec.curve]
+///
+/// {@category Animate}
 extension AnimationFromCurveExtension on Curve {
   /// Creates an [AnimationSpec] which uses this [Curve].
   ///

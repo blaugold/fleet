@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'animatable_widget.dart';
 
 /// Animatable version of [Align].
+///
+/// {@category Animatable Flutter widget}
 class AAlign extends StatefulWidget {
   /// Creates an animatable version of [Align].
   const AAlign({
@@ -62,6 +64,8 @@ class _AAlignState extends AnimatableState<AAlign> {
 }
 
 /// Animatable version of [ColoredBox].
+///
+/// {@category Animatable Flutter widget}
 class AColoredBox extends StatefulWidget {
   /// Creates an animatable version of [ColoredBox].
   const AColoredBox({super.key, required this.color, this.child});
@@ -94,6 +98,8 @@ class _AColoredBoxState extends AnimatableState<AColoredBox> {
 }
 
 /// Animatable version of [Container].
+///
+/// {@category Animatable Flutter widget}
 class AContainer extends StatefulWidget {
   /// Creates an animatable version of [Container].
   AContainer({
@@ -223,6 +229,8 @@ class _AContainerState extends AnimatableState<AContainer> {
 }
 
 /// Animatable version of [SizedBox].
+///
+/// {@category Animatable Flutter widget}
 class ASizedBox extends StatefulWidget {
   /// Creates an animatable version of [SizedBox].
   const ASizedBox({

@@ -1,4 +1,6 @@
 /// Extension for creating [Duration]s from [int]s.
+///
+/// {@category Animate}
 extension DurationFromIntExtension on int {
   /// A [Duration] that is as many **days** long as this value.
   Duration get d => Duration(days: this);

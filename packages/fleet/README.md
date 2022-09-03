@@ -4,8 +4,22 @@
 > ⚠️ This package is in an early state of development. If you find any bugs or
 > have any suggestions, please open an [issue][issues].
 
-**Fleet** is an animation framework that animates state changes instead of
-individual values.
+**Fleet** is an animation framework for Flutter.
+
+- [**State-based**][animated]: Animate all visual changes that are the result of
+  a state change.
+- [**Declarative**][animationspec]: Describe an animation and apply it to a
+  state change. No need to manage `AnimationController`s or `Tween`s.
+- **Animatable widgets**: Comes out of the box with general purpose widgets that
+  support animating with Fleet.
+  - [**Extensible**][animatablestatemixin]: Any widget can be made to support
+    animating with Fleet.
+  - **Flexible**: Animatable widgets can be used with or without animations.
+  - **Composable**: Widgets that build on animatable widgets are automatically
+    animatable.
+  - **Animate parameters individually**: Animate parameters of animatable widget
+    individually, e.g. with different curves.
+- **User-friendly**: Add and change animations with little refactoring.
 
 # Getting started
 
@@ -152,6 +166,8 @@ for animating with Fleet:
   https://developer.apple.com/documentation/swiftui/animations
 [example_app]:
   https://github.com/blaugold/fleet/tree/main/packages/fleet/example
+[withanimation]:
+  https://pub.dev/documentation/fleet/latest/fleet/withAnimation.html
 [setstatewithanimation]:
   https://pub.dev/documentation/fleet/latest/fleet/SetStateWithAnimationExtension/setStateWithAnimation.html
 [animatablestatemixin]:
@@ -160,3 +176,4 @@ for animating with Fleet:
   https://pub.dev/documentation/fleet/latest/fleet/AnimationSpec-class.html
 [acoloredbox]:
   https://pub.dev/documentation/fleet/latest/fleet/AColoredBox-class.html
+[animated]: https://pub.dev/documentation/fleet/latest/fleet/Animated-class.html
