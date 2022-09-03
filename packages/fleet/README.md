@@ -106,7 +106,7 @@ Now lets animate the state change of `_active`:
      return GestureDetector(
        onTap: () {
 -        setState(() {
-+        setStateWithAnimation(const AnimationSpec(), () {
++        setStateWithAnimation(Curves.ease.animation(250.ms), () {
            _active = !_active;
          });
        },
@@ -139,10 +139,15 @@ immediately executed like it is the case for `setState`. Instead, it is executed
 as part of building the next frame. In practice this seldomly makes a
 difference.
 
-The [`AnimationSpec`][animationspec] that we pass to `setStateWithAnimation`
-specifies how to animate from the old to the new state. `const AnimationSpec()`
-is the default animation spec, which uses `Curves.linear` and animates for
-200ms.
+`Curves.ease.animation(250.ms)` creates an [`AnimationSpec`][animationspec] that
+we pass to `setStateWithAnimation` to specify how to animate from the old to the
+new state.
+
+`.animate` is an extension method on `Curve` that creates an
+[`AnimationSpec`][animationspec] form the curve. It optionally takes a
+`Duration`. For a nicer syntax for specifying `Duration`s, Fleet provides
+extensions on `int`, e.g `250.ms` is equivalent to
+`Duration(milliseconds: 250)`.
 
 # Animatable widgets
 
