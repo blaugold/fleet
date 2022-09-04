@@ -1,3 +1,9 @@
+## 0.1.3+1
+
+ - **DOCS**: reword a few sentences. ([c243c225](https://github.com/blaugold/fleet/commit/c243c225c0e6c08c20374e17367b320c94caa2ec))
+ - **DOCS**: explain state-based approach. ([d39c77f1](https://github.com/blaugold/fleet/commit/d39c77f1c2d2c29c817e910685ef8fbf05c3ad19))
+ - **DOCS**: fix typos. ([27c72ab8](https://github.com/blaugold/fleet/commit/27c72ab8d01760c474550063a41bd1eb59b4bed2))
+
 ## 0.1.3
 
  - **FEAT**: add `APositioned`, `APositionedDirectional` and `ATransform` ([#23](https://github.com/blaugold/fleet/issues/23)). ([9910986d](https://github.com/blaugold/fleet/commit/9910986d0f689008ed475e5f90d6a329ef90ecd0))

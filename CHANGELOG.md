@@ -15,6 +15,29 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`fleet` - `v0.1.3+1`](#fleet---v0131)
+
+---
+
+#### `fleet` - `v0.1.3+1`
+
+ - **DOCS**: reword a few sentences. ([c243c225](https://github.com/blaugold/fleet/commit/c243c225c0e6c08c20374e17367b320c94caa2ec))
+ - **DOCS**: explain state-based approach. ([d39c77f1](https://github.com/blaugold/fleet/commit/d39c77f1c2d2c29c817e910685ef8fbf05c3ad19))
+ - **DOCS**: fix typos. ([27c72ab8](https://github.com/blaugold/fleet/commit/27c72ab8d01760c474550063a41bd1eb59b4bed2))
+
+
+## 2022-09-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`fleet` - `v0.1.3`](#fleet---v013)
 
 ---
