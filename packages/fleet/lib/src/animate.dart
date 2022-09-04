@@ -35,8 +35,8 @@ class FleetBinding extends BindingBase
 
 /// Applies an [animation] to the state changes caused by calling [block].
 ///
-/// See [Animated] for a widget that applies an animation **only to the state
-/// changes in its descendants**.
+/// To apply an animation **only to state changes in a widget subtree**, see
+/// [Animated].
 ///
 /// See [SetStateWithAnimationExtension.setStateWithAnimation] for an extension
 /// method for animating state changes in a [StatefulWidget].
@@ -168,11 +168,10 @@ extension SetStateWithAnimationExtension on State {
   }
 }
 
-/// A widget that applies an [animation] only to state changes in its
-/// descendants.
+/// A widget that applies an [animation] to state changes in its descendants.
 ///
 /// See [withAnimation] for a function that applies an animation to **all state
-/// changes that are result of calling a callback**.
+/// changes that are the result of calling a callback**.
 ///
 /// {@template fleet.Animated.widgets}
 ///
