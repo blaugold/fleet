@@ -1,3 +1,8 @@
+## 0.1.3
+
+ - **FEAT**: add `APositioned`, `APositionedDirectional` and `ATransform` ([#23](https://github.com/blaugold/fleet/issues/23)). ([9910986d](https://github.com/blaugold/fleet/commit/9910986d0f689008ed475e5f90d6a329ef90ecd0))
+ - **FEAT**: slightly revise API and improve doc comments ([#22](https://github.com/blaugold/fleet/issues/22)). ([7ddd4ef9](https://github.com/blaugold/fleet/commit/7ddd4ef93fe840b8520c3e892e40ad660b86280a))
+
 ## 0.1.2
 
  - **FEAT**: add widgets for padding and opacity ([#21](https://github.com/blaugold/fleet/issues/21)). ([c389a655](https://github.com/blaugold/fleet/commit/c389a655003f82e7feef081a0fc0c2e985a78b47))
