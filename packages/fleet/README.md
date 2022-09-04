@@ -132,11 +132,18 @@ state-based animation through components provided by Fleet (see
 [`AnimatableStateMixin`][animatablestatemixin]). Issues or PRs for adding
 support for more widgets are welcome!
 
-`setStateWithAnimation` is from an extension on `State`. All state changes
-caused by executing the callback will be animated. Note that the callback is not
-immediately executed like it is the case for `setState`. Instead, it is executed
-as part of building the next frame. In practice this seldomly makes a
-difference.
+Note that we did not explicitly tell `setStateWithAnimation` what to animate.
+This is because Fleet uses a **state-based** approach. All state changes caused
+by executing the provided callback will be animated. Even the state changes
+which are indirect, like the `color` parameter of `AColoredBox` going from
+`Colors.grey` to `Colors.blue`. Fleet does this by tracking the state of
+animatable parameters of animatable widgets from one build to the next.
+
+`setStateWithAnimation` is a little bit special in that it does not immediately
+execute the callback, like it is the case for `setState`. Instead,
+`setStateWithAnimation` executes the callback as part of building the next
+frame. In practice this seldomly makes a difference. `setStateWithAnimation` is
+a method from an extension on `State`.
 
 `Curves.ease.animation(250.ms)` creates an [`AnimationSpec`][animationspec] that
 we pass to `setStateWithAnimation` to specify how to animate from the old to the
