@@ -1,1 +1,1 @@
-Components which allow you tu build widgets that support animating with Fleet.
+Components which allow you to build widgets that support animating with Fleet.

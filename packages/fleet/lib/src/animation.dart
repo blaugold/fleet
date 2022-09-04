@@ -12,8 +12,8 @@ import './animate.dart';
 /// - `const AnimationSpec()` uses uses [defaultCurve] and [defaultDuration].
 /// - [AnimationSpec.curve] animates with a [Curve] over a fixed [Duration].
 ///
-/// Any [AnimationSpec] instance can be refined by calling on of the modifiers
-/// which returns a new [AnimationSpec] instance:
+/// Any [AnimationSpec] instance can be refined by calling one of the modifiers.
+/// A modifier returns a new [AnimationSpec] instance:
 ///
 /// - [delay]
 /// - [repeat]
