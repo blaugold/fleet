@@ -2,12 +2,44 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
-/// Specification for animating visual changes.
+import './animate.dart';
+
+/// Specification for animating state changes.
+///
+/// You select the type of animation you want through the constructor you use to
+/// create the [AnimationSpec].
+///
+/// - `const AnimationSpec()` uses uses [defaultCurve] and [defaultDuration].
+/// - [AnimationSpec.curve] animates with a [Curve] over a fixed [Duration].
+///
+/// Any [AnimationSpec] instance can be refined by calling on of the modifiers
+/// which returns a new [AnimationSpec] instance:
+///
+/// - [delay]
+/// - [repeat]
+/// - [repeatForever]
+/// - [speed]
+///
+/// To apply an [AnimationSpec] to a state change, use [Animated],
+/// [withAnimation] or [SetStateWithAnimationExtension].
+///
+/// ## Examples
+///
+/// Create an [AnimationSpec] with modifiers:
+///
+/// ```dart
+/// import 'package:flutter/animation.dart';
+///
+/// final animation = AnimationSpec.curve(Curves.ease, 300.ms)
+///     .delay(250.s)
+///     .repeat(2)
+///     .speed(2.0);
+/// ```
 ///
 /// {@category Animate}
 @immutable
 class AnimationSpec with Diagnosticable {
-  /// Animation which uses [defaultCurve] and [defaultDuration].
+  /// Default animation which uses [defaultCurve] and [defaultDuration].
   const AnimationSpec()
       : this._(
           provider: const _CurveAnimationProvider(
@@ -16,7 +48,24 @@ class AnimationSpec with Diagnosticable {
           ),
         );
 
-  /// Animation which uses the provided [curve].
+  /// Animation which uses a [curve] and animates for a fixed [duration].
+  ///
+  /// # Examples
+  ///
+  /// ```dart
+  /// import 'package:flutter/animation.dart';
+  ///
+  /// final linearDefaultDuration = AnimationSpec.curve(Curves.linear);
+  /// final linearDefaultDurationFromCurve = Curves.linear.animation();
+  /// final ease250ms = AnimationSpec.curve(Curves.ease, 250.ms);
+  /// final ease250msFromCurve = Curves.ease.animation(250.ms);
+  /// final withDelay = AnimationSpec.curve(Curves.linear).delay(250.ms);
+  /// ```
+  ///
+  /// See also:
+  ///
+  /// - [AnimationFromCurveExtension.animation] for a more convenient way to
+  ///   create an animation from a [Curve].
   AnimationSpec.curve(Curve curve, [Duration duration = defaultDuration])
       : this._(
           provider: _CurveAnimationProvider(
@@ -24,26 +73,6 @@ class AnimationSpec with Diagnosticable {
             duration: duration,
           ),
         );
-
-  /// Animation which uses [Curves.linear].
-  factory AnimationSpec.linear([Duration duration = defaultDuration]) =>
-      AnimationSpec.curve(Curves.linear, duration);
-
-  /// Animation which uses [Curves.ease].
-  factory AnimationSpec.ease([Duration duration = defaultDuration]) =>
-      AnimationSpec.curve(Curves.ease, duration);
-
-  /// Animation which uses [Curves.easeIn].
-  factory AnimationSpec.easeIn([Duration duration = defaultDuration]) =>
-      AnimationSpec.curve(Curves.easeIn, duration);
-
-  /// Animation which uses [Curves.easeOut].
-  factory AnimationSpec.easeOut([Duration duration = defaultDuration]) =>
-      AnimationSpec.curve(Curves.easeOut, duration);
-
-  /// Animation which uses [Curves.easeInOut].
-  factory AnimationSpec.easeInOut([Duration duration = defaultDuration]) =>
-      AnimationSpec.curve(Curves.easeInOut, duration);
 
   const AnimationSpec._({
     required AnimationProvider provider,
@@ -90,13 +119,29 @@ class AnimationSpec with Diagnosticable {
 
   /// Returns a copy of this [AnimationSpec] which will start animating after
   /// the given [delay].
+  ///
+  /// # Examples
+  ///
+  /// ```dart
+  /// import 'package:flutter/animation.dart';
+  ///
+  /// final withDelay = Curves.linear.animation().delay(250.ms);
+  /// ```
   AnimationSpec delay(Duration delay) => _copyWith(delay: delay);
 
   /// Returns a copy of this [AnimationSpec] which repeats [count] times.
   ///
   /// If [reverse] is true, the animation will reverse after finishing, instead
   /// of starting immediately from the beginning. A reverse counts as a repeat.
-  AnimationSpec repeat(int count, {bool reverse = false}) {
+  ///
+  /// # Examples
+  ///
+  /// ```dart
+  /// import 'package:flutter/animation.dart';
+  ///
+  /// final withRepeat = Curves.linear.animation().repeat(2);
+  /// ```
+  AnimationSpec repeat(int count, {bool reverse = true}) {
     if (count < 0) {
       throw ArgumentError.value(count, 'count', 'must be greater than zero.');
     }
@@ -107,12 +152,28 @@ class AnimationSpec with Diagnosticable {
   ///
   /// If [reverse] is true, the animation will reverse after finishing, instead
   /// of starting immediately from the beginning.
-  AnimationSpec repeatForever({bool reverse = false}) =>
+  ///
+  /// # Examples
+  ///
+  /// ```dart
+  /// import 'package:flutter/animation.dart';
+  ///
+  /// final withRepeatForever = Curves.linear.animation().repeatForever();
+  /// ```
+  AnimationSpec repeatForever({bool reverse = true}) =>
       _copyWith(repeatCount: _foreverRepeatCount, reverse: reverse);
 
   /// Returns a copy of this [AnimationSpec] with the given [speed].
   ///
   /// For example a speed of 0.5 will cause the animation to run at half speed.
+  ///
+  /// # Examples
+  ///
+  /// ```dart
+  /// import 'package:flutter/animation.dart';
+  ///
+  /// final withSpeed = Curves.linear.animation().speed(0.5);
+  /// ```
   AnimationSpec speed(double speed) {
     if (speed <= 0) {
       throw ArgumentError.value(speed, 'speed', 'must be greater than zero.');
@@ -175,7 +236,17 @@ class AnimationSpec with Diagnosticable {
 ///
 /// {@category Animate}
 extension AnimationFromCurveExtension on Curve {
-  /// Creates an [AnimationSpec] which uses this [Curve].
+  /// Returns an animation which uses this curve and animates for a fixed
+  /// [duration].
+  ///
+  /// # Examples
+  ///
+  /// ```dart
+  /// import 'package:flutter/animation.dart';
+  ///
+  /// final linearDefaultDuration = Curves.linear.animation();
+  /// final linear250ms = Curves.linear.animation(250.ms);
+  /// ```
   ///
   /// See also:
   ///
@@ -185,7 +256,7 @@ extension AnimationFromCurveExtension on Curve {
   }
 }
 
-/// The current [AnimationSpec] that will be used to animated visual changes.
+/// The current [AnimationSpec] that will be used to animated state changes.
 AnimationSpec? get currentAnimation => _currentAnimation;
 AnimationSpec? _currentAnimation;
 

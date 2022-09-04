@@ -1,5 +1,6 @@
 import 'package:fleet/fleet.dart';
 import 'package:fleet/src/animation.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -160,7 +161,7 @@ void main() {
         final value = AnimatableDouble(0, state: state);
 
         await tester.withAnimation(
-          linear1sCurve.repeat(2),
+          linear1sCurve.repeat(2, reverse: false),
           () => value.value = 1,
         );
 
@@ -179,7 +180,7 @@ void main() {
           final value = AnimatableDouble(0, state: state);
 
           await tester.withAnimation(
-            linear1sCurve.repeat(2, reverse: true),
+            linear1sCurve.repeat(2),
             () => value.value = 1,
           );
 
@@ -198,7 +199,7 @@ void main() {
           final value = AnimatableDouble(0, state: state);
 
           await tester.withAnimation(
-            linear1sCurve.repeat(3, reverse: true),
+            linear1sCurve.repeat(3),
             () => value.value = 1,
           );
 
@@ -220,7 +221,7 @@ void main() {
 const d250ms = Duration(milliseconds: 250);
 const d500ms = Duration(milliseconds: 500);
 
-final linear1sCurve = AnimationSpec.linear(const Duration(seconds: 1));
+final linear1sCurve = Curves.linear.animation(const Duration(seconds: 1));
 
 extension on WidgetTester {
   Future<T> withAnimation<T>(

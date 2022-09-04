@@ -6,22 +6,27 @@ import 'package:flutter/widgets.dart' hide Animation;
 import 'animation.dart';
 import 'transaction.dart';
 
-/// A wrapper around an animatable parameter of a widget that supports
-/// state-based animation.
+/// A wrapper around an animatable parameter of a widget that supports animating
+/// with Fleet.
 ///
 /// [value] itself is not animated, can be changed at any time and immediately
-/// reflects the new value. [animatedValue] is animated and changes over time to
-/// the new [value].
+/// reflects the new value.
 ///
-/// An [AnimatableParameter] uses the [AnimationSpec] that is active when a new
-/// value is set to animate the change.
+/// [animatedValue] is animated and changes over time to the new [value].
+///
+/// At any given point in time there is exaclty **one** or **none**
+/// [AnimationSpec]s available from the mechanism that Fleet uses to bind
+/// [AnimationSpec]s to state changes.
+///
+/// When a new value is set, the currently available [AnimationSpec] is used to
+/// animate the change.
 ///
 /// {@category Animatable widget}
 abstract class AnimatableParameter<T>
     with Diagnosticable
     implements AnimatableValue<T> {
   /// Creates a wrapper around an animatable parameter of a widget that supports
-  /// state-based animation.
+  /// animating with Fleet.
   AnimatableParameter(T value, {required AnimatableStateMixin state})
       : _value = value,
         _animatedValue = value,
@@ -401,11 +406,33 @@ class OptionalAnimatableSize extends AnimatableParameter<Size?> {
   Tween<Size?> createTween() => _OptionalTween(SizeTween());
 }
 
-/// Mixin for widgets that support state-based animation of parameters.
+/// Mixin for the [State] of a widget that supports animating with Fleet.
 ///
-/// Implementers must implement [updateAnimatableParameters] to update the
-/// [AnimatableParameter]s when the widget changes and use
-/// [AnimatableParameter.animatedValue] in their [build] methods.
+/// To support animating with Fleet, a widget needs to be able to detect changes
+/// in its parameters. That means it has to be a [StatefulWidget]. This mixin is
+/// meant to be mixed in to the [State] of such a widget. To drive animations,
+/// [State] also needs to be able to provide [Ticker]s through
+/// [TickerProviderStateMixin]. It is usually easier to extend the widget's
+/// state class from [AnimatableState], wich already mixes in the mentioned
+/// mixins.
+///
+/// Not every parameter of a widget can be animated. Values of discrete types,
+/// like [Enum]s, cannot be interpolated between.
+///
+/// The state class needs to contain an [AnimatableParameter] for each parameter
+/// that can and should be animatable. You need to use a subclass of
+/// [AnimatableParameter] that is specific to the parameter, e.g.
+/// [AnimatableColor] for [Color]s. If the parameter is optional, you need to
+/// use the corresponding subclass that supports `null` values, e.g.
+/// [OptionalAnimatableColor].
+///
+/// In the [build] method, you have to use [AnimatableParameter.animatedValue]
+/// to get the current value of a parameter.
+///
+/// When the widget is rebuilt, [updateAnimatableParameters] is called, in which
+/// you have to update the [AnimatableParameter]s with the new values.
+///
+/// # Examples
 ///
 /// ```dart
 /// import 'package:flutter/widgets.dart';
