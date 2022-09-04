@@ -6,8 +6,7 @@
 
 **Fleet** is an animation framework for Flutter.
 
-- [**State-based**][animated]: Animate all visual changes that are the result of
-  a state change.
+- [**State-based**][animated]: Animate transitions from one state to another.
 - [**Declarative**][animationspec]: Describe an animation and apply it to a
   state change. No need to manage `AnimationController`s or `Tween`s.
 - **Animatable widgets**: Comes out of the box with general purpose widgets that

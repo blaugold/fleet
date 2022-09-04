@@ -33,20 +33,25 @@ class FleetBinding extends BindingBase
   }
 }
 
-/// Animates the state change caused by calling [block] with the provided
-/// [animation].
+/// Applies an [animation] to the state changes caused by calling [block].
 ///
-/// During the next frame, [block] will be called and all visual changes that
+/// See [Animated] for a widget that applies an animation **only to the state
+/// changes in its descendants**.
+///
+/// See [SetStateWithAnimationExtension.setStateWithAnimation] for an extension
+/// method for animating state changes in a [StatefulWidget].
+///
+/// During the next frame, [block] will be called and all state changes that
 /// result from its execution will be animated with [animation].
 ///
 /// {@macro fleet.Animated.widgets}
 ///
-/// # Example
+/// # Examples
 ///
 /// ```dart
 /// import 'package:flutter/material.dart';
 ///
-/// final color = ValueNotifier(Colors.green);
+/// final active = ValueNotifier(false);
 ///
 /// class MyWidget extends StatelessWidget {
 ///   const MyWidget({super.key});
@@ -55,14 +60,14 @@ class FleetBinding extends BindingBase
 ///   Widget build(BuildContext context) {
 ///     return GestureDetector(
 ///       onTap: () {
-///         withAnimation(const AnimationSpec(), () {
-///           color.value = Colors.red;
+///         withAnimation(Curves.ease.animation(250.ms), () {
+///           active.value = !active.value;
 ///         });
 ///       },
-///       child: ValueListenableBuilder<Color>(
-///         valueListenable: color,
-///         builder: (context, color, _) {
-///           return AColoredBox(color: color);
+///       child: ValueListenableBuilder<bool>(
+///         valueListenable: active,
+///         builder: (context, active, _) {
+///           return AColoredBox(color: active ? Colors.blue : Colors.grey);
 ///         },
 ///       ),
 ///     );
@@ -74,6 +79,8 @@ class FleetBinding extends BindingBase
 ///
 /// - [SetStateWithAnimationExtension.setStateWithAnimation] for animating state
 ///   changes in a [StatefulWidget]'s [State].
+/// - [Animated] for a widget that applies an [animation] to the state changes
+///   in its descendants.
 ///
 /// {@category Animate}
 void withAnimation(AnimationSpec animation, void Function() block) {
@@ -108,16 +115,18 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
 ///
 /// {@category Animate}
 extension SetStateWithAnimationExtension on State {
-  /// Animates the state change caused by calling [block] with the provided
-  /// [animation].
+  /// Applies an [animation] to the state changes caused by calling [block].
+  ///
+  /// See [Animated] for a widget that applies an animation **only to the state
+  /// changes in its descendants**.
   ///
   /// During the next frame, [block] will be called within [setState] and all
-  /// visual changes that result from its execution will be animated with
+  /// state changes that result from its execution will be animated with
   /// [animation].
   ///
   /// {@macro fleet.Animated.widgets}
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```dart
   /// import 'package:flutter/material.dart';
@@ -130,21 +139,28 @@ extension SetStateWithAnimationExtension on State {
   /// }
   ///
   /// class _MyWidgetState extends State<MyWidget> {
-  ///   var _color = Colors.green;
+  ///   var _active = false;
   ///
   ///   @override
   ///   Widget build(BuildContext context) {
   ///     return GestureDetector(
   ///       onTap: () {
-  ///         setStateWithAnimation(const AnimationSpec(), () {
-  ///           _color = Colors.red;
+  ///         setStateWithAnimation(Curves.ease.animation(250.ms), () {
+  ///           _active = !_active;
   ///         });
   ///       },
-  ///       child: AColoredBox(color: _color),
+  ///       child: AColoredBox(color: _active ? Colors.blue : Colors.grey),
   ///     );
   ///   }
   /// }
   /// ```
+  ///
+  /// See also:
+  ///
+  /// - [withAnimation] for a static function that works like this extension
+  ///   method, but without calling [State.setState].
+  /// - [Animated] for a widget that applies an animation to the state changes
+  ///   in its descendants.
   @protected
   void setStateWithAnimation(AnimationSpec animation, void Function() block) {
     // ignore: invalid_use_of_protected_member
@@ -152,7 +168,11 @@ extension SetStateWithAnimationExtension on State {
   }
 }
 
-/// Widget that animates changes in its widget subtree.
+/// A widget that applies an [animation] only to state changes in its
+/// descendants.
+///
+/// See [withAnimation] for a function that applies an animation to **all state
+/// changes that are result of calling a callback**.
 ///
 /// {@template fleet.Animated.widgets}
 ///
@@ -173,21 +193,58 @@ extension SetStateWithAnimationExtension on State {
 ///
 /// {@endtemplate}
 ///
-/// Changes in this widgets subtree will be animated with the [animation] at the
-/// time of the build in which the state change is detected.
-///
-/// If no [value] is provided every state change is animated. If a [value] is
-/// provided state changes are only animated if the coincide with a change in
-/// [value].
+/// State changes are only animated if they happen at the same time that [value]
+/// changes. If no [value] is provided, every state change is animated.
 ///
 /// [Animated] can be nested, with the closest enclosing [Animated] widget
-/// taking precedence. To negate the effects of an enclosing [Animated] widget
-/// for part of the widget tree wrap it in an [Animated] widget, with
-/// [animation] set to `null`.
+/// taking precedence.
+///
+/// To negate the effects of an ancestor [Animated] widget for part of the
+/// widget tree, wrap it in an [Animated] widget, with [animation] set to
+/// `null`.
+///
+/// # Examples
+///
+/// ```dart
+/// import 'package:flutter/material.dart';
+///
+/// class MyWidget extends StatefulWidget {
+///   const MyWidget({super.key});
+///
+///   @override
+///   State<MyWidget> createState() => _MyWidgetState();
+/// }
+///
+/// class _MyWidgetState extends State<MyWidget> {
+///   var _active = false;
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     return GestureDetector(
+///       onTap: () {
+///         setState(() {
+///           _active = !_active;
+///         });
+///       },
+///       child: Animated(
+///         animation: Curves.ease.animation(250.ms),
+///         value: _active,
+///         child: AColoredBox(color: _active ? Colors.blue : Colors.grey),
+///       ),
+///     );
+///   }
+/// }
+/// ```
+///
+/// See also:
+///
+/// - [withAnimation] for a function that applies an animation to the state
+///   changes caused by calling a callback.
 ///
 /// {@category Animate}
 class Animated extends StatefulWidget {
-  /// Creates a widget that animates changes in its widget subtree.
+  /// Creates a widget that applies an [animation] only to state changes in its
+  /// descendants.
   const Animated({
     super.key,
     this.animation = const AnimationSpec(),
@@ -197,13 +254,13 @@ class Animated extends StatefulWidget {
 
   static const _animateAllChanges = Object();
 
-  /// The [AnimationSpec] to use for animating changes in this widget's subtree.
+  /// The [AnimationSpec] to use for animating state changes in descendants.
   final AnimationSpec? animation;
 
-  /// When this value changes all coinciding state changes in the subtree are
+  /// When this value changes, coinciding state changes in descendants are
   /// animated.
   ///
-  /// If this value is `null` all state changes are animated.
+  /// If no value is provided, all state changes are animated.
   final Object? value;
 
   /// The widget below this widget in the tree.
