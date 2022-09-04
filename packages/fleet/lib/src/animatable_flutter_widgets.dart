@@ -308,6 +308,203 @@ class _APaddingState extends AnimatableState<APadding> {
   }
 }
 
+/// Animatable version of [Positioned].
+///
+/// {@category Animatable Flutter widget}
+class APositioned extends StatefulWidget {
+  /// Creates an animatable version of [Positioned].
+  const APositioned({
+    super.key,
+    this.left,
+    this.top,
+    this.right,
+    this.bottom,
+    this.width,
+    this.height,
+    required this.child,
+  })  : assert(left == null || right == null || width == null),
+        assert(top == null || bottom == null || height == null);
+
+  /// See [Positioned.fromRect].
+  APositioned.fromRect({
+    super.key,
+    required Rect rect,
+    required this.child,
+  })  : left = rect.left,
+        top = rect.top,
+        width = rect.width,
+        height = rect.height,
+        right = null,
+        bottom = null;
+
+  /// See [Positioned.fromRelativeRect].
+  APositioned.fromRelativeRect({
+    super.key,
+    required RelativeRect rect,
+    required this.child,
+  })  : left = rect.left,
+        top = rect.top,
+        right = rect.right,
+        bottom = rect.bottom,
+        width = null,
+        height = null;
+
+  /// See [Positioned.fill].
+  const APositioned.fill({
+    super.key,
+    this.left = 0.0,
+    this.top = 0.0,
+    this.right = 0.0,
+    this.bottom = 0.0,
+    required this.child,
+  })  : width = null,
+        height = null;
+
+  /// See [Positioned.directional].
+  factory APositioned.directional({
+    Key? key,
+    required TextDirection textDirection,
+    double? start,
+    double? top,
+    double? end,
+    double? bottom,
+    double? width,
+    double? height,
+    required Widget child,
+  }) {
+    double? left;
+    double? right;
+    switch (textDirection) {
+      case TextDirection.rtl:
+        left = end;
+        right = start;
+        break;
+      case TextDirection.ltr:
+        left = start;
+        right = end;
+        break;
+    }
+    return APositioned(
+      key: key,
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+      width: width,
+      height: height,
+      child: child,
+    );
+  }
+
+  /// See [Positioned.left].
+  final double? left;
+
+  /// See [Positioned.top].
+  final double? top;
+
+  /// See [Positioned.right].
+  final double? right;
+
+  /// See [Positioned.bottom].
+  final double? bottom;
+
+  /// See [Positioned.width].
+  final double? width;
+
+  /// See [Positioned.height].
+  final double? height;
+
+  /// See [ProxyWidget.child].
+  final Widget child;
+
+  @override
+  State<APositioned> createState() => _APositionedState();
+}
+
+class _APositionedState extends AnimatableState<APositioned> {
+  late final _left = OptionalAnimatableDouble(widget.left, state: this);
+  late final _top = OptionalAnimatableDouble(widget.top, state: this);
+  late final _right = OptionalAnimatableDouble(widget.right, state: this);
+  late final _bottom = OptionalAnimatableDouble(widget.bottom, state: this);
+  late final _width = OptionalAnimatableDouble(widget.width, state: this);
+  late final _height = OptionalAnimatableDouble(widget.height, state: this);
+
+  @override
+  void updateAnimatableParameters() {
+    _left.value = widget.left;
+    _top.value = widget.top;
+    _right.value = widget.right;
+    _bottom.value = widget.bottom;
+    _width.value = widget.width;
+    _height.value = widget.height;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: _left.animatedValue,
+      top: _top.animatedValue,
+      right: _right.animatedValue,
+      bottom: _bottom.animatedValue,
+      width: _width.animatedValue,
+      height: _height.animatedValue,
+      child: widget.child,
+    );
+  }
+}
+
+/// Animatable version of [PositionedDirectional].
+///
+/// {@category Animatable Flutter widget}
+class APositionedDirectional extends StatelessWidget {
+  /// Creates an animatable version of [PositionedDirectional].
+  const APositionedDirectional({
+    super.key,
+    this.start,
+    this.top,
+    this.end,
+    this.bottom,
+    this.width,
+    this.height,
+    required this.child,
+  });
+
+  /// See [PositionedDirectional.start].
+  final double? start;
+
+  /// See [PositionedDirectional.top].
+  final double? top;
+
+  /// See [PositionedDirectional.end].
+  final double? end;
+
+  /// See [PositionedDirectional.bottom].
+  final double? bottom;
+
+  /// See [PositionedDirectional.width].
+  final double? width;
+
+  /// See [PositionedDirectional.height].
+  final double? height;
+
+  /// See [PositionedDirectional.child].
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return APositioned.directional(
+      textDirection: Directionality.of(context),
+      start: start,
+      top: top,
+      end: end,
+      bottom: bottom,
+      width: width,
+      height: height,
+      child: child,
+    );
+  }
+}
+
 /// Animatable version of [SizedBox].
 ///
 /// {@category Animatable Flutter widget}

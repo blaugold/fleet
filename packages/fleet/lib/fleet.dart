@@ -5,6 +5,8 @@ export 'src/animatable_flutter_widgets.dart'
         AContainer,
         AOpacity,
         APadding,
+        APositioned,
+        APositionedDirectional,
         ASizedBox,
         ASliverOpacity,
         ASliverPadding;
