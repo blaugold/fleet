@@ -158,9 +158,12 @@ for animating with Fleet:
 - AContainer
 - AOpacity
 - APadding
+- APositioned
+- APositionedDirectional
 - ASizedBox
 - ASliverOpacity
 - ASliverPadding
+- ATransform
 
 ---
 

@@ -5,9 +5,12 @@ export 'src/animatable_flutter_widgets.dart'
         AContainer,
         AOpacity,
         APadding,
+        APositioned,
+        APositionedDirectional,
         ASizedBox,
         ASliverOpacity,
-        ASliverPadding;
+        ASliverPadding,
+        ATransform;
 export 'src/animatable_widget.dart'
     show
         AnimatableAlignmentGeometry,
@@ -18,6 +21,7 @@ export 'src/animatable_widget.dart'
         AnimatableEdgeInsetsGeometry,
         AnimatableInt,
         AnimatableMatrix4,
+        AnimatableObject,
         AnimatableParameter,
         AnimatableRect,
         AnimatableSize,
@@ -31,6 +35,7 @@ export 'src/animatable_widget.dart'
         OptionalAnimatableEdgeInsetsGeometry,
         OptionalAnimatableInt,
         OptionalAnimatableMatrix4,
+        OptionalAnimatableObject,
         OptionalAnimatableRect,
         OptionalAnimatableSize;
 export 'src/animate.dart'

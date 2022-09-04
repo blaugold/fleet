@@ -187,9 +187,12 @@ extension SetStateWithAnimationExtension on State {
 /// - [AContainer]
 /// - [AOpacity]
 /// - [APadding]
+/// - [APositioned]
+/// - [APositionedDirectional]
 /// - [ASizedBox]
 /// - [ASliverOpacity]
 /// - [ASliverPadding]
+/// - [ATransform]
 ///
 /// {@endtemplate}
 ///

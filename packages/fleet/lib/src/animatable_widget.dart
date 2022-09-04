@@ -43,6 +43,9 @@ abstract class AnimatableParameter<T>
     _animationImpl?.stop();
   }
 
+  /// The current animation status of this parameter, if it is animating.
+  AnimationStatus? get animationStatus => _animationImpl?.status;
+
   @override
   T get value => _value;
   T _value;
@@ -356,6 +359,32 @@ class OptionalAnimatableMatrix4 extends AnimatableParameter<Matrix4?> {
 
   @override
   Tween<Matrix4?> createTween() => _OptionalTween(Matrix4Tween());
+}
+
+/// An [AnimatableParameter] that animates changes to a value of an
+/// interpolatable type [T].
+///
+/// See [Tween] for the requirements for a type to be interpolatable.
+///
+/// {@category Animatable widget}
+class AnimatableObject<T> extends AnimatableParameter<T> {
+  /// Creates an [AnimatableParameter] that animates changes to a value of an
+  /// interpolatable type [T].
+  AnimatableObject(super.value, {required super.state});
+
+  @override
+  Tween<T?> createTween() => Tween();
+}
+
+/// Version of [AnimatableObject] for optional parameters.
+///
+/// {@category Animatable widget}
+class OptionalAnimatableObject<T> extends AnimatableParameter<T?> {
+  /// Creates a version of [AnimatableObject] for optional parameters.
+  OptionalAnimatableObject(super.value, {required super.state});
+
+  @override
+  Tween<T?> createTween() => _OptionalTween(Tween());
 }
 
 /// An [AnimatableParameter] that animates changes to a [Rect] through a
