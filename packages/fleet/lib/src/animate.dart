@@ -192,6 +192,7 @@ extension SetStateWithAnimationExtension on State {
 /// - [ASizedBox]
 /// - [ASliverOpacity]
 /// - [ASliverPadding]
+/// - [ATransform]
 ///
 /// {@endtemplate}
 ///

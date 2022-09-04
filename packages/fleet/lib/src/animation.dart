@@ -347,6 +347,23 @@ abstract class AnimationImpl<T> with Diagnosticable {
   Duration _lastRepeatDuration = Duration.zero;
   var _isStopped = false;
 
+  /// Whether this animation is currently running.
+  bool get isAnimating => _ticker.isActive;
+
+  /// The current status of this animation.
+  AnimationStatus get status {
+    if (!isAnimating) {
+      if (_currentValue == _tween.begin) {
+        return AnimationStatus.dismissed;
+      }
+      if (_currentValue == _tween.end) {
+        return AnimationStatus.completed;
+      }
+    }
+
+    return _forward ? AnimationStatus.forward : AnimationStatus.reverse;
+  }
+
   /// The current value of the animation.
   T get currentValue => _currentValue;
   T _currentValue;
@@ -461,7 +478,14 @@ abstract class AnimationImpl<T> with Diagnosticable {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('spec', _spec));
     properties.add(DiagnosticsProperty('repeat', _repeat));
-    properties.add(DiagnosticsProperty('forward', _forward));
+    properties.add(
+      FlagProperty(
+        'direction',
+        value: isAnimating ? _forward : null,
+        ifTrue: 'forward',
+        ifFalse: 'reverse',
+      ),
+    );
   }
 }
 

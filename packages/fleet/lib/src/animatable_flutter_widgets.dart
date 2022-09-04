@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 import 'animatable_widget.dart';
@@ -637,5 +639,365 @@ class _ASliverPaddingState extends AnimatableState<ASliverPadding> {
       padding: _padding.animatedValue,
       sliver: widget.sliver,
     );
+  }
+}
+
+/// Animatable version of [Transform].
+///
+/// {@category Animatable Flutter widget}
+abstract class ATransform extends StatefulWidget {
+  /// Creates an animatable version of [Transform].
+  const factory ATransform({
+    Key? key,
+    required Matrix4 transform,
+    Offset? origin,
+    AlignmentGeometry? alignment,
+    bool transformHitTests,
+    FilterQuality? filterQuality,
+    Widget? child,
+  }) = _ATransform;
+
+  /// Creates an animatable version of [Transform.rotate].
+  const factory ATransform.rotate({
+    Key? key,
+    required double angle,
+    Offset? origin,
+    AlignmentGeometry? alignment,
+    bool transformHitTests,
+    FilterQuality? filterQuality,
+    Widget? child,
+  }) = _ATransformRotate;
+
+  /// Creates an animatable version of [Transform.translate].
+  const factory ATransform.translate({
+    Key? key,
+    required Offset offset,
+    bool transformHitTests,
+    FilterQuality? filterQuality,
+    Widget? child,
+  }) = _ATransformTranslate;
+
+  /// Creates an animatable version of [Transform.scale].
+  const factory ATransform.scale({
+    Key? key,
+    double? scale,
+    double? scaleX,
+    double? scaleY,
+    Offset? origin,
+    AlignmentGeometry? alignment,
+    bool transformHitTests,
+    FilterQuality? filterQuality,
+    Widget? child,
+  }) = _ATransformScale;
+
+  const ATransform._({super.key});
+
+  /// See [Transform.transform].
+  Matrix4 get transform;
+
+  /// See [Transform.origin].
+  Offset? get origin;
+
+  /// See [Transform.alignment].
+  AlignmentGeometry? get alignment;
+
+  /// See [Transform.transformHitTests].
+  bool get transformHitTests;
+
+  /// See [Transform.filterQuality].
+  FilterQuality? get filterQuality;
+
+  /// See [ProxyWidget.child].
+  Widget? get child;
+}
+
+abstract class _ATransformBase extends ATransform {
+  const _ATransformBase({
+    super.key,
+    this.origin,
+    this.alignment,
+    this.transformHitTests = true,
+    this.filterQuality,
+    this.child,
+  }) : super._();
+
+  @override
+  final Offset? origin;
+
+  @override
+  final AlignmentGeometry? alignment;
+
+  @override
+  final bool transformHitTests;
+
+  @override
+  final FilterQuality? filterQuality;
+
+  @override
+  final Widget? child;
+}
+
+abstract class _ATransformBaseState<T extends _ATransformBase>
+    extends AnimatableState<T> {
+  late final _origin = OptionalAnimatableObject(
+    widget.origin,
+    state: this,
+  );
+  late final _alignment = OptionalAnimatableAlignmentGeometry(
+    widget.alignment,
+    state: this,
+  );
+
+  bool get _useFilterQuality;
+
+  Matrix4 get _transform;
+
+  @override
+  void updateAnimatableParameters() {
+    _origin.value = widget.origin;
+    _alignment.value = widget.alignment;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform(
+      transform: _transform,
+      alignment: _alignment.animatedValue,
+      transformHitTests: widget.transformHitTests,
+      filterQuality: _useFilterQuality ? widget.filterQuality : null,
+      child: widget.child,
+    );
+  }
+}
+
+extension on AnimatableParameter<void> {
+  bool get useFilterQuality {
+    // The ImageFilter layer created by setting filterQuality will introduce
+    // a saveLayer call. This is usually worthwhile when animating the layer,
+    // but leaving it in the layer tree before the animation has started or
+    // after it has finished significantly hurts performance.
+    final animationStatus = this.animationStatus;
+    if (animationStatus == null) {
+      return false;
+    }
+    switch (animationStatus) {
+      case AnimationStatus.forward:
+      case AnimationStatus.reverse:
+        return true;
+      case AnimationStatus.completed:
+      case AnimationStatus.dismissed:
+        return false;
+    }
+  }
+}
+
+abstract class _ASingleInputTransform<T> extends _ATransformBase {
+  const _ASingleInputTransform({
+    super.key,
+    required this.input,
+    super.origin,
+    super.alignment,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
+  }) : super();
+
+  AnimatableParameter<T> createInputParameter(
+    T value, {
+    required AnimatableStateMixin state,
+  });
+
+  Matrix4 computeTransform(T input);
+
+  final T input;
+
+  @override
+  Matrix4 get transform => computeTransform(input);
+
+  @override
+  State<_ASingleInputTransform<T>> createState() => _ASingInputTransformState();
+}
+
+class _ASingInputTransformState<T>
+    extends _ATransformBaseState<_ASingleInputTransform<T>> {
+  late final _input = widget.createInputParameter(widget.input, state: this);
+
+  @override
+  bool get _useFilterQuality => _input.useFilterQuality;
+
+  @override
+  Matrix4 get _transform => widget.computeTransform(_input.animatedValue);
+
+  @override
+  void updateAnimatableParameters() {
+    super.updateAnimatableParameters();
+    _input.value = widget.input;
+  }
+}
+
+class _ATransform extends _ASingleInputTransform<Matrix4> {
+  const _ATransform({
+    super.key,
+    required Matrix4 transform,
+    super.origin,
+    super.alignment,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
+  }) : super(input: transform);
+
+  @override
+  AnimatableParameter<Matrix4> createInputParameter(
+    Matrix4 value, {
+    required AnimatableStateMixin state,
+  }) =>
+      AnimatableMatrix4(value, state: state);
+
+  @override
+  Matrix4 computeTransform(Matrix4 transform) => transform;
+}
+
+class _ATransformRotate extends _ASingleInputTransform<double> {
+  const _ATransformRotate({
+    super.key,
+    required double angle,
+    super.origin,
+    super.alignment = Alignment.center,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
+  }) : super(input: angle);
+
+  @override
+  AnimatableParameter<double> createInputParameter(
+    double value, {
+    required AnimatableStateMixin state,
+  }) =>
+      AnimatableDouble(value, state: state);
+
+  @override
+  Matrix4 computeTransform(double transformInput) =>
+      _computeRotation(transformInput);
+
+  // Computes a rotation matrix for an angle in radians, attempting to keep
+  // rotations at integral values for angles of 0, π/2, π, 3π/2.
+  static Matrix4 _computeRotation(double radians) {
+    assert(
+      radians.isFinite,
+      'Cannot compute the rotation matrix for a non-finite angle: $radians',
+    );
+    if (radians == 0.0) {
+      return Matrix4.identity();
+    }
+    final sin = math.sin(radians);
+    if (sin == 1.0) {
+      return _createZRotation(1, 0);
+    }
+    if (sin == -1.0) {
+      return _createZRotation(-1, 0);
+    }
+    final cos = math.cos(radians);
+    if (cos == -1.0) {
+      return _createZRotation(0, -1);
+    }
+    return _createZRotation(sin, cos);
+  }
+
+  static Matrix4 _createZRotation(double sin, double cos) {
+    final result = Matrix4.zero();
+    result.storage[0] = cos;
+    result.storage[1] = sin;
+    result.storage[4] = -sin;
+    result.storage[5] = cos;
+    result.storage[10] = 1.0;
+    result.storage[15] = 1.0;
+    return result;
+  }
+}
+
+class _ATransformTranslate extends _ASingleInputTransform<Offset> {
+  const _ATransformTranslate({
+    super.key,
+    required Offset offset,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
+  }) : super(input: offset);
+
+  @override
+  AnimatableParameter<Offset> createInputParameter(
+    Offset value, {
+    required AnimatableStateMixin state,
+  }) =>
+      AnimatableObject(value, state: state);
+
+  @override
+  Matrix4 computeTransform(Offset transformInput) =>
+      Matrix4.translationValues(transformInput.dx, transformInput.dy, 0);
+}
+
+class _ATransformScale extends _ATransformBase {
+  const _ATransformScale({
+    super.key,
+    this.scale,
+    this.scaleX,
+    this.scaleY,
+    super.origin,
+    super.alignment = Alignment.center,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
+  })  : assert(
+          !(scale == null && scaleX == null && scaleY == null),
+          "At least one of 'scale', 'scaleX' and 'scaleY' is required to be "
+          'non-null',
+        ),
+        assert(
+          scale == null || (scaleX == null && scaleY == null),
+          "If 'scale' is non-null then 'scaleX' and 'scaleY' must be left null",
+        );
+
+  final double? scale;
+  final double? scaleX;
+  final double? scaleY;
+
+  Matrix4 _computeScale(double? scale, double? scaleX, double? scaleY) =>
+      Matrix4.diagonal3Values(
+        scale ?? scaleX ?? 1.0,
+        scale ?? scaleY ?? 1.0,
+        1,
+      );
+
+  @override
+  Matrix4 get transform => _computeScale(scale, scaleX, scaleY);
+
+  @override
+  State<StatefulWidget> createState() => _ATransformScaleState();
+}
+
+class _ATransformScaleState extends _ATransformBaseState<_ATransformScale> {
+  late final _scale = OptionalAnimatableDouble(widget.scale, state: this);
+  late final _scaleX = OptionalAnimatableDouble(widget.scaleX, state: this);
+  late final _scaleY = OptionalAnimatableDouble(widget.scaleY, state: this);
+
+  @override
+  bool get _useFilterQuality =>
+      _scale.useFilterQuality ||
+      _scaleX.useFilterQuality ||
+      _scaleY.useFilterQuality;
+
+  @override
+  Matrix4 get _transform => widget._computeScale(
+        _scale.animatedValue,
+        _scaleX.animatedValue,
+        _scaleY.animatedValue,
+      );
+
+  @override
+  void updateAnimatableParameters() {
+    super.updateAnimatableParameters();
+    _scale.value = widget.scale;
+    _scaleX.value = widget.scaleX;
+    _scaleY.value = widget.scaleY;
   }
 }

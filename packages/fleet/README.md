@@ -163,6 +163,7 @@ for animating with Fleet:
 - ASizedBox
 - ASliverOpacity
 - ASliverPadding
+- ATransform
 
 ---
 
