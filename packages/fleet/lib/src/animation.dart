@@ -21,7 +21,7 @@ import './animate.dart';
 /// - [speed]
 ///
 /// To apply an [AnimationSpec] to a state change, use [Animated],
-/// [withAnimation] or [SetStateWithAnimationExtension].
+/// [withAnimationAsync] or [SetStateWithAnimationExtension].
 ///
 /// ## Examples
 ///

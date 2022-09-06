@@ -38,8 +38,8 @@ class FleetBinding extends BindingBase
 /// To apply an animation **only to state changes in a widget subtree**, see
 /// [Animated].
 ///
-/// See [SetStateWithAnimationExtension.setStateWithAnimation] for an extension
-/// method for animating state changes in a [StatefulWidget].
+/// See [SetStateWithAnimationExtension.setStateWithAnimationAsync] for an
+/// extension method for animating state changes in a [StatefulWidget].
 ///
 /// During the next frame, [block] will be called and all state changes that
 /// result from its execution will be animated with [animation].
@@ -60,7 +60,7 @@ class FleetBinding extends BindingBase
 ///   Widget build(BuildContext context) {
 ///     return GestureDetector(
 ///       onTap: () {
-///         withAnimation(Curves.ease.animation(250.ms), () {
+///         withAnimationAsync(Curves.ease.animation(250.ms), () {
 ///           active.value = !active.value;
 ///         });
 ///       },
@@ -77,13 +77,13 @@ class FleetBinding extends BindingBase
 ///
 /// See also:
 ///
-/// - [SetStateWithAnimationExtension.setStateWithAnimation] for animating state
-///   changes in a [StatefulWidget]'s [State].
+/// - [SetStateWithAnimationExtension.setStateWithAnimationAsync] for animating
+///   state changes in a [StatefulWidget]'s [State].
 /// - [Animated] for a widget that applies an [animation] to the state changes
 ///   in its descendants.
 ///
 /// {@category Animate}
-void withAnimation(AnimationSpec animation, void Function() block) {
+void withAnimationAsync(AnimationSpec animation, void Function() block) {
   final globalTransactionBinding = TransactionBinding.instance;
   if (globalTransactionBinding == null) {
     _debugWarnGlobalTransactionBindingIsNotInitialized();
@@ -101,7 +101,7 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
       _debugDidWarnGlobalTransactionsBindingIsNotInitialized = true;
       debugPrint(
         'GlobalTransactionBinding has not been initialized. Without it, '
-        'withAnimation, setStateWithAnimation and Animate cannot apply the '
+        'withAnimationAsync, setStateWithAnimationAsync and Animate cannot apply the '
         'provided animation. Make sure you have called '
         'FleetBinding.ensureInitialized() before runApp.',
       );
@@ -145,7 +145,7 @@ extension SetStateWithAnimationExtension on State {
   ///   Widget build(BuildContext context) {
   ///     return GestureDetector(
   ///       onTap: () {
-  ///         setStateWithAnimation(Curves.ease.animation(250.ms), () {
+  ///         setStateWithAnimationAsync(Curves.ease.animation(250.ms), () {
   ///           _active = !_active;
   ///         });
   ///       },
@@ -157,21 +157,24 @@ extension SetStateWithAnimationExtension on State {
   ///
   /// See also:
   ///
-  /// - [withAnimation] for a static function that works like this extension
-  ///   method, but without calling [State.setState].
+  /// - [withAnimationAsync] for a static function that works like this
+  ///   extension method, but without calling [State.setState].
   /// - [Animated] for a widget that applies an animation to the state changes
   ///   in its descendants.
   @protected
-  void setStateWithAnimation(AnimationSpec animation, void Function() block) {
+  void setStateWithAnimationAsync(
+    AnimationSpec animation,
+    void Function() block,
+  ) {
     // ignore: invalid_use_of_protected_member
-    withAnimation(animation, () => setState(block));
+    withAnimationAsync(animation, () => setState(block));
   }
 }
 
 /// A widget that applies an [animation] to state changes in its descendants.
 ///
-/// See [withAnimation] for a function that applies an animation to **all state
-/// changes that are the result of calling a callback**.
+/// See [withAnimationAsync] for a function that applies an animation to **all
+/// state changes that are the result of calling a callback**.
 ///
 /// {@template fleet.Animated.widgets}
 ///
@@ -240,7 +243,7 @@ extension SetStateWithAnimationExtension on State {
 ///
 /// See also:
 ///
-/// - [withAnimation] for a function that applies an animation to the state
+/// - [withAnimationAsync] for a function that applies an animation to the state
 ///   changes caused by calling a callback.
 ///
 /// {@category Animate}
