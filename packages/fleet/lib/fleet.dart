@@ -39,6 +39,10 @@ export 'src/animatable_widget.dart'
         OptionalAnimatableRect,
         OptionalAnimatableSize;
 export 'src/animate.dart'
-    show Animated, FleetBinding, withAnimation, SetStateWithAnimationExtension;
+    show
+        Animated,
+        FleetBinding,
+        withAnimationAsync,
+        SetStateWithAnimationExtension;
 export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
 export 'src/duration.dart' show DurationFromIntExtension;

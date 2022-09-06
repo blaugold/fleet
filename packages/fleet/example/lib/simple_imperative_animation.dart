@@ -34,14 +34,14 @@ class _MyHomePageState extends State<MyHomePage> {
   var _size = _collapsedSize;
 
   void _collapse() {
-    setStateWithAnimation(Curves.easeInOut.animation(), () {
+    setStateWithAnimationAsync(Curves.easeInOut.animation(), () {
       _color = _collapsedColor;
       _size = _collapsedSize;
     });
   }
 
   void _expand() {
-    setStateWithAnimation(Curves.easeInOutExpo.animation(1.s), () {
+    setStateWithAnimationAsync(Curves.easeInOutExpo.animation(1.s), () {
       _color = _expandedColor;
       _size = (context.findRenderObject()! as RenderBox).size;
     });

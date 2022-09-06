@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         onPanEnd: (_) {
-          setStateWithAnimation(Curves.ease.animation(300.ms), () {
+          setStateWithAnimationAsync(Curves.ease.animation(300.ms), () {
             _alignment = Alignment.center;
             _color = _distanceColorTween.begin!;
           });
