@@ -264,14 +264,14 @@ mixin TransactionBinding on BindingBase, RendererBinding {
   }
 
   void _flushTransaction() {
-    _transactionScope(_currentlyExecutingTransactions.last!, () {
+    _transactionScope(_currentlyExecutingTransactions.last, () {
       buildOwner!.buildScope(renderViewElement!);
       pipelineOwner.flushLayout();
       _clearLocalTransactions();
     });
   }
 
-  void _transactionScope(Object transaction, VoidCallback callback) {
+  void _transactionScope(Object? transaction, VoidCallback callback) {
     final previousTransaction = _scheduledTransaction;
     _scheduledTransaction = transaction;
     try {
