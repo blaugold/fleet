@@ -97,7 +97,8 @@ class _MyWidgetState extends State<MyWidget> {
 Now lets animate the state change of `_active`:
 
 ```diff
- class _MyWidgetState extends State<MyWidget> {
+-class _MyWidgetState extends State<MyWidget> {
++class _MyWidgetState extends State<MyWidget> with AnimatingStateMixin {
    var _active = false;
 
    @override
@@ -105,7 +106,7 @@ Now lets animate the state change of `_active`:
      return GestureDetector(
        onTap: () {
 -        setState(() {
-+        setStateWithAnimationAsync(Curves.ease.animation(250.ms), () {
++        setStateAsync(animation: Curves.ease.animation(250.ms), () {
            _active = !_active;
          });
        },
@@ -118,9 +119,13 @@ Now lets animate the state change of `_active`:
  }
 ```
 
-All we did was replace `ColoredBox` with [`AColoredBox`][acoloredbox] and use
-[`setStateWithAnimationAsync`][setstatewithanimationasync] instead of
-`setState`.
+We made the following changes:
+
+1. Mixin `AnimatingStateMixin` to `_MyWidgetState`, so we can use
+   `setStateAsync`.
+2. Use `setStateAsync` to specify the animation that we want to apply to the
+   state change.
+3. Use `AColoredBox` instead of `ColoredBox`.
 
 The `AColoredBox` widget is a drop-in replacement for `ColoredBox` that supports
 animating with Fleet. Widgets that support animating with Fleet don't have any
@@ -133,22 +138,20 @@ state-based animation through components provided by Fleet (see
 [`AnimatableStateMixin`][animatablestatemixin]). Issues or PRs for adding
 support for more widgets are welcome!
 
-Note that we did not explicitly tell `setStateWithAnimationAsync` what to
-animate. This is because Fleet uses a **state-based** approach. All state
-changes caused by executing the provided callback will be animated. Even the
-state changes which are indirect, like the `color` parameter of `AColoredBox`
-going from `Colors.grey` to `Colors.blue`. Fleet does this by tracking the state
-of animatable parameters of animatable widgets from one build to the next.
+Note that we did not explicitly tell `setStateAsync` what to animate. This is
+because Fleet uses a **state-based** approach. All state changes caused by
+executing the provided callback will be animated. Even the state changes which
+are indirect, like the `color` parameter of `AColoredBox` going from
+`Colors.grey` to `Colors.blue`. Fleet does this by tracking the state of
+animatable parameters of animatable widgets from one build to the next.
 
-`setStateWithAnimationAsync` is a little bit special in that it does not
-immediately execute the callback, like it is the case for `setState`. Instead,
-`setStateWithAnimationAsync` executes the callback as part of building the next
-frame. In practice this seldomly makes a difference.
-`setStateWithAnimationAsync` is a method from an extension on `State`.
+`setStateAsync` is a little bit special in that it does not immediately execute
+the callback, like it is the case for `setState`. Instead, `setStateAsync`
+executes the callback as part of building the next frame.
 
 `Curves.ease.animation(250.ms)` creates an [`AnimationSpec`][animationspec] that
-we pass to `setStateWithAnimationAsync` to specify how to animate from the old
-to the new state.
+we pass to `setStateAsync` to specify how to animate from the old to the new
+state.
 
 `.animate` is an extension method on `Curve` that creates an
 [`AnimationSpec`][animationspec] form the curve. It optionally takes a
@@ -187,8 +190,8 @@ for animating with Fleet:
   https://github.com/blaugold/fleet/tree/main/packages/fleet/example
 [withanimationasync]:
   https://pub.dev/documentation/fleet/latest/fleet/withAnimationAsync.html
-[setstatewithanimationasync]:
-  https://pub.dev/documentation/fleet/latest/fleet/SetStateWithAnimationExtension/setStateWithAnimationAsync.html
+[setstateasync]:
+  https://pub.dev/documentation/fleet/latest/fleet/AnimatingStateMixin/setStateAsync.html
 [animatablestatemixin]:
   https://pub.dev/documentation/fleet/latest/fleet/AnimatableStateMixin-mixin.html
 [animationspec]:
