@@ -67,13 +67,8 @@ class Transaction extends StatefulWidget {
   /// Returns the current transaction value that is visible at the location of
   /// the provided [context].
   static Object? of(BuildContext context) {
-    final scheduledTransaction =
-        TransactionBinding.instance?.scheduledTransaction;
-    if (scheduledTransaction != null) {
-      return scheduledTransaction;
-    }
-
-    return _InheritedTransactionState.of(context)?._transaction;
+    var transaction = _InheritedTransactionState.of(context)?._transaction;
+    return transaction ??= TransactionBinding.instance?.scheduledTransaction;
   }
 
   @override
