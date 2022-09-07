@@ -101,8 +101,8 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
       _debugDidWarnGlobalTransactionsBindingIsNotInitialized = true;
       debugPrint(
         'GlobalTransactionBinding has not been initialized. Without it, '
-        'withAnimationAsync, setStateWithAnimationAsync and Animate cannot apply the '
-        'provided animation. Make sure you have called '
+        'withAnimationAsync, setStateWithAnimationAsync and Animate cannot '
+        'apply the provided animation. Make sure you have called '
         'FleetBinding.ensureInitialized() before runApp.',
       );
     }
@@ -199,14 +199,10 @@ extension SetStateWithAnimationExtension on State {
 /// {@endtemplate}
 ///
 /// State changes are only animated if they happen at the same time that [value]
-/// changes. If no [value] is provided, every state change is animated.
+/// changes.
 ///
 /// [Animated] can be nested, with the closest enclosing [Animated] widget
 /// taking precedence.
-///
-/// To negate the effects of an ancestor [Animated] widget for part of the
-/// widget tree, wrap it in an [Animated] widget, with [animation] set to
-/// `null`.
 ///
 /// # Examples
 ///
@@ -253,19 +249,15 @@ class Animated extends StatefulWidget {
   const Animated({
     super.key,
     this.animation = const AnimationSpec(),
-    this.value = _animateAllChanges,
+    required this.value,
     required this.child,
   });
 
-  static const _animateAllChanges = Object();
-
   /// The [AnimationSpec] to use for animating state changes in descendants.
-  final AnimationSpec? animation;
+  final AnimationSpec animation;
 
   /// When this value changes, coinciding state changes in descendants are
   /// animated.
-  ///
-  /// If no value is provided, all state changes are animated.
   final Object? value;
 
   /// The widget below this widget in the tree.
@@ -283,8 +275,7 @@ class _AnimatedState extends State<Animated> {
   @override
   void didUpdateWidget(covariant Animated oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _animationIsActive = widget.value == Animated._animateAllChanges ||
-        widget.value != oldWidget.value;
+    _animationIsActive = widget.value != oldWidget.value;
   }
 
   @override
