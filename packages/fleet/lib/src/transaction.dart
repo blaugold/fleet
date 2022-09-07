@@ -218,7 +218,15 @@ mixin TransactionBinding on BindingBase, RendererBinding {
 
     Timeline.startSync('TRANSACTIONS');
 
-    for (final entry in _scheduledTransactions) {
+    // We explicitly support scheduling transactions while building.
+    // This is useful when a state change is needed to trigger some action that
+    // should start immediately and not in the next frame. For example, starting
+    // an animation when a widget is built for the first time.
+    //
+    // Because of that we cannot iterate the list of scheduled transactions
+    // because it might be modified by the build.
+    while (_scheduledTransactions.isNotEmpty) {
+      final entry = _scheduledTransactions.removeAt(0);
       final transaction = entry.key;
       final callback = entry.value;
 
@@ -227,8 +235,6 @@ mixin TransactionBinding on BindingBase, RendererBinding {
       _executeTransaction(transaction, callback);
       debugBuildingDirtyElements = true;
     }
-
-    _scheduledTransactions.clear();
 
     Timeline.finishSync();
   }
