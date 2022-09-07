@@ -1,3 +1,13 @@
+## 0.2.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: support scheduling transactions while building ([#35](https://github.com/blaugold/fleet/issues/35)). ([0cb5d90c](https://github.com/blaugold/fleet/commit/0cb5d90c4e6cec6419df12126bf5f57e30c3c7ba))
+ - **FIX**: give local transaction the highest precedence ([#33](https://github.com/blaugold/fleet/issues/33)). ([c0737c44](https://github.com/blaugold/fleet/commit/c0737c4435c09dfd03aff5acef650dc7987ed444))
+ - **BREAKING** **FEAT**: turn `SetStateWithAnimationExtension` into  `AnimatingStateMixin` for proper ordering of state changes ([#34](https://github.com/blaugold/fleet/issues/34)). ([6bc4079a](https://github.com/blaugold/fleet/commit/6bc4079a051ee7ec2353871b19be1ce222a083f0))
+ - **BREAKING** **FEAT**: require `animation` and `value` for `Animated` ([#32](https://github.com/blaugold/fleet/issues/32)). ([93205068](https://github.com/blaugold/fleet/commit/932050684934fac4af9decee17d965b3a056ffde))
+ - **BREAKING** **FEAT**: rename `setStateWithAnimation` to `setStateWithAnimationAsync` and `withAnimation` to `withAnimationAsync` ([#26](https://github.com/blaugold/fleet/issues/26)). ([23606ef4](https://github.com/blaugold/fleet/commit/23606ef486fa90396d39f88829db0e945871b732))
+
 ## 0.1.3+1
 
  - **DOCS**: reword a few sentences. ([c243c225](https://github.com/blaugold/fleet/commit/c243c225c0e6c08c20374e17367b320c94caa2ec))
