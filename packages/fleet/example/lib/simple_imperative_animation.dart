@@ -25,7 +25,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
   static const _collapsedColor = Colors.blue;
   static const _expandedColor = Colors.green;
   static const _collapsedSize = Size.square(300);
@@ -34,14 +34,14 @@ class _MyHomePageState extends State<MyHomePage> {
   var _size = _collapsedSize;
 
   void _collapse() {
-    setStateWithAnimationAsync(Curves.easeInOut.animation(), () {
+    setStateAsync(animation: Curves.easeInOut.animation(), () {
       _color = _collapsedColor;
       _size = _collapsedSize;
     });
   }
 
   void _expand() {
-    setStateWithAnimationAsync(Curves.easeInOutExpo.animation(1.s), () {
+    setStateAsync(animation: Curves.easeInOutExpo.animation(1.s), () {
       _color = _expandedColor;
       _size = (context.findRenderObject()! as RenderBox).size;
     });

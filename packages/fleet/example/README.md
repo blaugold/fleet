@@ -7,7 +7,7 @@ demonstrate the Fleet framework:
 - [simple_declarative_animation.dart] shows how to animate in a declarative
   style with `Animated`.
 - [simple_imperative_animation.dart] shows how to animate in an imperative style
-  with `setStateWithAnimationAsync`.
+  with `AnimatingStateMixin.setStateAsync`.
 - [stack.dart] shows how to stagger animations through `AnimatedSpec.delay`.
 
 [interactive_box_fleet.dart]:

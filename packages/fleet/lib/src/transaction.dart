@@ -58,7 +58,7 @@ class Transaction extends StatefulWidget {
   ///
   /// See [Transaction] for more information about transactions.
   static void scheduleTransaction(
-    Object transaction,
+    Object? transaction,
     VoidCallback callback,
   ) {
     TransactionBinding.instance?.scheduleTransaction(transaction, callback);
@@ -131,9 +131,7 @@ class _InheritedTransactionState extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_InheritedTransactionState oldWidget) {
-    // Readers don't care about the ancestor Transaction changing. They only
-    // care about what the transaction value is at the time of the read.
-    return false;
+    return state._transaction != oldWidget.state._transaction;
   }
 }
 
@@ -194,15 +192,17 @@ mixin TransactionBinding on BindingBase, RendererBinding {
   Object? get scheduledTransaction => _scheduledTransaction;
   Object? _scheduledTransaction;
 
-  final List<MapEntry<Object, VoidCallback>> _scheduledTransactions =
-      <MapEntry<Object, VoidCallback>>[];
+  final List<MapEntry<Object?, VoidCallback>> _scheduledTransactions =
+      <MapEntry<Object?, VoidCallback>>[];
 
   final _currentlyExecutingTransactions = <Object?>[];
 
   /// Schedules a transaction to be executed as part of the next frame.
   ///
   /// See [Transaction] for more information about transactions.
-  void scheduleTransaction(Object transaction, VoidCallback callback) {
+  // TODO: Merge consecutive transactions with the same transaction value and
+  //       run them in a single build.
+  void scheduleTransaction(Object? transaction, VoidCallback callback) {
     if (_currentlyExecutingTransactions.isNotEmpty) {
       _executeTransaction(transaction, callback);
     } else {
@@ -234,7 +234,7 @@ mixin TransactionBinding on BindingBase, RendererBinding {
   }
 
   @pragma('vm:notify-debugger-on-exception')
-  void _executeTransaction(Object transaction, VoidCallback callback) {
+  void _executeTransaction(Object? transaction, VoidCallback callback) {
     if (_currentlyExecutingTransactions.isNotEmpty) {
       _flushTransaction();
     }
@@ -264,14 +264,14 @@ mixin TransactionBinding on BindingBase, RendererBinding {
   }
 
   void _flushTransaction() {
-    _transactionScope(_currentlyExecutingTransactions.last!, () {
+    _transactionScope(_currentlyExecutingTransactions.last, () {
       buildOwner!.buildScope(renderViewElement!);
       pipelineOwner.flushLayout();
       _clearLocalTransactions();
     });
   }
 
-  void _transactionScope(Object transaction, VoidCallback callback) {
+  void _transactionScope(Object? transaction, VoidCallback callback) {
     final previousTransaction = _scheduledTransaction;
     _scheduledTransaction = transaction;
     try {

@@ -38,8 +38,8 @@ class FleetBinding extends BindingBase
 /// To apply an animation **only to state changes in a widget subtree**, see
 /// [Animated].
 ///
-/// See [SetStateWithAnimationExtension.setStateWithAnimationAsync] for an
-/// extension method for animating state changes in a [StatefulWidget].
+/// See [AnimatingStateMixin.setStateAsync] for for animating state changes in a
+/// [StatefulWidget].
 ///
 /// During the next frame, [block] will be called and all state changes that
 /// result from its execution will be animated with [animation].
@@ -77,19 +77,23 @@ class FleetBinding extends BindingBase
 ///
 /// See also:
 ///
-/// - [SetStateWithAnimationExtension.setStateWithAnimationAsync] for animating
-///   state changes in a [StatefulWidget]'s [State].
+/// - [AnimatingStateMixin.setStateAsync] for animating state changes in a
+///   [StatefulWidget]'s [State].
 /// - [Animated] for a widget that applies an [animation] to the state changes
 ///   in its descendants.
 ///
 /// {@category Animate}
-void withAnimationAsync(AnimationSpec animation, void Function() block) {
+void withAnimationAsync(AnimationSpec animation, VoidCallback block) {
+  _scheduleTransaction(animation, block);
+}
+
+void _scheduleTransaction(Object? transaction, VoidCallback block) {
   final globalTransactionBinding = TransactionBinding.instance;
   if (globalTransactionBinding == null) {
     _debugWarnGlobalTransactionBindingIsNotInitialized();
     block();
   } else {
-    Transaction.scheduleTransaction(animation, block);
+    Transaction.scheduleTransaction(transaction, block);
   }
 }
 
@@ -101,7 +105,7 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
       _debugDidWarnGlobalTransactionsBindingIsNotInitialized = true;
       debugPrint(
         'GlobalTransactionBinding has not been initialized. Without it, '
-        'withAnimationAsync, setStateWithAnimationAsync and Animate cannot '
+        'withAnimationAsync, setStateAsync and Animate cannot '
         'apply the provided animation. Make sure you have called '
         'FleetBinding.ensureInitialized() before runApp.',
       );
@@ -110,19 +114,50 @@ void _debugWarnGlobalTransactionBindingIsNotInitialized() {
   }());
 }
 
-/// Extension that adds a variant of [State.setState] that allows animating
-/// state changes.
+/// Mixin for the [State] of a [StatefulWidget] that wants to apply animations
+/// when calling [setState].
+///
+/// See [setStateAsync] for more information.
 ///
 /// {@category Animate}
-extension SetStateWithAnimationExtension on State {
-  /// Applies an [animation] to the state changes caused by calling [block].
+mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
+  @Deprecated(
+    'Use setStateAsync instead of setState in a State that mixes in '
+    'AnimatingStateMixin. This is required to ensure predictable ordering of '
+    'state changes.',
+  )
+  @override
+  void setState(VoidCallback fn) {
+    throw UnsupportedError(
+      'Use setStateAsync instead of setState in a State that mixes in '
+      'AnimatingStateMixin. This is required to ensure predictable ordering of '
+      'state changes.',
+    );
+  }
+
+  /// A version of [setState] that invokes [fn] when Flutter builds the next
+  /// frame.
+  ///
+  /// Within an [AnimatingStateMixin], this method must be used instead of
+  /// [setState] to ensure state changes are applied in a predictable order.
+  ///
+  /// Since this method can be called when Flutter is not currently building a
+  /// Frame, [fn] might be executed asynchronously. If this method is called
+  /// while Flutter is building a frame, [fn] might be executed immediately.
+  ///
+  /// The callbacks of multiple calls to [setStateAsync] will be executed in the
+  /// same order as the calls to [setStateAsync].
+  ///
+  /// # Animations
+  ///
+  /// This method optionally applies an [animation] to the state changes caused
+  /// by calling [fn].
   ///
   /// See [Animated] for a widget that applies an animation **only to the state
   /// changes in its descendants**.
   ///
-  /// During the next frame, [block] will be called within [setState] and all
-  /// state changes that result from its execution will be animated with
-  /// [animation].
+  /// All state changes that result from the execution of [fn] will be animated
+  /// with [animation].
   ///
   /// {@macro fleet.Animated.widgets}
   ///
@@ -138,14 +173,14 @@ extension SetStateWithAnimationExtension on State {
   ///   State<MyWidget> createState() => _MyWidgetState();
   /// }
   ///
-  /// class _MyWidgetState extends State<MyWidget> {
+  /// class _MyWidgetState extends State<MyWidget> with AnimatingStateMixin {
   ///   var _active = false;
   ///
   ///   @override
   ///   Widget build(BuildContext context) {
   ///     return GestureDetector(
   ///       onTap: () {
-  ///         setStateWithAnimationAsync(Curves.ease.animation(250.ms), () {
+  ///         setStateAsync(animation: Curves.ease.animation(250.ms), () {
   ///           _active = !_active;
   ///         });
   ///       },
@@ -162,12 +197,8 @@ extension SetStateWithAnimationExtension on State {
   /// - [Animated] for a widget that applies an animation to the state changes
   ///   in its descendants.
   @protected
-  void setStateWithAnimationAsync(
-    AnimationSpec animation,
-    void Function() block,
-  ) {
-    // ignore: invalid_use_of_protected_member
-    withAnimationAsync(animation, () => setState(block));
+  void setStateAsync(VoidCallback fn, {AnimationSpec? animation}) {
+    _scheduleTransaction(animation, () => super.setState(fn));
   }
 }
 

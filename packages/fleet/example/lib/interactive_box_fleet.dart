@@ -25,7 +25,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
   static final _distanceColorTween =
       ColorTween(begin: Colors.blue, end: Colors.green);
 
@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: GestureDetector(
         onPanUpdate: (details) {
-          setState(() {
+          setStateAsync(() {
             _alignment += Alignment(
               details.delta.dx / size.width,
               details.delta.dy / size.height,
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         onPanEnd: (_) {
-          setStateWithAnimationAsync(Curves.ease.animation(300.ms), () {
+          setStateAsync(animation: Curves.ease.animation(300.ms), () {
             _alignment = Alignment.center;
             _color = _distanceColorTween.begin!;
           });
