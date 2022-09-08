@@ -195,7 +195,7 @@ mixin TransactionBinding on BindingBase, RendererBinding {
   final List<MapEntry<Object?, VoidCallback>> _scheduledTransactions =
       <MapEntry<Object?, VoidCallback>>[];
 
-  final _currentlyExecutingTransactions = <Object?>[];
+  List<Object?>? _currentlyExecutingTransactions;
 
   /// Schedules a transaction to be executed as part of the next frame.
   ///
@@ -203,7 +203,7 @@ mixin TransactionBinding on BindingBase, RendererBinding {
   // TODO: Merge consecutive transactions with the same transaction value and
   //       run them in a single build.
   void scheduleTransaction(Object? transaction, VoidCallback callback) {
-    if (_currentlyExecutingTransactions.isNotEmpty) {
+    if (_currentlyExecutingTransactions != null) {
       _executeTransaction(transaction, callback);
     } else {
       _scheduledTransactions.add(MapEntry(transaction, callback));
@@ -241,11 +241,14 @@ mixin TransactionBinding on BindingBase, RendererBinding {
 
   @pragma('vm:notify-debugger-on-exception')
   void _executeTransaction(Object? transaction, VoidCallback callback) {
-    if (_currentlyExecutingTransactions.isNotEmpty) {
+    if (_currentlyExecutingTransactions != null) {
       _flushTransaction();
     }
 
-    _currentlyExecutingTransactions.add(transaction);
+    final currentlyExecutingTransactions =
+        _currentlyExecutingTransactions ??= [];
+    currentlyExecutingTransactions.add(transaction);
+
     try {
       callback();
     } catch (exception, stack) {
@@ -265,16 +268,24 @@ mixin TransactionBinding on BindingBase, RendererBinding {
         ),
       );
     }
+
     _flushTransaction();
-    _currentlyExecutingTransactions.removeLast();
+
+    currentlyExecutingTransactions.removeLast();
+    if (currentlyExecutingTransactions.isEmpty) {
+      _currentlyExecutingTransactions = null;
+    }
   }
 
   void _flushTransaction() {
-    _transactionScope(_currentlyExecutingTransactions.last, () {
+    final currentlyExecutingTransactions = _currentlyExecutingTransactions!;
+    _currentlyExecutingTransactions = null;
+    _transactionScope(currentlyExecutingTransactions.last, () {
       buildOwner!.buildScope(renderViewElement!);
       pipelineOwner.flushLayout();
       _clearLocalTransactions();
     });
+    _currentlyExecutingTransactions = currentlyExecutingTransactions;
   }
 
   void _transactionScope(Object? transaction, VoidCallback callback) {
