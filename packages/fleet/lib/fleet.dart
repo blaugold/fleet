@@ -42,3 +42,5 @@ export 'src/animate.dart'
     show Animated, FleetBinding, withAnimationAsync, AnimatingStateMixin;
 export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
 export 'src/duration.dart' show DurationFromIntExtension;
+export 'src/transition.dart'
+    show WidgetModifierExtension, Transition, Transitioner, WidgetModifier;
