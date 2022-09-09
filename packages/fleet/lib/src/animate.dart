@@ -317,3 +317,11 @@ class _AnimatedState extends State<Animated> {
     );
   }
 }
+
+AnimationSpec? animationOf(BuildContext context) {
+  final transaction = Transaction.of(context);
+  if (transaction is AnimationSpec) {
+    return transaction;
+  }
+  return null;
+}

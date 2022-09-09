@@ -378,6 +378,7 @@ abstract class AnimationImpl<T> with Diagnosticable {
   void start() {
     assert(!_isStopped);
     assert(!_ticker.isActive);
+    _onTick(Duration.zero);
     _ticker.start();
   }
 
@@ -509,8 +510,8 @@ class _CurveAnimationProvider extends AnimationProvider {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(EnumProperty('curve', curve));
-    properties.add(DiagnosticsProperty<Duration>('duration', duration));
+    properties.add(DiagnosticsProperty('curve', curve));
+    properties.add(DiagnosticsProperty('duration', duration));
   }
 
   @override

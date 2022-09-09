@@ -41,4 +41,7 @@ export 'src/animatable_widget.dart'
 export 'src/animate.dart'
     show Animated, FleetBinding, withAnimationAsync, AnimatingStateMixin;
 export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
+export 'src/curve.dart' show CosineCurve, SineCurve, CurveExtension;
 export 'src/duration.dart' show DurationFromIntExtension;
+export 'src/effect.dart'
+    show Effect, EffectWidgetExtension, Effects, Effected, StateEffect;

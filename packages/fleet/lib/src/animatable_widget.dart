@@ -3,8 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart' hide Animation;
 
+import 'animate.dart';
 import 'animation.dart';
-import 'transaction.dart';
 
 /// A wrapper around an animatable parameter of a widget that supports animating
 /// with Fleet.
@@ -526,9 +526,9 @@ mixin AnimatableStateMixin<T extends StatefulWidget>
   void didUpdateWidget(covariant T oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final transaction = Transaction.of(context);
-    if (transaction is AnimationSpec) {
-      runWithAnimation(transaction, updateAnimatableParameters);
+    final animation = animationOf(context);
+    if (animation != null) {
+      runWithAnimation(animation, updateAnimatableParameters);
     } else {
       updateAnimatableParameters();
     }
