@@ -23,10 +23,16 @@ class TypeName {
 
   @override
   String toString() {
+    String result;
     if (typeArguments.isEmpty) {
-      return name;
+      result = name;
+    } else {
+      result = '$name<${typeArguments.join(', ')}>';
     }
-    return '$name<${typeArguments.join(', ')}>';
+    if (isOptional) {
+      result = '$result?';
+    }
+    return result;
   }
 }
 

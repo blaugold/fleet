@@ -15,3 +15,13 @@ class TextParameterView extends _TextParameterView {
   @override
   final String text;
 }
+
+class OptionalParameterView extends _OptionalParameterView {
+  OptionalParameterView({
+    super.key,
+    this.text,
+  });
+
+  @override
+  final String? text;
+}

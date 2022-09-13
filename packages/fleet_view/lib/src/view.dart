@@ -21,11 +21,13 @@ import 'annotation.dart';
 ///
 /// ## Minimal view
 ///
+/// <!--
 /// ```dart multi_begin
 /// // ignore_for_file: URI_HAS_NOT_BEEN_GENERATED,UNUSED_ELEMENT
 /// ```
+/// -->
 ///
-/// ```dart multi_end
+/// ```dart
 /// import 'package:flutter/widgets.dart';
 ///
 /// part 'minimal_view.g.dart';
@@ -44,6 +46,19 @@ import 'annotation.dart';
 ///   runApp(MinimalView());
 /// }
 /// ```
+///
+/// <!--
+/// ```dart multi_end
+/// // Just a mock to make the analyzer happy, since we don't generate the
+/// // code for the view.
+/// class MinimalView extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     return Container();
+///   }
+/// }
+/// ```
+/// -->
 abstract class ViewWidget extends Widget {
   /// Constructor for subclasses.
   // ignore: prefer_const_constructors_in_immutables

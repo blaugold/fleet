@@ -38,3 +38,15 @@ abstract class _TextParameterView extends ViewWidget {
     return Text(text);
   }
 }
+
+@viewGen
+abstract class _OptionalParameterView extends ViewWidget {
+  _OptionalParameterView({super.key});
+
+  abstract final String? text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text ?? 'no text');
+  }
+}
