@@ -51,6 +51,30 @@ extension StringBufferCodeBuilderUtils on StringBuffer {
     writeln();
   }
 
+  /// Writes a field declaration.
+  void writeField({
+    required String name,
+    TypeName? type,
+    bool isFinal = false,
+    bool isOverride = false,
+  }) {
+    if (isOverride) {
+      writeln('@override');
+    }
+    if (isFinal) {
+      write('final ');
+    }
+    if (type != null) {
+      write(type);
+    } else if (!isFinal) {
+      write('var');
+    }
+    write(' ');
+    write(name);
+    writeln(';');
+    writeln();
+  }
+
   /// Writes a function declaration.
   ///
   /// The body of the function has to be written by the [writeBody] callback.

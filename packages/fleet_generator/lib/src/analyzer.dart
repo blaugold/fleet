@@ -10,55 +10,92 @@ class FleetAnalyzer {
   /// Analyzes the given [element] for code generation for a Fleet view and
   /// returns a [ViewModel] that describes the view.
   ViewModel analyzeViewElement(Element element) {
-    _validateViewElement(element);
+    final viewClass = _validateViewElement(element);
 
-    // Remove the leading underscore.
-    final viewName = element.name!.substring(1);
+    // Remove the leading underscore of the view class.
+    final viewName = viewClass.name.substring(1);
 
     return ViewModel(
       name: viewName,
+      docComment: viewClass.documentationComment,
+      parameters: _analyzeViewParameters(viewClass),
     );
   }
 
-  void _validateViewElement(Element element) {
+  ClassElement _validateViewElement(Element element) {
     if (element is! ClassElement) {
       _errorFor(element, 'ViewGen must be applied to a class.');
     }
 
+    if (!element.isAbstract) {
+      _errorFor(element, 'A view class must be abstract.');
+    }
+
     if (!element.extendsViewWidget) {
-      _errorFor(element, 'A view must extend ViewWidget.');
+      _errorFor(element, 'A view class must extend ViewWidget.');
     }
 
     if (element.interfaces.isNotEmpty) {
-      _errorFor(element, 'A view must not implement interfaces.');
+      _errorFor(element, 'A view class must not implement interfaces.');
     }
 
     if (element.mixins.isNotEmpty) {
-      _errorFor(element, 'A view must not mix in mixins.');
+      _errorFor(element, 'A view class must not mix in mixins.');
     }
 
     if (!element.name.startsWith('_')) {
       _errorFor(
         element,
-        'The name of a class that is annotated with ViewGen must start with '
-        "'_'.",
+        "The name of a view class must start with '_'.",
       );
     }
 
     if (!element.hasViewDeclarationConstructor) {
       _errorFor(
         element,
-        'A class that is annotated with ViewGen must have only the default '
-        'constructor with the signature ({super.key}).',
+        'A view class must have only the default constructor with the '
+        'signature ({super.key}).',
       );
     }
 
-    if (element.accessors.isNotEmpty) {
-      _errorFor(
-        element,
-        'A view must not have any accessors.',
-      );
+    return element;
+  }
+
+  List<ViewParameter> _analyzeViewParameters(ClassElement viewClass) {
+    final fields = viewClass.fields;
+
+    for (final field in fields) {
+      if (field.isPrivate) {
+        _errorFor(
+          field,
+          'A view class must only have public fields.',
+        );
+      }
+
+      if (!field.isAbstract) {
+        _errorFor(
+          field,
+          'A view class must only have abstract fields.',
+        );
+      }
+
+      if (!field.isFinal) {
+        _errorFor(
+          field,
+          'A view class must only have final fields.',
+        );
+      }
     }
+
+    return fields
+        .map(
+          (field) => ViewParameter(
+            name: field.name,
+            type: field.type.toTypeName(),
+            docComment: field.documentationComment,
+          ),
+        )
+        .toList();
   }
 
   Never _errorFor(Element element, String message, {String todo = ''}) {

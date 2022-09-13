@@ -1,7 +1,15 @@
+import 'package:analyzer/dart/element/nullability_suffix.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:source_gen/source_gen.dart';
+
 /// The full name of a type, including type parameters.
 class TypeName {
   /// Creates a new [TypeName].
-  TypeName(this.name, [this.typeArguments = const []]);
+  TypeName(
+    this.name, {
+    this.typeArguments = const [],
+    this.isOptional = false,
+  });
 
   /// The name of the type, without type parameters.
   final String name;
@@ -10,12 +18,43 @@ class TypeName {
   /// [TypeName].
   final List<TypeName> typeArguments;
 
+  /// Whether the type is optional.
+  final bool isOptional;
+
   @override
   String toString() {
     if (typeArguments.isEmpty) {
       return name;
     }
     return '$name<${typeArguments.join(', ')}>';
+  }
+}
+
+/// Extension for converting a [DartType] to a [TypeName].
+extension DartTypeTypeName on DartType {
+  /// Converts this [DartType] to a [TypeName].
+  TypeName toTypeName() {
+    final typeArguments = <TypeName>[];
+
+    final alias = this.alias;
+    if (alias != null) {
+      for (final typeArgument in alias.typeArguments) {
+        typeArguments.add(typeArgument.toTypeName());
+      }
+    } else {
+      final self = this;
+      if (self is ParameterizedType) {
+        for (final typeArgument in self.typeArguments) {
+          typeArguments.add(typeArgument.toTypeName());
+        }
+      }
+    }
+
+    return TypeName(
+      typeNameOf(this),
+      typeArguments: typeArguments,
+      isOptional: nullabilitySuffix == NullabilitySuffix.question,
+    );
   }
 }
 
@@ -125,15 +164,16 @@ class ParameterList {
       }
       result.write('[');
       result.writeAll(positionalOptional, ', ');
-      result.write(']');
-    }
-    if (named.isNotEmpty) {
+      result.write(',]');
+    } else if (named.isNotEmpty) {
       if (positional.isNotEmpty) {
         result.write(', ');
       }
       result.write('{');
       result.writeAll(named, ', ');
-      result.write('}');
+      result.write(',}');
+    } else if (positional.isNotEmpty) {
+      result.write(',');
     }
     result.write(')');
     return result.toString();
@@ -143,14 +183,43 @@ class ParameterList {
 /// Information about a Fleet view that are required for code generation.
 class ViewModel {
   /// Creates a new [ViewModel].
-  ViewModel({required this.name});
+  ViewModel({
+    required this.name,
+    this.docComment,
+    required this.parameters,
+  });
 
   /// The name of the view.
   final String name;
+
+  /// The doc comment of the view class, including comment syntax.
+  final String? docComment;
+
+  /// The parameters of the view.
+  final List<ViewParameter> parameters;
 
   /// The type name of the class the is generated to implement the view.
   TypeName get implementationClassName => TypeName(name);
 
   /// The type name of the class that was written by a user to declare the view.
   TypeName get declarationClassName => TypeName('_$name');
+}
+
+/// A parameter of a view.
+class ViewParameter {
+  /// Creates a new [ViewParameter].
+  ViewParameter({
+    required this.name,
+    required this.type,
+    this.docComment,
+  });
+
+  /// The name of the parameter.
+  final String name;
+
+  /// The type of the parameter.
+  final TypeName type;
+
+  /// The doc comment of the parameter, including comment syntax.
+  final String? docComment;
 }

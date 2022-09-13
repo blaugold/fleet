@@ -9,13 +9,13 @@ import 'annotation.dart';
 /// Views require code generation. To generate the code for a view, annotate the
 /// view class with the [ViewGen] annotation.
 ///
-/// The name of the annotated class must start with an underscore. A class will
-/// be generated that has the same name as the annotated class without the
-/// leading underscore. This class has to be used to instantiate the view.
+/// The name of the view class must start with an underscore. A class will be
+/// generated that has the same name as the view class without the leading
+/// underscore. This class has to be used to instantiate the view.
 ///
-/// The declaration class of a view must be abstract and extend [ViewWidget]. It
-/// must not implement any other types of use mixins. The class must have only
-/// the default constructor with the signature `({super.key})`.
+/// A view class must be abstract and extend [ViewWidget]. It must not implement
+/// any other types or use mixins. The class must have only the default
+/// constructor with the signature `({super.key})`.
 ///
 /// # Examples
 ///
@@ -39,6 +39,10 @@ import 'annotation.dart';
 ///     return const SizedBox();
 ///   }
 /// }
+///
+/// void main() {
+///   runApp(MinimalView());
+/// }
 /// ```
 abstract class ViewWidget extends Widget {
   /// Constructor for subclasses.
@@ -59,6 +63,18 @@ class ViewElement extends ComponentElement {
 
   @override
   ViewWidget get widget => super.widget as ViewWidget;
+
+  @override
+  void update(covariant Widget newWidget) {
+    super.update(newWidget);
+    // TODO: continue building directly
+    // The Flutter framework currently does not allow us to mark this element as
+    // dirt and rebuild it directly. We have to add it to the list of dirty
+    // elements and let the BuildOwner rebuild it. This still happens in
+    // the same frame, but is not how StatelessElement and StatefulElement work.
+    // I suspect that using markNeedsBuild is not as performant as it could be.
+    markNeedsBuild();
+  }
 
   @override
   Widget build() => widget.build(this);

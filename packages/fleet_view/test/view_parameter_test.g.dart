@@ -1,13 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'minimal_view_test.dart';
+part of 'view_parameter_test.dart';
 
 // **************************************************************************
 // ViewGenerator
 // **************************************************************************
 
-class MinimalView extends _MinimalView {
-  MinimalView({
+class TextParameterView extends _TextParameterView {
+  TextParameterView({
     super.key,
+    required this.text,
   });
+
+  @override
+  final String text;
 }

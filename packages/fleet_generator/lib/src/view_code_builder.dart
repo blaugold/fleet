@@ -20,12 +20,15 @@ class ViewCodeBuilder {
   }
 
   void _buildImplementationClass() {
+    if (viewModel.docComment != null) {
+      _buffer.writeln(viewModel.docComment);
+    }
     _buffer.writeClass(
       name: viewModel.implementationClassName.toString(),
       extendsType: viewModel.declarationClassName,
-      // ignore: unnecessary_lambdas
       () {
         _buildConstructor();
+        _buildParameterFields();
       },
     );
   }
@@ -37,8 +40,28 @@ class ViewCodeBuilder {
       parameters: ParameterList(
         named: [
           NamedParameter('key', isSuperFormal: true),
+          for (final parameter in viewModel.parameters)
+            NamedParameter(
+              parameter.name,
+              isInitializingFormal: true,
+              isRequired: !parameter.type.isOptional,
+            ),
         ],
       ),
     );
+  }
+
+  void _buildParameterFields() {
+    for (final parameter in viewModel.parameters) {
+      if (viewModel.docComment != null) {
+        _buffer.writeln(parameter.docComment);
+      }
+      _buffer.writeField(
+        name: parameter.name,
+        type: parameter.type,
+        isFinal: true,
+        isOverride: true,
+      );
+    }
   }
 }
