@@ -1,0 +1,8 @@
+builders:
+  fleet:
+    import: "package:fleet_generator/builder.dart"
+    builder_factories: ["fleetBuilder"]
+    build_extensions: {".dart": [".fleet.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

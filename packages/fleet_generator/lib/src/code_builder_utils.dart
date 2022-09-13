@@ -1,0 +1,79 @@
+import 'model.dart';
+
+/// Util for building Dart code.
+extension StringBufferCodeBuilderUtils on StringBuffer {
+  /// Writes a class declaration.
+  ///
+  /// The members of the class have to be written by the [writeMembers]
+  /// callback.
+  void writeClass(
+    void Function() writeMembers, {
+    required String name,
+    TypeName? extendsType,
+  }) {
+    write('class $name ');
+    if (extendsType != null) {
+      write('extends $extendsType ');
+    }
+    write('{');
+    writeMembers();
+    writeln('}');
+    writeln();
+  }
+
+  /// Writes a constructor declaration.
+  ///
+  /// The body of the constructor has to be written by the [writeBody] callback.
+  /// If the constructor has no body, the [writeBody] callback can be omitted.
+  void writeConstructor(
+    void Function()? writeBody, {
+    required String className,
+    String? name,
+    ParameterList? parameters,
+  }) {
+    parameters ??= ParameterList();
+
+    write(className);
+    if (name != null) {
+      write('.');
+      write(name);
+    }
+    write(parameters);
+
+    if (writeBody != null) {
+      write(' ');
+      write('{');
+      writeBody();
+      writeln('}');
+    } else {
+      writeln(';');
+    }
+    writeln();
+  }
+
+  /// Writes a function declaration.
+  ///
+  /// The body of the function has to be written by the [writeBody] callback.
+  void writeFunction(
+    void Function() writeBody, {
+    required String name,
+    bool isOverride = false,
+    TypeName? returnType,
+    ParameterList? parameters,
+  }) {
+    returnType ??= TypeName('void');
+    parameters ??= ParameterList();
+
+    if (isOverride) {
+      writeln('@override');
+    }
+    write('$returnType ');
+    write(name);
+    write('$parameters');
+    write(' ');
+    write('{');
+    writeBody();
+    writeln('}');
+    writeln();
+  }
+}
