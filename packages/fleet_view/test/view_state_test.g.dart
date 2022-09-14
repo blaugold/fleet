@@ -6,6 +6,12 @@ part of 'view_state_test.dart';
 // ViewGenerator
 // **************************************************************************
 
+abstract class _$ClickCounterView extends ViewWidget {
+  _$ClickCounterView({
+    super.key,
+  });
+}
+
 // ignore: must_be_immutable
 class ClickCounterView extends _ClickCounterView {
   ClickCounterView({

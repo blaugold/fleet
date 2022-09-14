@@ -7,7 +7,7 @@ void main() {}
 
 /// A view doc comment.
 @view
-abstract class _DocCommentView extends ViewWidget {
+abstract class _DocCommentView extends _$DocCommentView {
   _DocCommentView({super.key});
 
   /// The parameter doc comment.

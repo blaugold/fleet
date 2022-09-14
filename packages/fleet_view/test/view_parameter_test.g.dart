@@ -6,6 +6,12 @@ part of 'view_parameter_test.dart';
 // ViewGenerator
 // **************************************************************************
 
+abstract class _$TextParameterView extends ViewWidget {
+  _$TextParameterView({
+    super.key,
+  });
+}
+
 class TextParameterView extends _TextParameterView {
   TextParameterView({
     super.key,
@@ -14,6 +20,12 @@ class TextParameterView extends _TextParameterView {
 
   @override
   final String text;
+}
+
+abstract class _$OptionalParameterView extends ViewWidget {
+  _$OptionalParameterView({
+    super.key,
+  });
 }
 
 class OptionalParameterView extends _OptionalParameterView {

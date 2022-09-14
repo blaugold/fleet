@@ -28,7 +28,7 @@ void main() {
 }
 
 @view
-abstract class _TextParameterView extends ViewWidget {
+abstract class _TextParameterView extends _$TextParameterView {
   _TextParameterView({super.key});
 
   abstract final String text;
@@ -40,7 +40,7 @@ abstract class _TextParameterView extends ViewWidget {
 }
 
 @view
-abstract class _OptionalParameterView extends ViewWidget {
+abstract class _OptionalParameterView extends _$OptionalParameterView {
   _OptionalParameterView({super.key});
 
   abstract final String? text;

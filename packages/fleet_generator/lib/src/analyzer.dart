@@ -1,5 +1,6 @@
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 // ignore: implementation_imports
 import 'package:fleet_view/src/annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -28,15 +29,25 @@ class FleetAnalyzer {
 
   ClassElement _validateViewElement(Element element) {
     if (element is! ClassElement) {
-      _errorFor(element, 'ViewGen must be applied to a class.');
+      _errorFor(element, 'view must be applied to a class.');
     }
 
     if (!element.isAbstract) {
       _errorFor(element, 'A view class must be abstract.');
     }
 
-    if (!element.extendsViewWidget) {
-      _errorFor(element, 'A view class must extend ViewWidget.');
+    if (!element.name.startsWith('_')) {
+      _errorFor(
+        element,
+        "The name of a view class must start with '_'.",
+      );
+    }
+
+    if (!element.extendsViewDeclarationBase) {
+      _errorFor(
+        element,
+        'The view class must extend ${element.viewDeclarationBaseName}.',
+      );
     }
 
     if (element.interfaces.isNotEmpty) {
@@ -45,13 +56,6 @@ class FleetAnalyzer {
 
     if (element.mixins.isNotEmpty) {
       _errorFor(element, 'A view class must not mix in mixins.');
-    }
-
-    if (!element.name.startsWith('_')) {
-      _errorFor(
-        element,
-        "The name of a view class must start with '_'.",
-      );
     }
 
     if (!element.hasViewDeclarationConstructor) {
@@ -162,16 +166,24 @@ class FleetAnalyzer {
 }
 
 extension on ClassElement {
-  bool get extendsViewWidget {
-    return supertype?.isViewWidget ?? false;
+  String get viewDeclarationBaseName {
+    return '_\$${name.substring(1)}';
   }
 
-  bool get isViewWidget {
-    // We cannot use TypeChecker because importing Flutter libraries crashes
-    // compiling the build_runner build script.
-    // ViewWidget extends Widget.
-    return name == 'ViewWidget' &&
-        librarySource.uri.toString() == 'package:fleet_view/src/view.dart';
+  bool get extendsViewDeclarationBase {
+    final supertype = this.supertype;
+    if (supertype == null) {
+      return false;
+    }
+
+    return ((session!.getParsedLibraryByElement(library) as ParsedLibraryResult)
+                .getElementDeclaration(this)!
+                .node as ClassDeclaration)
+            .extendsClause
+            ?.superclass
+            .name
+            .name ==
+        viewDeclarationBaseName;
   }
 
   bool get hasViewDeclarationConstructor {
@@ -194,12 +206,5 @@ extension on ClassElement {
     }
 
     return true;
-  }
-}
-
-extension on InterfaceType {
-  bool get isViewWidget {
-    final element = element2;
-    return element is ClassElement && element.isViewWidget;
   }
 }

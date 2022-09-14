@@ -12,7 +12,7 @@ void main() {
 }
 
 @view
-abstract class _MinimalView extends ViewWidget {
+abstract class _MinimalView extends _$MinimalView {
   _MinimalView({super.key});
 
   @override

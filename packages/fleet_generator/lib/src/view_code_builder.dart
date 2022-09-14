@@ -15,11 +15,31 @@ class ViewCodeBuilder {
 
   /// Builds and returns the generated code.
   String build() {
+    _buildDeclarationBaseClass();
     _buildImplementationClass();
     if (viewModel.isStateful) {
       _buildStateClass();
     }
     return _buffer.toString();
+  }
+
+  void _buildDeclarationBaseClass() {
+    _buffer.writeClass(
+      isAbstract: true,
+      name: viewModel.declarationBaseClassName.name,
+      extendsType: TypeName('ViewWidget'),
+      () {
+        _buffer.writeConstructor(
+          className: viewModel.declarationBaseClassName.name,
+          parameters: ParameterList(
+            named: [
+              NamedParameter('key', isSuperFormal: true),
+            ],
+          ),
+          null,
+        );
+      },
+    );
   }
 
   void _buildImplementationClass() {

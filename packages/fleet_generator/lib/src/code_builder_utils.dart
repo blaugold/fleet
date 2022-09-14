@@ -10,7 +10,11 @@ extension StringBufferCodeBuilderUtils on StringBuffer {
     void Function() writeMembers, {
     required String name,
     TypeName? extendsType,
+    bool isAbstract = false,
   }) {
+    if (isAbstract) {
+      write('abstract ');
+    }
     write('class $name ');
     if (extendsType != null) {
       write('extends $extendsType ');

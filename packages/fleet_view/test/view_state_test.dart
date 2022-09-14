@@ -44,7 +44,7 @@ void main() {
 }
 
 @view
-abstract class _ClickCounterView extends ViewWidget {
+abstract class _ClickCounterView extends _$ClickCounterView {
   _ClickCounterView({super.key});
 
   abstract final String? prefix;

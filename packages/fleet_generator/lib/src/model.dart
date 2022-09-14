@@ -222,6 +222,10 @@ class ViewModel {
   /// The type name of the class the is generated to implement the view.
   TypeName get implementationClassName => TypeName(name);
 
+  /// The type name of the class the is generated and that the view declaration
+  /// class must extend.
+  TypeName get declarationBaseClassName => TypeName('_\$$name');
+
   /// The type name of the class that was written by a user to declare the view.
   TypeName get declarationClassName => TypeName('_$name');
 
