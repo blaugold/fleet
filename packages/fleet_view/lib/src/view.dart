@@ -69,6 +69,19 @@ abstract class ViewWidget extends Widget {
 
   @override
   Element createElement() => ViewElement(this);
+
+  /// Internal method to create the state for a instantiation of this view.
+  ///
+  /// This should return null if the view does not have any state.
+  ///
+  /// The returned object will be used as the state for this view. It will be
+  /// notified when the view widget changes through [updateWidget].
+  ViewWidget? createState(ViewElement element) => null;
+
+  /// Internal method to update the view widget for a stateful view.
+  ///
+  /// Only objects returned by [createState] will have this method called.
+  void updateWidget(covariant ViewWidget newWidget) {}
 }
 
 /// An [Element] that is configured by a [ViewWidget].
@@ -79,8 +92,17 @@ class ViewElement extends ComponentElement {
   @override
   ViewWidget get widget => super.widget as ViewWidget;
 
+  ViewWidget? _state;
+
   @override
-  void update(covariant Widget newWidget) {
+  void mount(Element? parent, Object? newSlot) {
+    _state = widget.createState(this);
+    super.mount(parent, newSlot);
+  }
+
+  @override
+  void update(covariant ViewWidget newWidget) {
+    _state?.updateWidget(newWidget);
     super.update(newWidget);
     // TODO: continue building directly
     // The Flutter framework currently does not allow us to mark this element as
@@ -92,5 +114,5 @@ class ViewElement extends ComponentElement {
   }
 
   @override
-  Widget build() => widget.build(this);
+  Widget build() => (_state ?? widget).build(this);
 }

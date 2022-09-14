@@ -192,7 +192,7 @@ class ViewModel {
   ViewModel({
     required this.name,
     this.docComment,
-    required this.parameters,
+    required this.fields,
   });
 
   /// The name of the view.
@@ -201,31 +201,68 @@ class ViewModel {
   /// The doc comment of the view class, including comment syntax.
   final String? docComment;
 
+  /// Whether the view is stateful.
+  ///
+  /// A stateful view requires rebuilding not just when it's parameters change,
+  /// but also when the state of the view changes. The state can be owned by the
+  /// view itself, or be provided to the view.
+  bool get isStateful => fields.any((element) => element is ViewStateField);
+
+  /// All the fields of the view.
+  final List<ViewField> fields;
+
   /// The parameters of the view.
-  final List<ViewParameter> parameters;
+  late final List<ViewParameter> parameters =
+      fields.whereType<ViewParameter>().toList();
+
+  /// The state fields of the view.
+  late final List<ViewStateField> stateFields =
+      fields.whereType<ViewStateField>().toList();
 
   /// The type name of the class the is generated to implement the view.
   TypeName get implementationClassName => TypeName(name);
 
   /// The type name of the class that was written by a user to declare the view.
   TypeName get declarationClassName => TypeName('_$name');
+
+  /// The type name of the class that is generated to implement the state of the
+  /// view.
+  TypeName get stateClassName => TypeName('_${name}State');
 }
 
-/// A parameter of a view.
-class ViewParameter {
-  /// Creates a new [ViewParameter].
-  ViewParameter({
+/// A field in a view.
+abstract class ViewField {
+  /// Creates a new [ViewField].
+  ViewField({
     required this.name,
     required this.type,
+  });
+
+  /// The name of the field.
+  final String name;
+
+  /// The type of the field.
+  final TypeName type;
+}
+
+/// A public parameter of a view.
+class ViewParameter extends ViewField {
+  /// Creates a new [ViewParameter].
+  ViewParameter({
+    required super.name,
+    required super.type,
     this.docComment,
   });
 
-  /// The name of the parameter.
-  final String name;
-
-  /// The type of the parameter.
-  final TypeName type;
-
   /// The doc comment of the parameter, including comment syntax.
   final String? docComment;
+}
+
+/// A field of a view that holds and owns some state.
+class ViewStateField extends ViewField {
+  /// Creates a new [ViewStateField].
+  ViewStateField({
+    required super.name,
+    required super.type,
+  });
 }

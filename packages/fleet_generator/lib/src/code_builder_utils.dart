@@ -75,6 +75,50 @@ extension StringBufferCodeBuilderUtils on StringBuffer {
     writeln();
   }
 
+  /// Writes a getter declaration.
+  ///
+  /// The body of the getter has to be written by the [writeBody] callback.
+  void writeGetter(
+    void Function() writeBody, {
+    required String name,
+    required TypeName type,
+    bool isOverride = false,
+  }) {
+    if (isOverride) {
+      writeln('@override');
+    }
+    write(type);
+    write(' get ');
+    write(name);
+    write(' ');
+    write('{');
+    writeBody();
+    writeln('}');
+    writeln();
+  }
+
+  /// Writes a setter declaration.
+  ///
+  /// The body of the setter has to be written by the [writeBody] callback.
+  void writeSetter(
+    void Function() writeBody, {
+    required String name,
+    required TypeName type,
+    bool isOverride = false,
+  }) {
+    if (isOverride) {
+      writeln('@override');
+    }
+    write('set ');
+    write(name);
+    write('(');
+    write(type);
+    write(' value) {');
+    writeBody();
+    writeln('}');
+    writeln();
+  }
+
   /// Writes a function declaration.
   ///
   /// The body of the function has to be written by the [writeBody] callback.

@@ -1,8 +1,12 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+// ignore: implementation_imports
+import 'package:fleet_view/src/annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'model.dart';
+
+final _stateTypeChecker = TypeChecker.fromRuntime(state.runtimeType);
 
 /// Analyzes Dart code to validate it for code generation with Fleet and builds
 /// models to be used for code generation.
@@ -18,7 +22,7 @@ class FleetAnalyzer {
     return ViewModel(
       name: viewName,
       docComment: viewClass.documentationComment,
-      parameters: _analyzeViewParameters(viewClass),
+      fields: _analyzeViewFields(viewClass),
     );
   }
 
@@ -61,41 +65,91 @@ class FleetAnalyzer {
     return element;
   }
 
-  List<ViewParameter> _analyzeViewParameters(ClassElement viewClass) {
+  List<ViewField> _analyzeViewFields(ClassElement viewClass) {
     final fields = viewClass.fields;
+    final viewFields = <ViewField>[];
 
     for (final field in fields) {
       if (field.isPrivate) {
-        _errorFor(
-          field,
-          'A view class must only have public fields.',
-        );
-      }
-
-      if (!field.isAbstract) {
-        _errorFor(
-          field,
-          'A view class must only have abstract fields.',
-        );
-      }
-
-      if (!field.isFinal) {
-        _errorFor(
-          field,
-          'A view class must only have final fields.',
-        );
+        if (_stateTypeChecker.hasAnnotationOfExact(field)) {
+          viewFields.add(_analyzeViewStateField(field));
+        } else {
+          _errorFor(
+            field,
+            'A private view field must be annotated with @state.',
+          );
+        }
+      } else {
+        // All public fields are view parameters.
+        viewFields.add(_analyzeViewParameter(field));
       }
     }
 
-    return fields
-        .map(
-          (field) => ViewParameter(
-            name: field.name,
-            type: field.type.toTypeName(),
-            docComment: field.documentationComment,
-          ),
-        )
-        .toList();
+    return viewFields;
+  }
+
+  ViewParameter _analyzeViewParameter(FieldElement field) {
+    if (!field.isAbstract) {
+      _errorFor(
+        field,
+        'A view class parameter must be an abstract field.',
+      );
+    }
+
+    if (!field.isFinal) {
+      _errorFor(
+        field,
+        'A view class parameter must be a final field.',
+      );
+    }
+
+    if (field.isSynthetic) {
+      _errorFor(
+        field,
+        'A view class parameter must not be a synthetic field.',
+      );
+    }
+
+    return ViewParameter(
+      name: field.name,
+      type: field.type.toTypeName(),
+      docComment: field.documentationComment,
+    );
+  }
+
+  ViewField _analyzeViewStateField(FieldElement field) {
+    if (!field.isLate) {
+      _errorFor(
+        field,
+        'A view state field must be a late field.',
+      );
+    }
+
+    if (!field.hasInitializer) {
+      _errorFor(
+        field,
+        'A view state field must have an initializer.',
+      );
+    }
+
+    if (field.isFinal) {
+      _errorFor(
+        field,
+        'A view state field must not be a final field.',
+      );
+    }
+
+    if (field.isSynthetic) {
+      _errorFor(
+        field,
+        'A view state field must not be a synthetic field.',
+      );
+    }
+
+    return ViewStateField(
+      name: field.name,
+      type: field.type.toTypeName(),
+    );
   }
 
   Never _errorFor(Element element, String message, {String todo = ''}) {

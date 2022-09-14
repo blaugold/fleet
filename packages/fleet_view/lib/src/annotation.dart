@@ -13,3 +13,11 @@ class ViewGen {
 
 /// Convenience constant for a [ViewGen] annotation without options.
 const viewGen = ViewGen();
+
+@Target({TargetKind.field})
+class _State {
+  const _State();
+}
+
+/// Annotation that marks a field of a view as state that is owned by the view.
+const state = _State();

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 part 'view_parameter_test.g.dart';
 
 void main() {
-  testWidgets('updates on rebuild', (tester) async {
+  testWidgets('rebuilds when widget changes', (tester) async {
     final text = ValueNotifier('a');
 
     await tester.pumpWidget(
