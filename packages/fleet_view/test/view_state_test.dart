@@ -44,7 +44,6 @@ void main() {
 }
 
 @view
-// ignore: must_be_immutable
 abstract class _ClickCounterView extends ViewWidget {
   _ClickCounterView({super.key});
 
