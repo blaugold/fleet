@@ -6,6 +6,7 @@ part of 'view_state_test.dart';
 // ViewGenerator
 // **************************************************************************
 
+// ignore: must_be_immutable
 class ClickCounterView extends _ClickCounterView {
   ClickCounterView({
     super.key,
@@ -16,13 +17,14 @@ class ClickCounterView extends _ClickCounterView {
   final String? prefix;
 
   @override
-  _ClickCounterViewState createState(
+  ViewWidget createState(
     ViewElement element,
   ) {
     return _ClickCounterViewState(element, this);
   }
 }
 
+// ignore: must_be_immutable
 class _ClickCounterViewState extends _ClickCounterView {
   _ClickCounterViewState(
     this._element,

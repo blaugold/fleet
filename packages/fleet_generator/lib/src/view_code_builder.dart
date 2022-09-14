@@ -23,6 +23,9 @@ class ViewCodeBuilder {
   }
 
   void _buildImplementationClass() {
+    if (viewModel.isStateful) {
+      _buffer.writeln('// ignore: must_be_immutable');
+    }
     if (viewModel.docComment != null) {
       _buffer.writeln(viewModel.docComment);
     }
@@ -75,7 +78,7 @@ class ViewCodeBuilder {
     _buffer.writeFunction(
       isOverride: true,
       name: 'createState',
-      returnType: viewModel.stateClassName,
+      returnType: TypeName('ViewWidget'),
       parameters: ParameterList(
         positional: [
           Parameter('element', type: TypeName('ViewElement')),
@@ -90,6 +93,7 @@ class ViewCodeBuilder {
   }
 
   void _buildStateClass() {
+    _buffer.writeln('// ignore: must_be_immutable');
     _buffer.writeClass(
       name: viewModel.stateClassName.name,
       extendsType: viewModel.declarationClassName,

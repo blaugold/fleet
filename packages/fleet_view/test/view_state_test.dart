@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:fleet_view/fleet_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -46,6 +44,7 @@ void main() {
 }
 
 @view
+// ignore: must_be_immutable
 abstract class _ClickCounterView extends ViewWidget {
   _ClickCounterView({super.key});
 

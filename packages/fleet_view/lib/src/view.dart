@@ -32,7 +32,7 @@ import 'annotation.dart';
 ///
 /// part 'minimal_view.g.dart';
 ///
-/// @viewGen
+/// @view
 /// abstract class _MinimalView extends ViewWidget {
 ///   _MinimalView({super.key});
 ///
