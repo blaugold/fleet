@@ -6,7 +6,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'model.dart';
 
-final _stateTypeChecker = TypeChecker.fromRuntime(state.runtimeType);
+const _stateTypeChecker = TypeChecker.fromRuntime(StateGen);
 
 /// Analyzes Dart code to validate it for code generation with Fleet and builds
 /// models to be used for code generation.

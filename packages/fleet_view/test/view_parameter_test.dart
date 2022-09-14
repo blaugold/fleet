@@ -27,7 +27,7 @@ void main() {
   });
 }
 
-@viewGen
+@view
 abstract class _TextParameterView extends ViewWidget {
   _TextParameterView({super.key});
 
@@ -39,7 +39,7 @@ abstract class _TextParameterView extends ViewWidget {
   }
 }
 
-@viewGen
+@view
 abstract class _OptionalParameterView extends ViewWidget {
   _OptionalParameterView({super.key});
 

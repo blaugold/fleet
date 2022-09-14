@@ -6,7 +6,7 @@ part 'view_doc_comment_test.g.dart';
 void main() {}
 
 /// A view doc comment.
-@viewGen
+@view
 abstract class _DocCommentView extends ViewWidget {
   _DocCommentView({super.key});
 

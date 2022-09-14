@@ -45,7 +45,7 @@ void main() {
   });
 }
 
-@viewGen
+@view
 abstract class _ClickCounterView extends ViewWidget {
   _ClickCounterView({super.key});
 

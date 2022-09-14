@@ -11,7 +11,7 @@ void main() {
   });
 }
 
-@viewGen
+@view
 abstract class _MinimalView extends ViewWidget {
   _MinimalView({super.key});
 
