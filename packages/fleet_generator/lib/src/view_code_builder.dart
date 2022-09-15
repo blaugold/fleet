@@ -129,15 +129,19 @@ class ViewCodeBuilder {
 
   void _buildStateClassConstructor() {
     _buffer.writeConstructor(
-      className: viewModel.stateClassName.name,
-      parameters: ParameterList(
-        positional: [
-          Parameter('_element', isInitializingFormal: true),
-          Parameter('_widget', isInitializingFormal: true),
-        ],
-      ),
-      null,
-    );
+        className: viewModel.stateClassName.name,
+        parameters: ParameterList(
+          positional: [
+            Parameter('_element', isInitializingFormal: true),
+            Parameter('_widget', isInitializingFormal: true),
+          ],
+        ), () {
+      for (final field in viewModel.stateFields) {
+        _buffer.writeln('// ignore: unnecessary_statements');
+        _buffer.write(field.name);
+        _buffer.writeln(';');
+      }
+    });
   }
 
   void _buildStateClassFields() {
@@ -190,10 +194,18 @@ class ViewCodeBuilder {
         name: field.name,
         type: field.type,
         () {
+          _buffer.write('updateState<');
+          _buffer.write(field.type);
+          _buffer.write('>(super.');
+          _buffer.write(field.name);
+          _buffer.writeln(', value, (value, reason) {');
           _buffer.write('super.');
           _buffer.write(field.name);
-          _buffer.write(' = value;');
-          _buffer.write('_element.markNeedsBuild();');
+          _buffer.writeln(' = value;');
+          _buffer.writeln('if (reason == SetStateReason.rebuild) {');
+          _buffer.writeln('   _element.markNeedsBuild();');
+          _buffer.writeln('}');
+          _buffer.writeln('});');
         },
       );
     }

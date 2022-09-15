@@ -35,7 +35,10 @@ class _ClickCounterViewState extends _ClickCounterView {
   _ClickCounterViewState(
     this._element,
     this._widget,
-  );
+  ) {
+    // ignore: unnecessary_statements
+    _clicks;
+  }
 
   final ViewElement _element;
 
@@ -55,7 +58,11 @@ class _ClickCounterViewState extends _ClickCounterView {
 
   @override
   set _clicks(int value) {
-    super._clicks = value;
-    _element.markNeedsBuild();
+    updateState<int>(super._clicks, value, (value, reason) {
+      super._clicks = value;
+      if (reason == SetStateReason.rebuild) {
+        _element.markNeedsBuild();
+      }
+    });
   }
 }
