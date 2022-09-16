@@ -15,160 +15,61 @@ class ViewCodeBuilder {
 
   /// Builds and returns the generated code.
   String build() {
-    _buildDeclarationBaseClass();
-    _buildImplementationClass();
-    if (viewModel.isStateful) {
-      _buildStateClass();
-    }
+    _buildViewDeclarationBaseClass();
+    _buildViewImplementationClass();
+    _buildWidgetClass();
     return _buffer.toString();
   }
 
-  void _buildDeclarationBaseClass() {
+  void _buildViewDeclarationBaseClass() {
     _buffer.writeClass(
       isAbstract: true,
       name: viewModel.declarationBaseClassName.name,
-      extendsType: TypeName('ViewWidget'),
-      () {
-        _buffer.writeConstructor(
-          className: viewModel.declarationBaseClassName.name,
-          parameters: ParameterList(
-            named: [
-              NamedParameter('key', isSuperFormal: true),
-            ],
-          ),
-          null,
-        );
-      },
+      extendsType: TypeName('FleetView'),
+      () {},
     );
   }
 
-  void _buildImplementationClass() {
-    if (viewModel.isStateful) {
-      _buffer.writeln('// ignore: must_be_immutable');
-    }
-    if (viewModel.docComment != null) {
-      _buffer.writeln(viewModel.docComment);
-    }
+  void _buildViewImplementationClass() {
     _buffer.writeClass(
-      name: viewModel.implementationClassName.toString(),
+      name: viewModel.implementationClassName.name,
       extendsType: viewModel.declarationClassName,
       () {
-        _buildConstructor();
-        _buildParameterFields();
-        if (viewModel.isStateful) {
-          _buildCreateStateMethod();
-        }
-      },
-    );
-  }
-
-  void _buildConstructor() {
-    _buffer.writeConstructor(
-      null,
-      className: viewModel.implementationClassName.name,
-      parameters: ParameterList(
-        named: [
-          NamedParameter('key', isSuperFormal: true),
-          for (final parameter in viewModel.parameters)
-            NamedParameter(
-              parameter.name,
-              isInitializingFormal: true,
-              isRequired: !parameter.type.isOptional,
-            ),
-        ],
-      ),
-    );
-  }
-
-  void _buildParameterFields() {
-    for (final parameter in viewModel.parameters) {
-      if (viewModel.docComment != null) {
-        _buffer.writeln(parameter.docComment);
-      }
-      _buffer.writeField(
-        name: parameter.name,
-        type: parameter.type,
-        isFinal: true,
-        isOverride: true,
-      );
-    }
-  }
-
-  void _buildCreateStateMethod() {
-    _buffer.writeFunction(
-      isOverride: true,
-      name: 'createState',
-      returnType: TypeName('ViewWidget'),
-      parameters: ParameterList(
-        positional: [
-          Parameter('element', type: TypeName('ViewElement')),
-        ],
-      ),
-      () {
-        _buffer.write('return ');
-        _buffer.write(viewModel.stateClassName.name);
-        _buffer.writeln('(element, this);');
-      },
-    );
-  }
-
-  void _buildStateClass() {
-    _buffer.writeln('// ignore: must_be_immutable');
-    _buffer.writeClass(
-      name: viewModel.stateClassName.name,
-      extendsType: viewModel.declarationClassName,
-      () {
-        _buildStateClassConstructor();
-        _buildStateClassFields();
-        _buildUpdateWidgetMethod();
+        _buildViewImplementationClassConstructor();
+        _buildViewImplementationClassFields();
         _buildParameterGetters();
         _buildStateFieldSetters();
       },
     );
   }
 
-  void _buildStateClassConstructor() {
+  void _buildViewImplementationClassConstructor() {
     _buffer.writeConstructor(
-        className: viewModel.stateClassName.name,
-        parameters: ParameterList(
-          positional: [
-            Parameter('_element', isInitializingFormal: true),
-            Parameter('_widget', isInitializingFormal: true),
-          ],
-        ), () {
-      for (final field in viewModel.stateFields) {
-        _buffer.writeln('// ignore: unnecessary_statements');
-        _buffer.write(field.name);
-        _buffer.writeln(';');
-      }
-    });
-  }
-
-  void _buildStateClassFields() {
-    _buffer.writeField(
-      name: '_element',
-      type: TypeName('ViewElement'),
-      isFinal: true,
-    );
-
-    _buffer.writeField(
-      name: '_widget',
-      type: viewModel.implementationClassName,
-    );
-  }
-
-  void _buildUpdateWidgetMethod() {
-    _buffer.writeFunction(
-      isOverride: true,
-      name: 'updateWidget',
+      className: viewModel.implementationClassName.name,
       parameters: ParameterList(
         positional: [
-          Parameter('newWidget', type: viewModel.implementationClassName)
+          if (viewModel.isStateful)
+            Parameter('_element', isInitializingFormal: true),
+          Parameter('_widget', isInitializingFormal: true),
         ],
       ),
-      () {
-        _buffer.writeln('_widget = newWidget;');
-      },
+      viewModel.isStateful ? _buildStateFieldInitializersCalls : null,
+    );
+  }
+
+  void _buildViewImplementationClassFields() {
+    if (viewModel.isStateful) {
+      _buffer.writeField(
+        name: '_element',
+        type: TypeName('ViewElement'),
+        isFinal: true,
+      );
+    }
+
+    _buffer.writeln('  // ignore: unused_field');
+    _buffer.writeField(
+      name: '_widget',
+      type: viewModel.widgetClassName,
     );
   }
 
@@ -184,6 +85,14 @@ class ViewCodeBuilder {
           _buffer.writeln(';');
         },
       );
+    }
+  }
+
+  void _buildStateFieldInitializersCalls() {
+    for (final field in viewModel.stateFields) {
+      _buffer.writeln('// ignore: unnecessary_statements');
+      _buffer.write(field.name);
+      _buffer.writeln(';');
     }
   }
 
@@ -209,5 +118,93 @@ class ViewCodeBuilder {
         },
       );
     }
+  }
+
+  void _buildWidgetClass() {
+    if (viewModel.docComment != null) {
+      _buffer.writeln(viewModel.docComment);
+    }
+    _buffer.writeClass(
+      name: viewModel.widgetClassName.name,
+      extendsType: TypeName('FleetViewWidget'),
+      () {
+        _buildConstructor();
+        _buildParameterFields();
+        _buildCreateViewMethod();
+        _buildUpdateWidgetMethod();
+      },
+    );
+  }
+
+  void _buildConstructor() {
+    _buffer.writeConstructor(
+      null,
+      isConst: true,
+      className: viewModel.widgetClassName.name,
+      parameters: ParameterList(
+        named: [
+          NamedParameter('key', isSuperFormal: true),
+          for (final parameter in viewModel.parameters)
+            NamedParameter(
+              parameter.name,
+              isInitializingFormal: true,
+              isRequired: !parameter.type.isOptional,
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _buildParameterFields() {
+    for (final parameter in viewModel.parameters) {
+      if (viewModel.docComment != null) {
+        _buffer.writeln(parameter.docComment);
+      }
+      _buffer.writeField(
+        name: parameter.name,
+        type: parameter.type,
+        isFinal: true,
+      );
+    }
+  }
+
+  void _buildCreateViewMethod() {
+    _buffer.writeFunction(
+      isOverride: true,
+      name: 'createView',
+      returnType: TypeName('FleetView'),
+      parameters: ParameterList(
+        positional: [
+          Parameter('element', type: TypeName('ViewElement')),
+        ],
+      ),
+      () {
+        _buffer.write('return ');
+        _buffer.write(viewModel.implementationClassName.name);
+        _buffer.writeln('(');
+        if (viewModel.isStateful) {
+          _buffer.writeln('element, ');
+        }
+        _buffer.writeln('this);');
+      },
+    );
+  }
+
+  void _buildUpdateWidgetMethod() {
+    _buffer.writeFunction(
+      isOverride: true,
+      name: 'updateWidget',
+      parameters: ParameterList(
+        positional: [
+          Parameter('view', type: TypeName('FleetView')),
+          Parameter('newWidget', type: viewModel.widgetClassName),
+        ],
+      ),
+      () {
+        _buffer.write('(view as ');
+        _buffer.write(viewModel.implementationClassName);
+        _buffer.writeln(')._widget = newWidget;');
+      },
+    );
   }
 }

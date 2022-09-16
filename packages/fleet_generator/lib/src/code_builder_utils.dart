@@ -31,11 +31,16 @@ extension StringBufferCodeBuilderUtils on StringBuffer {
   /// If the constructor has no body, the [writeBody] callback can be omitted.
   void writeConstructor(
     void Function()? writeBody, {
+    bool isConst = false,
     required String className,
     String? name,
     ParameterList? parameters,
   }) {
     parameters ??= ParameterList();
+
+    if (isConst) {
+      write('const ');
+    }
 
     write(className);
     if (name != null) {

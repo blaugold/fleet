@@ -29,8 +29,6 @@ void main() {
 
 @view
 abstract class _TextParameterView extends _$TextParameterView {
-  _TextParameterView({super.key});
-
   abstract final String text;
 
   @override
@@ -41,8 +39,6 @@ abstract class _TextParameterView extends _$TextParameterView {
 
 @view
 abstract class _OptionalParameterView extends _$OptionalParameterView {
-  _OptionalParameterView({super.key});
-
   abstract final String? text;
 
   @override

@@ -28,7 +28,7 @@ void main() {
 
   testWidgets('rebuilds when state changes', (tester) async {
     await tester.pumpWidget(
-      Directionality(
+      const Directionality(
         textDirection: TextDirection.ltr,
         child: ClickCounterView(),
       ),
@@ -45,8 +45,6 @@ void main() {
 
 @view
 abstract class _ClickCounterView extends _$ClickCounterView {
-  _ClickCounterView({super.key});
-
   abstract final String? prefix;
 
   @state

@@ -58,11 +58,11 @@ class FleetAnalyzer {
       _errorFor(element, 'A view class must not mix in mixins.');
     }
 
-    if (!element.hasViewDeclarationConstructor) {
+    if (element.constructors.length > 1 ||
+        !element.constructors.first.isSynthetic) {
       _errorFor(
         element,
-        'A view class must have only the default constructor with the '
-        'signature ({super.key}).',
+        'A view class must have not have any constructors.',
       );
     }
 
@@ -184,27 +184,5 @@ extension on ClassElement {
             .name
             .name ==
         viewDeclarationBaseName;
-  }
-
-  bool get hasViewDeclarationConstructor {
-    if (constructors.length != 1) {
-      return false;
-    }
-
-    final constructor = constructors.first;
-    if (!constructor.isDefaultConstructor) {
-      return false;
-    }
-
-    if (constructor.parameters.length != 1) {
-      return false;
-    }
-
-    final parameter = constructor.parameters.first;
-    if (parameter.name != 'key' || !parameter.isSuperFormal) {
-      return false;
-    }
-
-    return true;
   }
 }

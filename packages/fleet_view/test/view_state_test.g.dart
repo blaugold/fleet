@@ -6,33 +6,10 @@ part of 'view_state_test.dart';
 // ViewGenerator
 // **************************************************************************
 
-abstract class _$ClickCounterView extends ViewWidget {
-  _$ClickCounterView({
-    super.key,
-  });
-}
+abstract class _$ClickCounterView extends FleetView {}
 
-// ignore: must_be_immutable
-class ClickCounterView extends _ClickCounterView {
-  ClickCounterView({
-    super.key,
-    this.prefix,
-  });
-
-  @override
-  final String? prefix;
-
-  @override
-  ViewWidget createState(
-    ViewElement element,
-  ) {
-    return _ClickCounterViewState(element, this);
-  }
-}
-
-// ignore: must_be_immutable
-class _ClickCounterViewState extends _ClickCounterView {
-  _ClickCounterViewState(
+class _ClickCounterViewImpl extends _ClickCounterView {
+  _ClickCounterViewImpl(
     this._element,
     this._widget,
   ) {
@@ -42,14 +19,8 @@ class _ClickCounterViewState extends _ClickCounterView {
 
   final ViewElement _element;
 
+  // ignore: unused_field
   ClickCounterView _widget;
-
-  @override
-  void updateWidget(
-    ClickCounterView newWidget,
-  ) {
-    _widget = newWidget;
-  }
 
   @override
   String? get prefix {
@@ -64,5 +35,29 @@ class _ClickCounterViewState extends _ClickCounterView {
         _element.markNeedsBuild();
       }
     });
+  }
+}
+
+class ClickCounterView extends FleetViewWidget {
+  const ClickCounterView({
+    super.key,
+    this.prefix,
+  });
+
+  final String? prefix;
+
+  @override
+  FleetView createView(
+    ViewElement element,
+  ) {
+    return _ClickCounterViewImpl(element, this);
+  }
+
+  @override
+  void updateWidget(
+    FleetView view,
+    ClickCounterView newWidget,
+  ) {
+    (view as _ClickCounterViewImpl)._widget = newWidget;
   }
 }

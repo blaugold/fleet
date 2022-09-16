@@ -219,8 +219,8 @@ class ViewModel {
   late final List<ViewStateField> stateFields =
       fields.whereType<ViewStateField>().toList();
 
-  /// The type name of the class the is generated to implement the view.
-  TypeName get implementationClassName => TypeName(name);
+  /// The type name of the widget class that hosts the view.
+  TypeName get widgetClassName => TypeName(name);
 
   /// The type name of the class the is generated and that the view declaration
   /// class must extend.
@@ -229,9 +229,8 @@ class ViewModel {
   /// The type name of the class that was written by a user to declare the view.
   TypeName get declarationClassName => TypeName('_$name');
 
-  /// The type name of the class that is generated to implement the state of the
-  /// view.
-  TypeName get stateClassName => TypeName('_${name}State');
+  /// The type name of the class that is generated to fully implement the view.
+  TypeName get implementationClassName => TypeName('_${name}Impl');
 }
 
 /// A field in a view.
