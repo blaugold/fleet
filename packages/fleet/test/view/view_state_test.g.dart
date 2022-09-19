@@ -14,7 +14,7 @@ class _ClickCounterViewImpl extends _ClickCounterView {
     this._widget,
   ) {
     // ignore: unnecessary_statements
-    _clicks;
+    clicks;
   }
 
   final ViewElement _element;
@@ -28,9 +28,9 @@ class _ClickCounterViewImpl extends _ClickCounterView {
   }
 
   @override
-  set _clicks(int value) {
-    updateState<int>(super._clicks, value, (value, reason) {
-      super._clicks = value;
+  set clicks(int value) {
+    updateState<int>(super.clicks, value, (value, reason) {
+      super.clicks = value;
       if (reason == SetStateReason.rebuild) {
         _element.markNeedsBuild();
       }

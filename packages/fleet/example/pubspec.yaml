@@ -7,12 +7,13 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.2
-  fleet:
-    path: ..
+  fleet: any
   flutter:
     sdk: flutter
 
 dev_dependencies:
+  build_runner: any
+  fleet_generator: any
   flutter_test:
     sdk: flutter
 

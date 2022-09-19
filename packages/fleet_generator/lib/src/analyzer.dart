@@ -74,17 +74,10 @@ class FleetAnalyzer {
     final viewFields = <ViewField>[];
 
     for (final field in fields) {
-      if (field.isPrivate) {
-        if (_stateTypeChecker.hasAnnotationOfExact(field)) {
-          viewFields.add(_analyzeViewStateField(field));
-        } else {
-          _errorFor(
-            field,
-            'A private view field must be annotated with @state.',
-          );
-        }
+      if (_stateTypeChecker.hasAnnotationOfExact(field)) {
+        viewFields.add(_analyzeViewStateField(field));
       } else {
-        // All public fields are view parameters.
+        // All fields without annotation are view parameters.
         viewFields.add(_analyzeViewParameter(field));
       }
     }

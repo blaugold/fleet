@@ -1,6 +1,8 @@
 This Flutter project contains a number of small self contained demos to
 demonstrate the Fleet framework:
 
+- [counter_app.dart] shows how to use a Fleet view to implement the canonical
+  Flutter counter app.
 - [interactive_box_fleet.dart] and [interactive_box_flutter.dart] implement the
   same interactive animation, one using the Fleet framework and the other using
   the standard components from the Flutter framework.
@@ -10,6 +12,8 @@ demonstrate the Fleet framework:
   with `AnimatingStateMixin.setStateAsync`.
 - [stack.dart] shows how to stagger animations through `AnimatedSpec.delay`.
 
+[counter_app.dart]:
+  https://github.com/blaugold/fleet/blob/main/packages/fleet/example/lib/counter_app.dart
 [interactive_box_fleet.dart]:
   https://github.com/blaugold/fleet/blob/main/packages/fleet/example/lib/interactive_box_fleet.dart
 [interactive_box_flutter.dart]:

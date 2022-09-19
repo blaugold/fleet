@@ -48,13 +48,13 @@ abstract class _ClickCounterView extends _$ClickCounterView {
   abstract final String? prefix;
 
   @state
-  late var _clicks = 0;
+  late int clicks = 0;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _clicks++,
-      child: Text('${prefix ?? ''}$_clicks'),
+      onTap: () => clicks++,
+      child: Text('${prefix ?? ''}$clicks'),
     );
   }
 }
