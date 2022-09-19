@@ -13,6 +13,11 @@ final _postBuildCallbacks = <VoidCallback>[];
 /// callback is also called after intermediate builds
 /// ([IntermediateBuildExtension]).
 void schedulePostBuildCallback(VoidCallback callback) {
+  assert(
+    SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle ||
+        _isBuildingIntermediately,
+  );
+
   if (!_isBuildingIntermediately && _postBuildCallbacks.isEmpty) {
     WidgetsBinding.instance.addPostFrameCallback(_runPostBuildCallbacks);
   }

@@ -71,7 +71,23 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
   /// changes in its descendants**.
   ///
   /// This is simply a convenience method for calling [setState] within
-  /// [withAnimation].
+  /// [withAnimation]
+  ///
+  /// <!--
+  /// ```dart multi_begin
+  /// void setState(void Function() fn) {}
+  /// ```
+  /// -->
+  ///
+  /// ```dart multi_end main
+  /// withAnimation(const AnimationSpec(), () {
+  ///   setState(() {
+  ///     // Change state...
+  ///   });
+  /// });
+  /// ```
+  ///
+  /// But it is usually more convenient to use this method.
   ///
   /// {@macro fleet.Animated.widgets}
   ///
