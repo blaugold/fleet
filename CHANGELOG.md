@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2022-09-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`fleet` - `v0.3.0`](#fleet---v030)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `fleet` - `v0.3.0`
+
+ - **FIX**: scheduling transactions while building ([#36](https://github.com/blaugold/fleet/issues/36)). ([ff9fe03d](https://github.com/blaugold/fleet/commit/ff9fe03ddad1dcce25dc96a21301b2e7e70b632d))
+ - **BREAKING** **FEAT**: make transactions always synchronous ([#38](https://github.com/blaugold/fleet/issues/38)). ([8005fa8f](https://github.com/blaugold/fleet/commit/8005fa8f440f0b24764ce0d4afb800c6f5357103))
+
+
 ## 2022-09-07
 
 ### Changes

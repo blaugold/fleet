@@ -1,3 +1,10 @@
+## 0.3.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: scheduling transactions while building ([#36](https://github.com/blaugold/fleet/issues/36)). ([ff9fe03d](https://github.com/blaugold/fleet/commit/ff9fe03ddad1dcce25dc96a21301b2e7e70b632d))
+ - **BREAKING** **FEAT**: make transactions always synchronous ([#38](https://github.com/blaugold/fleet/issues/38)). ([8005fa8f](https://github.com/blaugold/fleet/commit/8005fa8f440f0b24764ce0d4afb800c6f5357103))
+
 ## 0.2.0
 
 > Note: This release has breaking changes.
