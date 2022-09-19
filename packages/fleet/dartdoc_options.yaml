@@ -1,4 +1,5 @@
 dartdoc:
+  # TODO: Categorize view components
   categories:
     'Animate':
       markdown: doc/Animate.md

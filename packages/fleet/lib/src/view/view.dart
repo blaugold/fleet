@@ -9,12 +9,13 @@ import '../annotation.dart';
 /// Views require code generation. To generate the code for a view, annotate the
 /// view class with the [view] annotation.
 ///
-/// The name of the view class must start with an underscore. A class will be
-/// generated that has the same name as the view class without the leading
-/// underscore. This class has to be used to use the view as a [Widget].
+/// The name of the view class must start with an underscore (`_<view-name>`). A
+/// class will be generated that has the same name as the view class without the
+/// leading underscore. This class has to be used to use the view as a [Widget].
 ///
-/// A view class must be abstract and extend [FleetView]. It must not implement
-/// any other types or use mixins. The class must not have any constructors.
+/// A view class must be abstract and extend a generated class whose name has
+/// the format `_$<view-name>`. It must not implement any other types or use
+/// mixins. The class must not have any constructors.
 ///
 /// # Examples
 ///
