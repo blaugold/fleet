@@ -1,4 +1,4 @@
-export 'src/animatable_flutter_widgets.dart'
+export 'src/animate/animatable_flutter_widgets.dart'
     show
         AAlign,
         AColoredBox,
@@ -11,7 +11,7 @@ export 'src/animatable_flutter_widgets.dart'
         ASliverOpacity,
         ASliverPadding,
         ATransform;
-export 'src/animatable_widget.dart'
+export 'src/animate/animatable_widget.dart'
     show
         AnimatableAlignmentGeometry,
         AnimatableBoxConstraints,
@@ -38,7 +38,9 @@ export 'src/animatable_widget.dart'
         OptionalAnimatableObject,
         OptionalAnimatableRect,
         OptionalAnimatableSize;
-export 'src/animate.dart' show Animated, withAnimation, AnimatingStateMixin;
-export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
+export 'src/animate/animate.dart'
+    show Animated, withAnimation, AnimatingStateMixin;
+export 'src/animate/animation.dart'
+    show AnimationSpec, AnimationFromCurveExtension;
+export 'src/animate/duration.dart' show DurationFromIntExtension;
 export 'src/common.dart' show Block;
-export 'src/duration.dart' show DurationFromIntExtension;

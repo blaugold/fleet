@@ -3,8 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart' hide Animation;
 
+import '../transaction.dart';
 import 'animation.dart';
-import 'transaction.dart';
 
 /// A wrapper around an animatable parameter of a widget that supports animating
 /// with Fleet.
