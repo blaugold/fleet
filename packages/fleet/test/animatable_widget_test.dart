@@ -226,7 +226,7 @@ final linear1sCurve = Curves.linear.animation(const Duration(seconds: 1));
 extension on WidgetTester {
   Future<T> withAnimation<T>(
     AnimationSpec animationSpec,
-    T Function() block,
+    Block<T> block,
   ) async {
     final result = runWithAnimation(animationSpec, block);
     await pump();

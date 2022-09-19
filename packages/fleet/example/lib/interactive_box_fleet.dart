@@ -2,7 +2,6 @@ import 'package:fleet/fleet.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  FleetBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -38,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
     return Scaffold(
       body: GestureDetector(
         onPanUpdate: (details) {
-          setStateAsync(() {
+          setState(() {
             _alignment += Alignment(
               details.delta.dx / size.width,
               details.delta.dy / size.height,
@@ -48,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
           });
         },
         onPanEnd: (_) {
-          setStateAsync(animation: Curves.ease.animation(300.ms), () {
+          setStateWithAnimation(Curves.ease.animation(300.ms), () {
             _alignment = Alignment.center;
             _color = _distanceColorTween.begin!;
           });

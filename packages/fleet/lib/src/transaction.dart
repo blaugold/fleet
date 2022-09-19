@@ -1,8 +1,139 @@
-import 'dart:developer';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+
+import 'common.dart';
+
+// === Intermediate building ===================================================
+
+final _postBuildCallbacks = <VoidCallback>[];
+
+/// Schedules a [callback] to be called after the current build phase.
+///
+/// This is different from [SchedulerBinding.addPostFrameCallback] in that the
+/// callback is also called after intermediate builds
+/// ([IntermediateBuildExtension]).
+void schedulePostBuildCallback(VoidCallback callback) {
+  if (!_isBuildingIntermediately && _postBuildCallbacks.isEmpty) {
+    WidgetsBinding.instance.addPostFrameCallback(_runPostBuildCallbacks);
+  }
+
+  _postBuildCallbacks.add(callback);
+}
+
+void _runPostBuildCallbacks([Object? _]) {
+  for (final callback in _postBuildCallbacks) {
+    try {
+      callback();
+    } catch (exception, stack) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: exception,
+          stack: stack,
+          library: 'fleet',
+          context: ErrorDescription('while running post build callback'),
+        ),
+      );
+    }
+  }
+  _postBuildCallbacks.clear();
+}
+
+var _isBuildingIntermediately = false;
+
+/// Extension that allows performing intermediate builds.
+extension IntermediateBuildExtension on WidgetsBinding {
+  /// Runs an intermediate build.
+  ///
+  /// Intermediate builds are performed outside of the normal frame building
+  /// process, for example as part of handling an input event.
+  ///
+  /// All elements that have been marked as dirty before the intermediate build
+  /// is started will be rebuilt.
+  ///
+  /// # Layout
+  ///
+  /// As part of an intermediate build, layout also has to be performed, to
+  /// build elements that are children of elements which build their children
+  /// during layout, for example [LayoutBuilder].
+  ///
+  /// This does not necessarily mean that any real layout work is performed. If
+  /// the intermediate build did not change layout parameters, elements that
+  /// build their children during layout schedule a layout pass just to rebuild
+  /// their children.
+  ///
+  /// If multiple intermediate builds that change layout parameters are
+  /// performed before the next frame is built, some layout work may be
+  /// performed multiple times. This means that intermediate builds should only
+  /// be used if absolutely necessary.
+  void buildIntermediately() {
+    // ignore: invalid_use_of_protected_member
+    assert(!debugBuildingDirtyElements);
+    assert(() {
+      // ignore: invalid_use_of_protected_member
+      debugBuildingDirtyElements = true;
+      return true;
+    }());
+
+    _isBuildingIntermediately = true;
+
+    buildOwner!.buildScope(renderViewElement!);
+    pipelineOwner.flushLayout();
+    buildOwner!.finalizeTree();
+
+    _isBuildingIntermediately = false;
+
+    _runPostBuildCallbacks();
+
+    assert(() {
+      // ignore: invalid_use_of_protected_member
+      debugBuildingDirtyElements = false;
+      return true;
+    }());
+  }
+}
+
+// === Transaction =============================================================
+
+var _isInTransaction = false;
+Object? _transaction;
+
+/// Applies a [transaction] to the state changes caused by calling [block].
+///
+/// Returns the value returned by [block].
+T withTransaction<T>(Object? transaction, Block<T> block) {
+  final previousTransaction = _transaction;
+  final isSameAsPreviousTransaction = previousTransaction == _transaction;
+  final isRootTransaction = !_isInTransaction;
+
+  if (isRootTransaction) {
+    _isInTransaction = true;
+  }
+
+  if (isRootTransaction || !isSameAsPreviousTransaction) {
+    // Ensure that all elements are in a clean state before running the block,
+    // to isolate transactional changes from other changes.
+    // TODO: If we could know that all elements are in a clean state, we could
+    // skip this step.
+    WidgetsBinding.instance.buildIntermediately();
+  } else if (isSameAsPreviousTransaction) {
+    return block();
+  }
+
+  _transaction = transaction;
+
+  try {
+    return block();
+  } finally {
+    // Build elements that became dirty while running the block.
+    // This allows those elements to see the current transaction.
+    WidgetsBinding.instance.buildIntermediately();
+
+    _transaction = previousTransaction;
+    if (isRootTransaction) {
+      _isInTransaction = false;
+    }
+  }
+}
 
 /// A transaction allows you to associate an arbitrary value with a single build
 /// of a group of widgets.
@@ -22,13 +153,10 @@ import 'package:flutter/widgets.dart';
 /// [Transaction]. A [Transaction] with [transaction] value `null` can be used
 /// to hide the [transaction] value of the closest ancestor [Transaction].
 ///
-/// # Scheduled transactions
+/// # Global transactions
 ///
-/// [scheduleTransaction] allows you to scheduled transactions to be executed as
-/// part of the next frame. Each scheduled transaction has a callback that is
-/// executed when there are **no** dirty widgets. After the callback finishes,
-/// widgets that are now dirty are rebuilt and see the transaction value that
-/// was provided when the transaction was scheduled.
+/// [withTransaction] allows you to apply a transaction to the state changes
+/// caused by calling a callback.
 class Transaction extends StatefulWidget {
   /// Creates a local transaction whose [transaction] value is only visible to
   /// descendants that are building at the same time as this widget.
@@ -46,29 +174,12 @@ class Transaction extends StatefulWidget {
   /// {@macro flutter.widgets.ProxyWidget.child}
   final Widget child;
 
-  /// Schedules a transaction to be executed as part of the next frame.
-  ///
-  /// If a transaction is currently executing when another transaction is
-  /// scheduled, the currently executing transaction is paused and the newly
-  /// scheduled transaction is executed immediately. Before entering the newly
-  /// scheduled transaction, any dirty widgets are rebuilt in the currently
-  /// executing transaction. After the newly scheduled transaction finishes, the
-  /// currently executing transaction is resumed. Transaction can be nested in
-  /// this way arbitrarily deep.
-  ///
-  /// See [Transaction] for more information about transactions.
-  static void scheduleTransaction(
-    Object? transaction,
-    VoidCallback callback,
-  ) {
-    TransactionBinding.instance?.scheduleTransaction(transaction, callback);
-  }
-
   /// Returns the current transaction value that is visible at the location of
   /// the provided [context].
   static Object? of(BuildContext context) {
-    var transaction = _InheritedTransactionState.of(context)?._transaction;
-    return transaction ??= TransactionBinding.instance?.scheduledTransaction;
+    final inheritedTransaction =
+        _InheritedTransactionState.of(context)?._transaction;
+    return inheritedTransaction ?? _transaction;
   }
 
   @override
@@ -102,7 +213,7 @@ class _TransactionState extends State<Transaction> {
       // transaction don't see the transaction value in those builds.
       //
       // We only need to clear the transaction value if we have one.
-      TransactionBinding.instance?._scheduleClearingOfLocalTransaction(this);
+      _scheduleClearingOfLocalTransaction(this);
     }
 
     return _InheritedTransactionState(
@@ -135,166 +246,19 @@ class _InheritedTransactionState extends InheritedWidget {
   }
 }
 
-/// Bindings for building with [Transaction]s.
-mixin TransactionBinding on BindingBase, RendererBinding {
-  /// The [TransactionBinding] instance for the current binding.
-  static TransactionBinding? get instance => _instance;
-  static TransactionBinding? _instance;
+final _localTransactionClearingQueue = <_TransactionState>[];
 
-  @override
-  void initInstances() {
-    _instance = this;
-    super.initInstances();
+void _scheduleClearingOfLocalTransaction(_TransactionState transaction) {
+  if (_localTransactionClearingQueue.isEmpty) {
+    schedulePostBuildCallback(_clearLocalTransactions);
   }
 
-  /// See [WidgetsBinding.buildOwner].
-  BuildOwner? get buildOwner;
+  _localTransactionClearingQueue.add(transaction);
+}
 
-  /// See [WidgetsBinding.renderViewElement].
-  Element? get renderViewElement;
-
-  /// See [WidgetsBinding.debugBuildingDirtyElements].
-  bool get debugBuildingDirtyElements;
-  set debugBuildingDirtyElements(bool value);
-
-  @override
-  void drawFrame() {
-    if (renderViewElement != null) {
-      // Complete building widgets outside of scheduled transactions.
-      // We need to flush the layout because some widgets get built during
-      // layout.
-      pipelineOwner.flushLayout();
-      _clearLocalTransactions();
-
-      _dispatchScheduledTransactions();
-    } else {
-      assert(_scheduledTransactions.isEmpty);
-    }
-
-    super.drawFrame();
+void _clearLocalTransactions() {
+  for (final transaction in _localTransactionClearingQueue) {
+    transaction._clear();
   }
-
-  final List<_TransactionState> _localTransactionStates = <_TransactionState>[];
-
-  void _scheduleClearingOfLocalTransaction(_TransactionState transactionState) {
-    assert(!_localTransactionStates.contains(transactionState));
-    _localTransactionStates.add(transactionState);
-  }
-
-  void _clearLocalTransactions() {
-    for (final localTransaction in _localTransactionStates) {
-      localTransaction._clear();
-    }
-    _localTransactionStates.clear();
-  }
-
-  /// The transaction value of the currently building scheduled transaction.
-  Object? get scheduledTransaction => _scheduledTransaction;
-  Object? _scheduledTransaction;
-
-  final List<MapEntry<Object?, VoidCallback>> _scheduledTransactions =
-      <MapEntry<Object?, VoidCallback>>[];
-
-  List<Object?>? _currentlyExecutingTransactions;
-
-  /// Schedules a transaction to be executed as part of the next frame.
-  ///
-  /// See [Transaction] for more information about transactions.
-  // TODO: Merge consecutive transactions with the same transaction value and
-  //       run them in a single build.
-  void scheduleTransaction(Object? transaction, VoidCallback callback) {
-    if (_currentlyExecutingTransactions != null) {
-      _executeTransaction(transaction, callback);
-    } else {
-      _scheduledTransactions.add(MapEntry(transaction, callback));
-      ensureVisualUpdate();
-    }
-  }
-
-  void _dispatchScheduledTransactions() {
-    if (_scheduledTransactions.isEmpty) {
-      return;
-    }
-
-    Timeline.startSync('TRANSACTIONS');
-
-    // We explicitly support scheduling transactions while building.
-    // This is useful when a state change is needed to trigger some action that
-    // should start immediately and not in the next frame. For example, starting
-    // an animation when a widget is built for the first time.
-    //
-    // Because of that we cannot iterate the list of scheduled transactions
-    // because it might be modified by the build.
-    while (_scheduledTransactions.isNotEmpty) {
-      final entry = _scheduledTransactions.removeAt(0);
-      final transaction = entry.key;
-      final callback = entry.value;
-
-      assert(debugBuildingDirtyElements);
-      debugBuildingDirtyElements = false;
-      _executeTransaction(transaction, callback);
-      debugBuildingDirtyElements = true;
-    }
-
-    Timeline.finishSync();
-  }
-
-  @pragma('vm:notify-debugger-on-exception')
-  void _executeTransaction(Object? transaction, VoidCallback callback) {
-    if (_currentlyExecutingTransactions != null) {
-      _flushTransaction();
-    }
-
-    final currentlyExecutingTransactions =
-        _currentlyExecutingTransactions ??= [];
-    currentlyExecutingTransactions.add(transaction);
-
-    try {
-      callback();
-    } catch (exception, stack) {
-      FlutterError.reportError(
-        FlutterErrorDetails(
-          exception: exception,
-          stack: stack,
-          library: 'fleet library',
-          context: ErrorDescription('while executing transaction'),
-          informationCollector: () => [
-            DiagnosticsProperty<Object>(
-              'The transaction value was',
-              transaction,
-              style: DiagnosticsTreeStyle.errorProperty,
-            )
-          ],
-        ),
-      );
-    }
-
-    _flushTransaction();
-
-    currentlyExecutingTransactions.removeLast();
-    if (currentlyExecutingTransactions.isEmpty) {
-      _currentlyExecutingTransactions = null;
-    }
-  }
-
-  void _flushTransaction() {
-    final currentlyExecutingTransactions = _currentlyExecutingTransactions!;
-    _currentlyExecutingTransactions = null;
-    _transactionScope(currentlyExecutingTransactions.last, () {
-      buildOwner!.buildScope(renderViewElement!);
-      pipelineOwner.flushLayout();
-      _clearLocalTransactions();
-    });
-    _currentlyExecutingTransactions = currentlyExecutingTransactions;
-  }
-
-  void _transactionScope(Object? transaction, VoidCallback callback) {
-    final previousTransaction = _scheduledTransaction;
-    _scheduledTransaction = transaction;
-    try {
-      callback();
-    } finally {
-      _scheduledTransaction = previousTransaction;
-    }
-  }
+  _localTransactionClearingQueue.clear();
 }

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
 import './animate.dart';
+import 'common.dart';
 
 /// Specification for animating state changes.
 ///
@@ -21,7 +22,7 @@ import './animate.dart';
 /// - [speed]
 ///
 /// To apply an [AnimationSpec] to a state change, use [Animated],
-/// [withAnimationAsync] or [AnimatingStateMixin].
+/// [withAnimation] or [AnimatingStateMixin].
 ///
 /// ## Examples
 ///
@@ -267,7 +268,7 @@ extension InternalAnimationSpec on AnimationSpec {
 }
 
 /// Runs [block] with [currentAnimation] set to [animation].
-T runWithAnimation<T>(AnimationSpec animation, T Function() block) {
+T runWithAnimation<T>(AnimationSpec animation, Block<T> block) {
   final previousAnimation = _currentAnimation;
   _currentAnimation = animation;
   try {
