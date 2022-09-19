@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'annotation.dart';
+import '../annotation.dart';
 
 /// A Fleet view.
 ///

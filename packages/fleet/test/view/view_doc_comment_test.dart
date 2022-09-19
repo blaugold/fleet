@@ -1,4 +1,4 @@
-import 'package:fleet_view/fleet_view.dart';
+import 'package:fleet/fleet.dart';
 import 'package:flutter/widgets.dart';
 
 part 'view_doc_comment_test.g.dart';

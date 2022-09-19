@@ -43,4 +43,7 @@ export 'src/animate/animate.dart'
 export 'src/animate/animation.dart'
     show AnimationSpec, AnimationFromCurveExtension;
 export 'src/animate/duration.dart' show DurationFromIntExtension;
+export 'src/annotation.dart' show view, state;
 export 'src/common.dart' show Block;
+export 'src/view/state.dart' show StateSetter, updateState, SetStateReason;
+export 'src/view/view.dart' show FleetView, FleetViewWidget, ViewElement;

@@ -1,4 +1,4 @@
-import 'package:fleet_view/fleet_view.dart';
+import 'package:fleet/fleet.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -2,7 +2,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 // ignore: implementation_imports
-import 'package:fleet_view/src/annotation.dart';
+import 'package:fleet/src/annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'model.dart';

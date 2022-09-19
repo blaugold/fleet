@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 // ignore: implementation_imports
-import 'package:fleet_view/src/annotation.dart';
+import 'package:fleet/src/annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'analyzer.dart';
