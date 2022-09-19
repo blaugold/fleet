@@ -22,10 +22,16 @@ scripts:
     run: daco format --set-exit-if-changed .
 
   analyze:
-    exec: dart analyze
+    exec: dart analyze --fatal-infos
 
   analyze:doc_comments:
-    exec: daco analyze
+    exec: daco analyze --fatal-infos
+
+  check_generated_code:
+    exec: ../../tool/check_generated_code.sh
+    select-package:
+      scope:
+        - fleet
 
   test:unit:
     exec: flutter test
@@ -34,7 +40,8 @@ scripts:
 
   presubmit:
     run: |
-      melos format:check && \
-      melos analyze && \
-      melos analyze:doc_comments && \
-      melos test:unit
+      melos format:check --no-select && \
+      melos analyze --no-select  && \
+      melos analyze:doc_comments --no-select && \
+      melos check_generated_code --no-select && \
+      melos test:unit --no-select

@@ -19,5 +19,7 @@ dependencies:
   meta: ^1.7.0
 
 dev_dependencies:
+  build_runner: ^2.2.0
+  fleet_generator: any
   flutter_test:
     sdk: flutter

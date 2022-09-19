@@ -32,14 +32,16 @@ jobs:
         run: dart pub global activate daco 0.2.3+2
 
       - name: Check formatting
-        run: melos format:check
+        run: melos format:check --no-select
 
       - name: Analyze
-        run: melos analyze
+        run: melos analyze --no-select
 
       - name: Analyze doc comments
-        run: melos analyze:doc_comments
+        run: melos analyze:doc_comments --no-select
+
+      - name: Check generated code
+        run: melos check_generated_code --no-select
 
       - name: Test
-        run: melos test:unit
-
+        run: melos test:unit --no-select
