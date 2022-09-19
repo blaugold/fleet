@@ -1,48 +1,20 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Animation;
 
 import 'animatable_flutter_widgets.dart';
 import 'animatable_widget.dart';
 import 'animation.dart';
+import 'common.dart';
 import 'transaction.dart';
-
-/// A concrete binding for applications based on the Widgets framework that use
-/// the `fleet` package.
-class FleetBinding extends BindingBase
-    with
-        GestureBinding,
-        SchedulerBinding,
-        ServicesBinding,
-        PaintingBinding,
-        SemanticsBinding,
-        RendererBinding,
-        TransactionBinding,
-        WidgetsBinding {
-  static FleetBinding? _instance;
-
-  /// Ensures that the [FleetBinding] is initialized and returns it.
-  static WidgetsBinding ensureInitialized() {
-    if (FleetBinding._instance == null) {
-      FleetBinding();
-    }
-    return WidgetsBinding.instance;
-  }
-}
 
 /// Applies an [animation] to the state changes caused by calling [block].
 ///
 /// To apply an animation **only to state changes in a widget subtree**, see
 /// [Animated].
 ///
-/// See [AnimatingStateMixin.setStateAsync] for for animating state changes in a
+/// See [AnimatingStateMixin] for conveniently animating state changes in a
 /// [StatefulWidget].
 ///
-/// During the next frame, [block] will be called and all state changes that
-/// result from its execution will be animated with [animation].
+/// Returns the value returned by [block].
 ///
 /// {@macro fleet.Animated.widgets}
 ///
@@ -60,7 +32,7 @@ class FleetBinding extends BindingBase
 ///   Widget build(BuildContext context) {
 ///     return GestureDetector(
 ///       onTap: () {
-///         withAnimationAsync(Curves.ease.animation(250.ms), () {
+///         withAnimation(Curves.ease.animation(250.ms), () {
 ///           active.value = !active.value;
 ///         });
 ///       },
@@ -77,87 +49,45 @@ class FleetBinding extends BindingBase
 ///
 /// See also:
 ///
-/// - [AnimatingStateMixin.setStateAsync] for animating state changes in a
-///   [StatefulWidget]'s [State].
+/// - [AnimatingStateMixin] for conveniently animating state changes in a
+///   [StatefulWidget].
 /// - [Animated] for a widget that applies an [animation] to the state changes
 ///   in its descendants.
 ///
 /// {@category Animate}
-void withAnimationAsync(AnimationSpec animation, VoidCallback block) {
-  _scheduleTransaction(animation, block);
+T withAnimation<T>(AnimationSpec animation, Block<T> block) {
+  return withTransaction(animation, block);
 }
 
-void _scheduleTransaction(Object? transaction, VoidCallback block) {
-  final globalTransactionBinding = TransactionBinding.instance;
-  if (globalTransactionBinding == null) {
-    _debugWarnGlobalTransactionBindingIsNotInitialized();
-    block();
-  } else {
-    Transaction.scheduleTransaction(transaction, block);
-  }
-}
-
-var _debugDidWarnGlobalTransactionsBindingIsNotInitialized = false;
-
-void _debugWarnGlobalTransactionBindingIsNotInitialized() {
-  assert(() {
-    if (!_debugDidWarnGlobalTransactionsBindingIsNotInitialized) {
-      _debugDidWarnGlobalTransactionsBindingIsNotInitialized = true;
-      debugPrint(
-        'GlobalTransactionBinding has not been initialized. Without it, '
-        'withAnimationAsync, setStateAsync and Animate cannot '
-        'apply the provided animation. Make sure you have called '
-        'FleetBinding.ensureInitialized() before runApp.',
-      );
-    }
-    return true;
-  }());
-}
-
-/// Mixin for the [State] of a [StatefulWidget] that wants to apply animations
-/// when calling [setState].
-///
-/// See [setStateAsync] for more information.
+/// Mixin for the [State] of a [StatefulWidget] for conveniently applying
+/// animations when making state changes.
 ///
 /// {@category Animate}
 mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
-  @Deprecated(
-    'Use setStateAsync instead of setState in a State that mixes in '
-    'AnimatingStateMixin. This is required to ensure predictable ordering of '
-    'state changes.',
-  )
-  @override
-  void setState(VoidCallback fn) {
-    throw UnsupportedError(
-      'Use setStateAsync instead of setState in a State that mixes in '
-      'AnimatingStateMixin. This is required to ensure predictable ordering of '
-      'state changes.',
-    );
-  }
-
-  /// A version of [setState] that invokes [fn] when Flutter builds the next
-  /// frame.
-  ///
-  /// Within an [AnimatingStateMixin], this method must be used instead of
-  /// [setState] to ensure state changes are applied in a predictable order.
-  ///
-  /// Since this method can be called when Flutter is not currently building a
-  /// Frame, [fn] might be executed asynchronously. If this method is called
-  /// while Flutter is building a frame, [fn] might be executed immediately.
-  ///
-  /// The callbacks of multiple calls to [setStateAsync] will be executed in the
-  /// same order as the calls to [setStateAsync].
-  ///
-  /// # Animations
-  ///
-  /// This method optionally applies an [animation] to the state changes caused
-  /// by calling [fn].
+  /// A version of [setState] that applies an [animation] to the state changes
+  /// caused by calling [fn].
   ///
   /// See [Animated] for a widget that applies an animation **only to the state
   /// changes in its descendants**.
   ///
-  /// All state changes that result from the execution of [fn] will be animated
-  /// with [animation].
+  /// This is simply a convenience method for calling [setState] within
+  /// [withAnimation]
+  ///
+  /// <!--
+  /// ```dart multi_begin
+  /// void setState(void Function() fn) {}
+  /// ```
+  /// -->
+  ///
+  /// ```dart multi_end main
+  /// withAnimation(const AnimationSpec(), () {
+  ///   setState(() {
+  ///     // Change state...
+  ///   });
+  /// });
+  /// ```
+  ///
+  /// But it is usually more convenient to use this method.
   ///
   /// {@macro fleet.Animated.widgets}
   ///
@@ -180,7 +110,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
   ///   Widget build(BuildContext context) {
   ///     return GestureDetector(
   ///       onTap: () {
-  ///         setStateAsync(animation: Curves.ease.animation(250.ms), () {
+  ///         setStateWithAnimation(Curves.ease.animation(250.ms), () {
   ///           _active = !_active;
   ///         });
   ///       },
@@ -192,20 +122,20 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
   ///
   /// See also:
   ///
-  /// - [withAnimationAsync] for a static function that works like this
-  ///   extension method, but without calling [State.setState].
+  /// - [withAnimation] for a static function that applies an animation to the
+  ///   state changes caused by calling a callback.
   /// - [Animated] for a widget that applies an animation to the state changes
   ///   in its descendants.
   @protected
-  void setStateAsync(VoidCallback fn, {AnimationSpec? animation}) {
-    _scheduleTransaction(animation, () => super.setState(fn));
+  void setStateWithAnimation(AnimationSpec animation, VoidCallback fn) {
+    withAnimation(animation, () => super.setState(fn));
   }
 }
 
 /// A widget that applies an [animation] to state changes in its descendants.
 ///
-/// See [withAnimationAsync] for a function that applies an animation to **all
-/// state changes that are the result of calling a callback**.
+/// See [withAnimation] for a function that applies an animation to **all state
+/// changes that are the result of calling a callback**.
 ///
 /// {@template fleet.Animated.widgets}
 ///
@@ -270,7 +200,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 ///
 /// See also:
 ///
-/// - [withAnimationAsync] for a function that applies an animation to the state
+/// - [withAnimation] for a function that applies an animation to the state
 ///   changes caused by calling a callback.
 ///
 /// {@category Animate}

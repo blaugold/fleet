@@ -2,7 +2,6 @@ import 'package:fleet/fleet.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  FleetBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

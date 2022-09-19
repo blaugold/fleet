@@ -2,7 +2,6 @@ import 'package:fleet/fleet.dart';
 import 'package:flutter/material.dart' hide AnimatedSize;
 
 void main() {
-  FleetBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -34,14 +33,14 @@ class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
   var _size = _collapsedSize;
 
   void _collapse() {
-    setStateAsync(animation: Curves.easeInOut.animation(), () {
+    setStateWithAnimation(Curves.easeInOut.animation(), () {
       _color = _collapsedColor;
       _size = _collapsedSize;
     });
   }
 
   void _expand() {
-    setStateAsync(animation: Curves.easeInOutExpo.animation(1.s), () {
+    setStateWithAnimation(Curves.easeInOutExpo.animation(1.s), () {
       _color = _expandedColor;
       _size = (context.findRenderObject()! as RenderBox).size;
     });

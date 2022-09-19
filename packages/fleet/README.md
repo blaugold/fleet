@@ -22,33 +22,11 @@
 
 # Getting started
 
-1. Add Fleet to your `pubspec.yaml`:
+Add Fleet to your `pubspec.yaml`:
 
 ```shell
 flutter pub add fleet
 ```
-
-2. Add `FleetBinding.ensureInitialized()` to your `main` function:
-
-```dart
-import 'package:fleet/fleet.dart';
-import 'package:flutter/material.dart';
-
-void main() {
-  FleetBinding.ensureInitialized();
-  runApp(MyApp());
-}
-```
-
-You need to use this binding instead of `WidgetsFlutterBinding`.
-
-This step is currently necessary because of functionality that Fleet requires,
-but that is not available in Flutter. This step will become unnecessary if and
-when the required functionality becomes available in Flutter. Unfortunately,
-this also means that until that point, animations that use Fleet will not work
-in tests. The reason is that the test bindings cannot be extended in the same
-way that `WidgetsFlutterBinding` can be. You can still use Fleet in tests but
-animated values will immediately jump to their final value.
 
 Now you're ready to use Fleet in your Flutter app.
 
@@ -106,7 +84,7 @@ Now lets animate the state change of `_active`:
      return GestureDetector(
        onTap: () {
 -        setState(() {
-+        setStateAsync(animation: Curves.ease.animation(250.ms), () {
++        setStateWithAnimation(Curves.ease.animation(250.ms), () {
            _active = !_active;
          });
        },
@@ -122,9 +100,9 @@ Now lets animate the state change of `_active`:
 We made the following changes:
 
 1. Mixin `AnimatingStateMixin` to `_MyWidgetState`, so we can use
-   `setStateAsync`.
-2. Use `setStateAsync` to specify the animation that we want to apply to the
-   state change.
+   `setStateWithAnimation`.
+2. Use `setStateWithAnimation` to specify the animation that we want to apply to
+   the state change.
 3. Use `AColoredBox` instead of `ColoredBox`.
 
 The `AColoredBox` widget is a drop-in replacement for `ColoredBox` that supports
@@ -138,20 +116,16 @@ state-based animation through components provided by Fleet (see
 [`AnimatableStateMixin`][animatablestatemixin]). Issues or PRs for adding
 support for more widgets are welcome!
 
-Note that we did not explicitly tell `setStateAsync` what to animate. This is
-because Fleet uses a **state-based** approach. All state changes caused by
-executing the provided callback will be animated. Even the state changes which
-are indirect, like the `color` parameter of `AColoredBox` going from
+Note that we did not explicitly tell `setStateWithAnimation` what to animate.
+This is because Fleet uses a **state-based** approach. All state changes caused
+by executing the provided callback will be animated. Even the state changes
+which are indirect, like the `color` parameter of `AColoredBox` going from
 `Colors.grey` to `Colors.blue`. Fleet does this by tracking the state of
 animatable parameters of animatable widgets from one build to the next.
 
-`setStateAsync` is a little bit special in that it does not immediately execute
-the callback, like it is the case for `setState`. Instead, `setStateAsync`
-executes the callback as part of building the next frame.
-
 `Curves.ease.animation(250.ms)` creates an [`AnimationSpec`][animationspec] that
-we pass to `setStateAsync` to specify how to animate from the old to the new
-state.
+we pass to `setStateWithAnimation` to specify how to animate from the old to the
+new state.
 
 `.animate` is an extension method on `Curve` that creates an
 [`AnimationSpec`][animationspec] form the curve. It optionally takes a
@@ -190,8 +164,8 @@ for animating with Fleet:
   https://github.com/blaugold/fleet/tree/main/packages/fleet/example
 [withanimationasync]:
   https://pub.dev/documentation/fleet/latest/fleet/withAnimationAsync.html
-[setstateasync]:
-  https://pub.dev/documentation/fleet/latest/fleet/AnimatingStateMixin/setStateAsync.html
+[setstatewithanimation]:
+  https://pub.dev/documentation/fleet/latest/fleet/AnimatingStateMixin/setStateWithAnimation.html
 [animatablestatemixin]:
   https://pub.dev/documentation/fleet/latest/fleet/AnimatableStateMixin-mixin.html
 [animationspec]:
