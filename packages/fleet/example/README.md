@@ -1,6 +1,7 @@
 This Flutter project contains a number of small self contained demos to
 demonstrate the Fleet framework:
 
+- [hike_graph.dart] shows how to animate a graph of data points.
 - [interactive_box_fleet.dart] and [interactive_box_flutter.dart] implement the
   same interactive animation, one using the Fleet framework and the other using
   the standard components from the Flutter framework.
@@ -10,6 +11,8 @@ demonstrate the Fleet framework:
   with `AnimatingStateMixin.setStateAsync`.
 - [stack.dart] shows how to stagger animations through `AnimatedSpec.delay`.
 
+[hike_graph.dart]:
+  https://github.com/blaugold/fleet/blob/main/packages/fleet/example/lib/hike_graph.dart
 [interactive_box_fleet.dart]:
   https://github.com/blaugold/fleet/blob/main/packages/fleet/example/lib/interactive_box_fleet.dart
 [interactive_box_flutter.dart]:
