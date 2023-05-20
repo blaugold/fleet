@@ -7,8 +7,6 @@ ide:
   intellij: false
 
 command:
-  bootstrap:
-    usePubspecOverrides: true
   version:
     linkToCommits: true
     branch: main
@@ -29,8 +27,8 @@ scripts:
 
   test:unit:
     exec: flutter test
-    select-package:
-      dir-exists: test
+    packageFilters:
+      dirExists: test
 
   presubmit:
     run: |
