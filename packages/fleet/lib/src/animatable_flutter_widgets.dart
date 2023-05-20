@@ -514,8 +514,8 @@ class ASizedBox extends StatefulWidget {
   /// Creates an animatable version of [SizedBox].
   const ASizedBox({
     super.key,
-    required this.height,
-    required this.width,
+    this.height,
+    this.width,
     this.child,
   });
 

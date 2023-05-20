@@ -160,7 +160,8 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// {@endtemplate}
 ///
 /// State changes are only animated if they happen at the same time that [value]
-/// changes.
+/// changes. If no [value] or the [alwaysAnimateValue] is provided, the
+/// [animation] is applied to all state changes.
 ///
 /// [Animated] can be nested, with the closest enclosing [Animated] widget
 /// taking precedence.
@@ -210,9 +211,13 @@ class Animated extends StatefulWidget {
   const Animated({
     super.key,
     this.animation = const AnimationSpec(),
-    required this.value,
+    this.value = alwaysAnimateValue,
     required this.child,
   });
+
+  /// A [value] that can be provided to animate all state changes in
+  /// descendants.
+  static const alwaysAnimateValue = Object();
 
   /// The [AnimationSpec] to use for animating state changes in descendants.
   final AnimationSpec animation;
@@ -236,7 +241,8 @@ class _AnimatedState extends State<Animated> {
   @override
   void didUpdateWidget(covariant Animated oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _animationIsActive = widget.value != oldWidget.value;
+    _animationIsActive = identical(widget.value, Animated.alwaysAnimateValue) ||
+        widget.value != oldWidget.value;
   }
 
   @override
