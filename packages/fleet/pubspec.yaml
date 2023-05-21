@@ -10,8 +10,8 @@ funding:
   - https://github.com/sponsors/blaugold
 
 environment:
-  sdk: '>=2.17.6 <3.0.0'
-  flutter: '>=1.17.0'
+  sdk: '^3.0.0'
+  flutter: '>=3.10.0'
 
 dependencies:
   flutter:
