@@ -44,7 +44,7 @@ import 'parameter.dart';
 ///
 /// class _SquareState extends State<Square>
 ///     with AnimatableParameterHostMixin, AnimatableStateMixin {
-///   late final _dimension = AnimatableDouble(widget.dimension, state: this);
+///   late final _dimension = AnimatableDouble(widget.dimension, host: this);
 ///
 ///   @override
 ///   void updateAnimatableParameters() {
