@@ -15,15 +15,15 @@ void main() {
           debugSemanticsDisableAnimations = false;
         });
 
-        final state = TestState(tester);
-        final value = AnimatableDouble(0, state: state);
+        final host = TestHost(tester);
+        final value = AnimatableDouble(0, host: host);
 
         await tester.withAnimation(linear1sCurve, () => value.value = 1);
 
         await tester.pump(d500ms);
         await tester.pumpAndSettle();
 
-        expect(state.animationChanges, isEmpty);
+        expect(host.animationChanges, isEmpty);
       },
     );
   });
@@ -32,8 +32,8 @@ void main() {
     testWidgets(
       'different value stops running animation',
       (tester) async {
-        final state = TestState(tester);
-        final value = AnimatableDouble(0, state: state);
+        final host = TestHost(tester);
+        final value = AnimatableDouble(0, host: host);
 
         await tester.withAnimation(linear1sCurve, () => value.value = 1);
 
@@ -45,15 +45,15 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        expect(state.animationChanges, [.5]);
+        expect(host.animationChanges, [.5]);
       },
     );
 
     testWidgets(
       'same value allows running animation to continue',
       (tester) async {
-        final state = TestState(tester);
-        final value = AnimatableDouble(0, state: state);
+        final host = TestHost(tester);
+        final value = AnimatableDouble(0, host: host);
 
         await tester.withAnimation(linear1sCurve, () => value.value = 1);
 
@@ -66,15 +66,15 @@ void main() {
         await tester.pump(d500ms); // 1
         await tester.pumpAndSettle();
 
-        expect(state.animationChanges, [.5, 1]);
+        expect(host.animationChanges, [.5, 1]);
       },
     );
   });
 
   group('curve', () {
     testWidgets('simple', (tester) async {
-      final state = TestState(tester);
-      final value = AnimatableDouble(0, state: state);
+      final host = TestHost(tester);
+      final value = AnimatableDouble(0, host: host);
 
       await tester.withAnimation(linear1sCurve, () => value.value = 1);
 
@@ -82,12 +82,12 @@ void main() {
       await tester.pump(d500ms); // 1
       await tester.pumpAndSettle();
 
-      expect(state.animationChanges, [.5, 1]);
+      expect(host.animationChanges, [.5, 1]);
     });
 
     testWidgets('interrupt current animation with new one', (tester) async {
-      final state = TestState(tester);
-      final value = AnimatableDouble(0, state: state);
+      final host = TestHost(tester);
+      final value = AnimatableDouble(0, host: host);
 
       await tester.withAnimation(linear1sCurve, () => value.value = 1);
 
@@ -99,12 +99,12 @@ void main() {
       await tester.pump(d500ms); // 2
       await tester.pumpAndSettle();
 
-      expect(state.animationChanges, [.5, 1.25, 2]);
+      expect(host.animationChanges, [.5, 1.25, 2]);
     });
 
     testWidgets('delay', (tester) async {
-      final state = TestState(tester);
-      final value = AnimatableDouble(0, state: state);
+      final host = TestHost(tester);
+      final value = AnimatableDouble(0, host: host);
 
       await tester.withAnimation(
         linear1sCurve.delay(d500ms),
@@ -116,13 +116,13 @@ void main() {
       await tester.pump(d500ms); // 1
       await tester.pumpAndSettle();
 
-      expect(state.animationChanges, [.5, 1]);
+      expect(host.animationChanges, [.5, 1]);
     });
 
     group('speed', () {
       testWidgets('.5x', (tester) async {
-        final state = TestState(tester);
-        final value = AnimatableDouble(0, state: state);
+        final host = TestHost(tester);
+        final value = AnimatableDouble(0, host: host);
 
         await tester.withAnimation(
           linear1sCurve.speed(.5),
@@ -135,12 +135,12 @@ void main() {
         await tester.pump(d500ms); // 1
         await tester.pumpAndSettle();
 
-        expect(state.animationChanges, [.25, .5, .75, 1]);
+        expect(host.animationChanges, [.25, .5, .75, 1]);
       });
 
       testWidgets('2x', (tester) async {
-        final state = TestState(tester);
-        final value = AnimatableDouble(0, state: state);
+        final host = TestHost(tester);
+        final value = AnimatableDouble(0, host: host);
 
         await tester.withAnimation(
           linear1sCurve.speed(2),
@@ -151,14 +151,14 @@ void main() {
         await tester.pump(d250ms); // .1
         await tester.pumpAndSettle();
 
-        expect(state.animationChanges, [.5, 1]);
+        expect(host.animationChanges, [.5, 1]);
       });
     });
 
     group('repeat', () {
       testWidgets('2 times', (tester) async {
-        final state = TestState(tester);
-        final value = AnimatableDouble(0, state: state);
+        final host = TestHost(tester);
+        final value = AnimatableDouble(0, host: host);
 
         await tester.withAnimation(
           linear1sCurve.repeat(2, reverse: false),
@@ -171,13 +171,13 @@ void main() {
         await tester.pump(d500ms); // 1
         await tester.pumpAndSettle();
 
-        expect(state.animationChanges, [.5, 1, .5, 1]);
+        expect(host.animationChanges, [.5, 1, .5, 1]);
       });
 
       group('reverse', () {
         testWidgets('2 times', (tester) async {
-          final state = TestState(tester);
-          final value = AnimatableDouble(0, state: state);
+          final host = TestHost(tester);
+          final value = AnimatableDouble(0, host: host);
 
           await tester.withAnimation(
             linear1sCurve.repeat(2),
@@ -191,12 +191,12 @@ void main() {
           await tester.pump(d250ms); // 1 (the last tick always goes to the end)
           await tester.pumpAndSettle();
 
-          expect(state.animationChanges, [.5, 1, .5, .25, 1]);
+          expect(host.animationChanges, [.5, 1, .5, .25, 1]);
         });
 
         testWidgets('3 times', (tester) async {
-          final state = TestState(tester);
-          final value = AnimatableDouble(0, state: state);
+          final host = TestHost(tester);
+          final value = AnimatableDouble(0, host: host);
 
           await tester.withAnimation(
             linear1sCurve.repeat(3),
@@ -211,7 +211,7 @@ void main() {
           await tester.pump(d500ms); // 1
           await tester.pumpAndSettle();
 
-          expect(state.animationChanges, [.5, 1, .5, 0, .5, 1]);
+          expect(host.animationChanges, [.5, 1, .5, 0, .5, 1]);
         });
       });
     });
@@ -234,20 +234,20 @@ extension on WidgetTester {
   }
 }
 
-class TestState implements AnimatableStateMixin {
-  TestState(this.tester);
+class TestHost implements AnimatableStateMixin {
+  TestHost(this.tester);
 
   final WidgetTester tester;
   late final AnimatableParameter<Object?> parameter;
   final animationChanges = <Object?>[];
 
   @override
-  void registerParameter(AnimatableParameter<Object?> parameter) {
+  void registerAnimatableParameter(AnimatableParameter<Object?> parameter) {
     this.parameter = parameter;
   }
 
   @override
-  void parameterChanged() {
+  void animatableParameterChanged() {
     animationChanges.add(parameter.animatedValue);
   }
 
