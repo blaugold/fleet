@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart' hide Animation;
 
 import 'animatable_flutter_widgets.dart';
-import 'animatable_widget.dart';
+import 'animatable_widget_state.dart';
 import 'animation.dart';
 import 'common.dart';
 import 'transaction.dart';

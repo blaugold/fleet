@@ -1,67 +1,66 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:math' as math;
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import 'animatable_widget.dart';
+import 'animatable_render_object_widget.dart';
+import 'animatable_widget_state.dart';
+import 'parameter.dart';
+
+typedef _AlignAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  OptionalAnimatableDouble widthFactor,
+  OptionalAnimatableDouble heightFactor,
+});
 
 /// Animatable version of [Align].
 ///
 /// {@category Animatable Flutter widget}
-class AAlign extends StatefulWidget {
+class AAlign extends Align
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _AlignAnimatableParameters> {
   /// Creates an animatable version of [Align].
   const AAlign({
     super.key,
-    this.alignment = Alignment.center,
-    this.widthFactor,
-    this.heightFactor,
-    this.child,
+    super.alignment,
+    super.widthFactor,
+    super.heightFactor,
+    super.child,
   });
 
-  /// See [Align.alignment].
-  final AlignmentGeometry alignment;
-
-  /// See [Align.widthFactor].
-  final double? widthFactor;
-
-  /// See [Align.heightFactor].
-  final double? heightFactor;
-
-  /// See [ProxyWidget.child].
-  final Widget? child;
-
   @override
-  State<AAlign> createState() => _AAlignState();
-}
-
-class _AAlignState extends AnimatableState<AAlign> {
-  late final _alignment = AnimatableAlignmentGeometry(
-    widget.alignment,
-    state: this,
-  );
-  late final _heightFactor = OptionalAnimatableDouble(
-    widget.heightFactor,
-    state: this,
-  );
-  late final _widthFactor = OptionalAnimatableDouble(
-    widget.widthFactor,
-    state: this,
-  );
-
-  @override
-  void updateAnimatableParameters() {
-    _alignment.value = widget.alignment;
-    _heightFactor.value = widget.heightFactor;
-    _widthFactor.value = widget.widthFactor;
+  _AlignAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      widthFactor: OptionalAnimatableDouble(widthFactor, host: host),
+      heightFactor: OptionalAnimatableDouble(heightFactor, host: host),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: _alignment.animatedValue,
-      widthFactor: _widthFactor.animatedValue,
-      heightFactor: _heightFactor.animatedValue,
-      child: widget.child,
-    );
+  void updateAnimatableParameters(_AlignAnimatableParameters parameters) {
+    parameters
+      ..alignment.value = alignment
+      ..widthFactor.value = widthFactor
+      ..heightFactor.value = heightFactor;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderPositionedBox renderObject,
+    _AlignAnimatableParameters parameters,
+  ) {
+    final (:alignment, :widthFactor, :heightFactor) = parameters;
+    renderObject
+      ..alignment = alignment.animatedValue
+      ..widthFactor = widthFactor.animatedValue
+      ..heightFactor = heightFactor.animatedValue;
   }
 }
 
@@ -83,7 +82,7 @@ class AColoredBox extends StatefulWidget {
 }
 
 class _AColoredBoxState extends AnimatableState<AColoredBox> {
-  late final _color = AnimatableColor(widget.color, state: this);
+  late final _color = AnimatableColor(widget.color, host: this);
 
   @override
   void updateAnimatableParameters() {
@@ -164,39 +163,39 @@ class AContainer extends StatefulWidget {
 class _AContainerState extends AnimatableState<AContainer> {
   late final _alignment = OptionalAnimatableAlignmentGeometry(
     widget.alignment,
-    state: this,
+    host: this,
   );
   late final _padding = OptionalAnimatableEdgeInsetsGeometry(
     widget.padding,
-    state: this,
+    host: this,
   );
   late final _color = OptionalAnimatableColor(
     widget.color,
-    state: this,
+    host: this,
   );
   late final _decoration = OptionalAnimatableDecoration(
     widget.decoration,
-    state: this,
+    host: this,
   );
   late final _foregroundDecoration = OptionalAnimatableDecoration(
     widget.foregroundDecoration,
-    state: this,
+    host: this,
   );
   late final _constraints = OptionalAnimatableBoxConstraints(
     widget.constraints,
-    state: this,
+    host: this,
   );
   late final _margin = OptionalAnimatableEdgeInsetsGeometry(
     widget.margin,
-    state: this,
+    host: this,
   );
   late final _transform = OptionalAnimatableMatrix4(
     widget.transform,
-    state: this,
+    host: this,
   );
   late final _transformAlignment = OptionalAnimatableAlignmentGeometry(
     widget.transformAlignment,
-    state: this,
+    host: this,
   );
 
   @override
@@ -230,83 +229,78 @@ class _AContainerState extends AnimatableState<AContainer> {
   }
 }
 
+typedef _OpacityAnimatableParameters = ({AnimatableDouble opacity});
+
 /// Animatable version of [Opacity].
 ///
 /// {@category Animatable Flutter widget}
-class AOpacity extends StatefulWidget {
+class AOpacity extends Opacity
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _OpacityAnimatableParameters> {
   /// Creates an animatable version of [Opacity].
   const AOpacity({
     super.key,
-    required this.opacity,
-    this.alwaysIncludeSemantics = false,
-    this.child,
+    required super.opacity,
+    super.alwaysIncludeSemantics,
+    super.child,
   });
 
-  /// See [Opacity.opacity].
-  final double opacity;
-
-  /// See [Opacity.alwaysIncludeSemantics].
-  final bool alwaysIncludeSemantics;
-
-  /// See [ProxyWidget.child].
-  final Widget? child;
-
   @override
-  State<AOpacity> createState() => _AOpacityState();
-}
-
-class _AOpacityState extends AnimatableState<AOpacity> {
-  late final _opacity = AnimatableDouble(widget.opacity, state: this);
-
-  @override
-  void updateAnimatableParameters() {
-    _opacity.value = widget.opacity;
+  _OpacityAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (opacity: AnimatableDouble(opacity, host: host));
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Opacity(
-      opacity: _opacity.animatedValue,
-      alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
-      child: widget.child,
-    );
+  void updateAnimatableParameters(_OpacityAnimatableParameters parameters) {
+    parameters.opacity.value = opacity;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderOpacity renderObject,
+    _OpacityAnimatableParameters parameters,
+  ) {
+    final (:opacity) = parameters;
+    renderObject.opacity = opacity.animatedValue;
   }
 }
+
+typedef _PaddingAnimatableParameters = ({AnimatableEdgeInsetsGeometry padding});
 
 /// Animatable version of [Padding].
 ///
 /// {@category Animatable Flutter widget}
-class APadding extends StatefulWidget {
+class APadding extends Padding
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _PaddingAnimatableParameters> {
   /// Creates an animatable version of [Padding].
-  const APadding({super.key, required this.padding, this.child});
-
-  /// See [Padding.padding].
-  final EdgeInsetsGeometry padding;
-
-  /// See [ProxyWidget.child].
-  final Widget? child;
+  const APadding({super.key, required super.padding, super.child});
 
   @override
-  State<APadding> createState() => _APaddingState();
-}
-
-class _APaddingState extends AnimatableState<APadding> {
-  late final _padding = AnimatableEdgeInsetsGeometry(
-    widget.padding,
-    state: this,
-  );
-
-  @override
-  void updateAnimatableParameters() {
-    _padding.value = widget.padding;
+  _PaddingAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (padding: AnimatableEdgeInsetsGeometry(padding, host: host),);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: _padding.animatedValue,
-      child: widget.child,
-    );
+  void updateAnimatableParameters(_PaddingAnimatableParameters parameters) {
+    parameters.padding.value = padding;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderPadding renderObject,
+    _PaddingAnimatableParameters parameters,
+  ) {
+    final (:padding) = parameters;
+    renderObject.padding = padding.animatedValue;
   }
 }
 
@@ -424,12 +418,12 @@ class APositioned extends StatefulWidget {
 }
 
 class _APositionedState extends AnimatableState<APositioned> {
-  late final _left = OptionalAnimatableDouble(widget.left, state: this);
-  late final _top = OptionalAnimatableDouble(widget.top, state: this);
-  late final _right = OptionalAnimatableDouble(widget.right, state: this);
-  late final _bottom = OptionalAnimatableDouble(widget.bottom, state: this);
-  late final _width = OptionalAnimatableDouble(widget.width, state: this);
-  late final _height = OptionalAnimatableDouble(widget.height, state: this);
+  late final _left = OptionalAnimatableDouble(widget.left, host: this);
+  late final _top = OptionalAnimatableDouble(widget.top, host: this);
+  late final _right = OptionalAnimatableDouble(widget.right, host: this);
+  late final _bottom = OptionalAnimatableDouble(widget.bottom, host: this);
+  late final _width = OptionalAnimatableDouble(widget.width, host: this);
+  late final _height = OptionalAnimatableDouble(widget.height, host: this);
 
   @override
   void updateAnimatableParameters() {
@@ -507,145 +501,149 @@ class APositionedDirectional extends StatelessWidget {
   }
 }
 
+typedef _SizedBoxAnimatableParameters = ({
+  AnimatableBoxConstraints additionalConstraints
+});
+
 /// Animatable version of [SizedBox].
 ///
 /// {@category Animatable Flutter widget}
-class ASizedBox extends StatefulWidget {
+class ASizedBox extends SizedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _SizedBoxAnimatableParameters> {
   /// Creates an animatable version of [SizedBox].
   const ASizedBox({
     super.key,
-    this.height,
-    this.width,
-    this.child,
+    super.height,
+    super.width,
+    super.child,
   });
 
   /// See [SizedBox.fromSize].
-  ASizedBox.fromSize({super.key, this.child, Size? size})
-      : height = size?.height,
-        width = size?.width;
+  ASizedBox.fromSize({super.key, super.child, super.size}) : super.fromSize();
 
   /// See [SizedBox.square].
-  const ASizedBox.square({super.key, this.child, double? dimension})
-      : height = dimension,
-        width = dimension;
+  const ASizedBox.square({super.key, super.child, super.dimension})
+      : super.square();
 
-  /// See [SizedBox.height].
-  final double? height;
-
-  /// See [SizedBox.width].
-  final double? width;
-
-  /// See [ProxyWidget.child].
-  final Widget? child;
-
-  @override
-  State<ASizedBox> createState() => _ASizedBoxState();
-}
-
-class _ASizedBoxState extends AnimatableState<ASizedBox> {
-  late final _height = OptionalAnimatableDouble(widget.height, state: this);
-  late final _width = OptionalAnimatableDouble(widget.width, state: this);
-
-  @override
-  void updateAnimatableParameters() {
-    _height.value = widget.height;
-    _width.value = widget.width;
+  BoxConstraints get _additionalConstraints {
+    return BoxConstraints.tightFor(width: width, height: height);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: _height.animatedValue,
-      width: _width.animatedValue,
-      child: widget.child,
+  _SizedBoxAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (
+      additionalConstraints: AnimatableBoxConstraints(
+        _additionalConstraints,
+        host: host,
+      ),
     );
   }
+
+  @override
+  void updateAnimatableParameters(_SizedBoxAnimatableParameters parameters) {
+    parameters.additionalConstraints.value = _additionalConstraints;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderConstrainedBox renderObject,
+    _SizedBoxAnimatableParameters parameters,
+  ) {
+    final (:additionalConstraints) = parameters;
+    renderObject.additionalConstraints = additionalConstraints.animatedValue;
+  }
 }
+
+typedef _SliverOpacityAnimatableParameters = ({AnimatableDouble opacity});
 
 /// Animatable version of [SliverOpacity].
 ///
 /// {@category Animatable Flutter widget}
-class ASliverOpacity extends StatefulWidget {
+class ASliverOpacity extends SliverOpacity
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _SliverOpacityAnimatableParameters> {
   /// Creates an animatable version of [SliverOpacity].
   const ASliverOpacity({
     super.key,
-    required this.opacity,
-    this.alwaysIncludeSemantics = false,
-    this.sliver,
+    required super.opacity,
+    super.alwaysIncludeSemantics,
+    super.sliver,
   });
 
-  /// See [SliverOpacity.opacity].
-  final double opacity;
-
-  /// See [SliverOpacity.alwaysIncludeSemantics].
-  final bool alwaysIncludeSemantics;
-
-  /// See [ProxyWidget.child].
-  final Widget? sliver;
-
   @override
-  State<ASliverOpacity> createState() => _ASliverOpacityState();
-}
-
-class _ASliverOpacityState extends AnimatableState<ASliverOpacity> {
-  late final _opacity = AnimatableDouble(widget.opacity, state: this);
-
-  @override
-  void updateAnimatableParameters() {
-    _opacity.value = widget.opacity;
+  _SliverOpacityAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (opacity: AnimatableDouble(opacity, host: host),);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SliverOpacity(
-      opacity: _opacity.animatedValue,
-      alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
-      sliver: widget.sliver,
-    );
+  void updateAnimatableParameters(
+    _SliverOpacityAnimatableParameters parameters,
+  ) {
+    parameters.opacity.value = opacity;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderSliverOpacity renderObject,
+    _SliverOpacityAnimatableParameters parameters,
+  ) {
+    final (:opacity) = parameters;
+    renderObject.opacity = opacity.animatedValue;
   }
 }
+
+typedef _SliverPaddingAnimatableParameters = ({
+  AnimatableEdgeInsetsGeometry padding
+});
 
 /// Animatable version of [SliverPadding].
 ///
 /// {@category Animatable Flutter widget}
-class ASliverPadding extends StatefulWidget {
+class ASliverPadding extends SliverPadding
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _SliverPaddingAnimatableParameters> {
   /// Creates an animatable version of [SliverPadding].
-  const ASliverPadding({super.key, required this.padding, this.sliver});
-
-  /// See [SliverPadding.padding].
-  final EdgeInsetsGeometry padding;
-
-  /// See [ProxyWidget.child].
-  final Widget? sliver;
+  const ASliverPadding({super.key, required super.padding, super.sliver});
 
   @override
-  State<ASliverPadding> createState() => _ASliverPaddingState();
-}
-
-class _ASliverPaddingState extends AnimatableState<ASliverPadding> {
-  late final _padding = AnimatableEdgeInsetsGeometry(
-    widget.padding,
-    state: this,
-  );
-
-  @override
-  void updateAnimatableParameters() {
-    _padding.value = widget.padding;
+  _SliverPaddingAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (padding: AnimatableEdgeInsetsGeometry(padding, host: host),);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: _padding.animatedValue,
-      sliver: widget.sliver,
-    );
+  void updateAnimatableParameters(
+    _SliverPaddingAnimatableParameters parameters,
+  ) {
+    parameters.padding.value = padding;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderSliverPadding renderObject,
+    _SliverPaddingAnimatableParameters parameters,
+  ) {
+    final (:padding) = parameters;
+    renderObject.padding = padding.animatedValue;
   }
 }
 
 /// Animatable version of [Transform].
 ///
 /// {@category Animatable Flutter widget}
-abstract class ATransform extends StatefulWidget {
+abstract class ATransform extends Transform {
   /// Creates an animatable version of [Transform].
   const factory ATransform({
     Key? key,
@@ -655,10 +653,10 @@ abstract class ATransform extends StatefulWidget {
     bool transformHitTests,
     FilterQuality? filterQuality,
     Widget? child,
-  }) = _ATransform;
+  }) = _MatrixTransform;
 
   /// Creates an animatable version of [Transform.rotate].
-  const factory ATransform.rotate({
+  factory ATransform.rotate({
     Key? key,
     required double angle,
     Offset? origin,
@@ -666,19 +664,19 @@ abstract class ATransform extends StatefulWidget {
     bool transformHitTests,
     FilterQuality? filterQuality,
     Widget? child,
-  }) = _ATransformRotate;
+  }) = _RotateTransform;
 
   /// Creates an animatable version of [Transform.translate].
-  const factory ATransform.translate({
+  factory ATransform.translate({
     Key? key,
     required Offset offset,
     bool transformHitTests,
     FilterQuality? filterQuality,
     Widget? child,
-  }) = _ATransformTranslate;
+  }) = _TranslateTransform;
 
   /// Creates an animatable version of [Transform.scale].
-  const factory ATransform.scale({
+  factory ATransform.scale({
     Key? key,
     double? scale,
     double? scaleX,
@@ -688,85 +686,82 @@ abstract class ATransform extends StatefulWidget {
     bool transformHitTests,
     FilterQuality? filterQuality,
     Widget? child,
-  }) = _ATransformScale;
+  }) = _ScaleTransform;
 
-  const ATransform._({super.key});
-
-  /// See [Transform.transform].
-  Matrix4 get transform;
-
-  /// See [Transform.origin].
-  Offset? get origin;
-
-  /// See [Transform.alignment].
-  AlignmentGeometry? get alignment;
-
-  /// See [Transform.transformHitTests].
-  bool get transformHitTests;
-
-  /// See [Transform.filterQuality].
-  FilterQuality? get filterQuality;
-
-  /// See [ProxyWidget.child].
-  Widget? get child;
+  const ATransform._({
+    super.key,
+    required super.transform,
+    super.origin,
+    super.alignment,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
+  }) : super();
 }
 
-abstract class _ATransformBase extends ATransform {
-  const _ATransformBase({
+typedef _TransformAnimatableParameters<T> = ({
+  T transformInput,
+  OptionalAnimatableObject<Offset> origin,
+  OptionalAnimatableAlignmentGeometry alignment,
+});
+
+/// Animatable version of [Transform].
+///
+/// {@category Animatable Flutter widget}
+abstract class _TransformBase<T> extends ATransform
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _TransformAnimatableParameters<T>> {
+  const _TransformBase._({
     super.key,
-    this.origin,
-    this.alignment,
-    this.transformHitTests = true,
-    this.filterQuality,
-    this.child,
+    required super.transform,
+    super.origin,
+    super.alignment,
+    super.transformHitTests,
+    super.filterQuality,
+    super.child,
   }) : super._();
 
-  @override
-  final Offset? origin;
+  T createTransformInputParameters(AnimatableParameterHost host);
+
+  void updateTransformInputParameters(T parameters);
+
+  Matrix4 buildTransform(T parameters);
+
+  bool useFilterQuality(T parameters);
 
   @override
-  final AlignmentGeometry? alignment;
-
-  @override
-  final bool transformHitTests;
-
-  @override
-  final FilterQuality? filterQuality;
-
-  @override
-  final Widget? child;
-}
-
-abstract class _ATransformBaseState<T extends _ATransformBase>
-    extends AnimatableState<T> {
-  late final _origin = OptionalAnimatableObject(
-    widget.origin,
-    state: this,
-  );
-  late final _alignment = OptionalAnimatableAlignmentGeometry(
-    widget.alignment,
-    state: this,
-  );
-
-  bool get _useFilterQuality;
-
-  Matrix4 get _transform;
-
-  @override
-  void updateAnimatableParameters() {
-    _origin.value = widget.origin;
-    _alignment.value = widget.alignment;
+  _TransformAnimatableParameters<T> createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (
+      transformInput: createTransformInputParameters(host),
+      origin: OptionalAnimatableObject(origin, host: host),
+      alignment: OptionalAnimatableAlignmentGeometry(alignment, host: host),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Transform(
-      transform: _transform,
-      alignment: _alignment.animatedValue,
-      transformHitTests: widget.transformHitTests,
-      filterQuality: _useFilterQuality ? widget.filterQuality : null,
-      child: widget.child,
-    );
+  void updateAnimatableParameters(
+    _TransformAnimatableParameters<T> parameters,
+  ) {
+    updateTransformInputParameters(parameters.transformInput);
+    parameters.origin.value = origin;
+    parameters.alignment.value = alignment;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderTransform renderObject,
+    _TransformAnimatableParameters<T> parameters,
+  ) {
+    final (:transformInput, :origin, :alignment) = parameters;
+    renderObject.transform = buildTransform(transformInput);
+    renderObject.origin = origin.animatedValue;
+    renderObject.alignment = alignment.animatedValue;
+    renderObject.filterQuality =
+        useFilterQuality(transformInput) ? filterQuality : null;
   }
 }
 
@@ -791,93 +786,74 @@ extension on AnimatableParameter<void> {
   }
 }
 
-abstract class _ASingleInputTransform<T> extends _ATransformBase {
-  const _ASingleInputTransform({
+class _MatrixTransform extends _TransformBase<AnimatableMatrix4> {
+  const _MatrixTransform({
     super.key,
-    required this.input,
+    required super.transform,
     super.origin,
     super.alignment,
     super.transformHitTests,
     super.filterQuality,
     super.child,
-  }) : super();
-
-  AnimatableParameter<T> createInputParameter(
-    T value, {
-    required AnimatableStateMixin state,
-  });
-
-  Matrix4 computeTransform(T input);
-
-  final T input;
+  }) : super._();
 
   @override
-  Matrix4 get transform => computeTransform(input);
+  AnimatableMatrix4 createTransformInputParameters(
+    AnimatableParameterHost host,
+  ) {
+    return AnimatableMatrix4(transform, host: host);
+  }
 
   @override
-  State<_ASingleInputTransform<T>> createState() => _ASingInputTransformState();
-}
-
-class _ASingInputTransformState<T>
-    extends _ATransformBaseState<_ASingleInputTransform<T>> {
-  late final _input = widget.createInputParameter(widget.input, state: this);
+  void updateTransformInputParameters(AnimatableMatrix4 parameters) {
+    parameters.value = transform;
+  }
 
   @override
-  bool get _useFilterQuality => _input.useFilterQuality;
+  Matrix4 buildTransform(AnimatableMatrix4 parameters) {
+    return parameters.animatedValue;
+  }
 
   @override
-  Matrix4 get _transform => widget.computeTransform(_input.animatedValue);
-
-  @override
-  void updateAnimatableParameters() {
-    super.updateAnimatableParameters();
-    _input.value = widget.input;
+  bool useFilterQuality(AnimatableMatrix4 parameters) {
+    return parameters.useFilterQuality;
   }
 }
 
-class _ATransform extends _ASingleInputTransform<Matrix4> {
-  const _ATransform({
+class _RotateTransform extends _TransformBase<AnimatableDouble> {
+  _RotateTransform({
     super.key,
-    required Matrix4 transform,
+    required this.angle,
     super.origin,
     super.alignment,
     super.transformHitTests,
     super.filterQuality,
     super.child,
-  }) : super(input: transform);
+  }) : super._(transform: _computeRotation(angle));
+
+  final double angle;
 
   @override
-  AnimatableParameter<Matrix4> createInputParameter(
-    Matrix4 value, {
-    required AnimatableStateMixin state,
-  }) =>
-      AnimatableMatrix4(value, state: state);
+  AnimatableDouble createTransformInputParameters(
+    AnimatableParameterHost host,
+  ) {
+    return AnimatableDouble(angle, host: host);
+  }
 
   @override
-  Matrix4 computeTransform(Matrix4 transform) => transform;
-}
-
-class _ATransformRotate extends _ASingleInputTransform<double> {
-  const _ATransformRotate({
-    super.key,
-    required double angle,
-    super.origin,
-    super.alignment = Alignment.center,
-    super.transformHitTests,
-    super.filterQuality,
-    super.child,
-  }) : super(input: angle);
+  void updateTransformInputParameters(AnimatableDouble parameters) {
+    parameters.value = angle;
+  }
 
   @override
-  AnimatableParameter<double> createInputParameter(
-    double value, {
-    required AnimatableStateMixin state,
-  }) =>
-      AnimatableDouble(value, state: state);
+  Matrix4 buildTransform(AnimatableDouble parameters) {
+    return _computeRotation(parameters.animatedValue);
+  }
 
   @override
-  Matrix4 computeTransform(double transformInput) =>
-      _computeRotation(transformInput);
+  bool useFilterQuality(AnimatableDouble parameters) {
+    return parameters.useFilterQuality;
+  }
 
   // Computes a rotation matrix for an angle in radians, attempting to keep
   // rotations at integral values for angles of 0, π/2, π, 3π/2.
@@ -915,29 +891,50 @@ class _ATransformRotate extends _ASingleInputTransform<double> {
   }
 }
 
-class _ATransformTranslate extends _ASingleInputTransform<Offset> {
-  const _ATransformTranslate({
+class _TranslateTransform extends _TransformBase<AnimatableObject<Offset>> {
+  _TranslateTransform({
     super.key,
-    required Offset offset,
+    required this.offset,
     super.transformHitTests,
     super.filterQuality,
     super.child,
-  }) : super(input: offset);
+  }) : super._(transform: Matrix4.translationValues(offset.dx, offset.dy, 0));
+
+  final Offset offset;
 
   @override
-  AnimatableParameter<Offset> createInputParameter(
-    Offset value, {
-    required AnimatableStateMixin state,
-  }) =>
-      AnimatableObject(value, state: state);
+  AnimatableObject<Offset> createTransformInputParameters(
+    AnimatableParameterHost host,
+  ) {
+    return AnimatableObject(offset, host: host);
+  }
 
   @override
-  Matrix4 computeTransform(Offset transformInput) =>
-      Matrix4.translationValues(transformInput.dx, transformInput.dy, 0);
+  void updateTransformInputParameters(AnimatableObject<Offset> parameters) {
+    parameters.value = offset;
+  }
+
+  @override
+  Matrix4 buildTransform(AnimatableObject<Offset> parameters) {
+    final offset = parameters.animatedValue;
+    return Matrix4.translationValues(offset.dx, offset.dy, 0);
+  }
+
+  @override
+  bool useFilterQuality(AnimatableObject<Offset> parameters) {
+    return parameters.useFilterQuality;
+  }
 }
 
-class _ATransformScale extends _ATransformBase {
-  const _ATransformScale({
+typedef _ScaleTransformAnimatableParameters = ({
+  OptionalAnimatableDouble scale,
+  OptionalAnimatableDouble scaleX,
+  OptionalAnimatableDouble scaleY,
+});
+
+class _ScaleTransform
+    extends _TransformBase<_ScaleTransformAnimatableParameters> {
+  _ScaleTransform({
     super.key,
     this.scale,
     this.scaleX,
@@ -955,13 +952,14 @@ class _ATransformScale extends _ATransformBase {
         assert(
           scale == null || (scaleX == null && scaleY == null),
           "If 'scale' is non-null then 'scaleX' and 'scaleY' must be left null",
-        );
+        ),
+        super._(transform: _computeScale(scale, scaleX, scaleY));
 
   final double? scale;
   final double? scaleX;
   final double? scaleY;
 
-  Matrix4 _computeScale(double? scale, double? scaleX, double? scaleY) =>
+  static Matrix4 _computeScale(double? scale, double? scaleX, double? scaleY) =>
       Matrix4.diagonal3Values(
         scale ?? scaleX ?? 1.0,
         scale ?? scaleY ?? 1.0,
@@ -969,35 +967,41 @@ class _ATransformScale extends _ATransformBase {
       );
 
   @override
-  Matrix4 get transform => _computeScale(scale, scaleX, scaleY);
+  _ScaleTransformAnimatableParameters createTransformInputParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (
+      scale: OptionalAnimatableDouble(scale, host: host),
+      scaleX: OptionalAnimatableDouble(scaleX, host: host),
+      scaleY: OptionalAnimatableDouble(scaleY, host: host),
+    );
+  }
 
   @override
-  State<StatefulWidget> createState() => _ATransformScaleState();
-}
-
-class _ATransformScaleState extends _ATransformBaseState<_ATransformScale> {
-  late final _scale = OptionalAnimatableDouble(widget.scale, state: this);
-  late final _scaleX = OptionalAnimatableDouble(widget.scaleX, state: this);
-  late final _scaleY = OptionalAnimatableDouble(widget.scaleY, state: this);
-
-  @override
-  bool get _useFilterQuality =>
-      _scale.useFilterQuality ||
-      _scaleX.useFilterQuality ||
-      _scaleY.useFilterQuality;
+  void updateTransformInputParameters(
+    _ScaleTransformAnimatableParameters parameters,
+  ) {
+    parameters
+      ..scale.value = scale
+      ..scaleX.value = scaleX
+      ..scaleY.value = scaleY;
+  }
 
   @override
-  Matrix4 get _transform => widget._computeScale(
-        _scale.animatedValue,
-        _scaleX.animatedValue,
-        _scaleY.animatedValue,
-      );
+  Matrix4 buildTransform(_ScaleTransformAnimatableParameters parameters) {
+    final (:scale, :scaleX, :scaleY) = parameters;
+    return _computeScale(
+      scale.animatedValue,
+      scaleX.animatedValue,
+      scaleY.animatedValue,
+    );
+  }
 
   @override
-  void updateAnimatableParameters() {
-    super.updateAnimatableParameters();
-    _scale.value = widget.scale;
-    _scaleX.value = widget.scaleX;
-    _scaleY.value = widget.scaleY;
+  bool useFilterQuality(_ScaleTransformAnimatableParameters parameters) {
+    final (:scale, :scaleX, :scaleY) = parameters;
+    return scale.useFilterQuality ||
+        scaleX.useFilterQuality ||
+        scaleY.useFilterQuality;
   }
 }

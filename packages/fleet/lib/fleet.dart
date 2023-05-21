@@ -11,7 +11,17 @@ export 'src/animatable_flutter_widgets.dart'
         ASliverOpacity,
         ASliverPadding,
         ATransform;
-export 'src/animatable_widget.dart'
+export 'src/animatable_render_object_widget.dart'
+    show
+        AnimatableRenderObjectWidget,
+        AnimatableSingleChildRenderObjectWidgetMixin;
+export 'src/animatable_widget_state.dart'
+    show AnimatableState, AnimatableStateMixin;
+export 'src/animate.dart' show Animated, withAnimation, AnimatingStateMixin;
+export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
+export 'src/common.dart' show Block;
+export 'src/duration.dart' show DurationFromIntExtension;
+export 'src/parameter.dart'
     show
         AnimatableAlignmentGeometry,
         AnimatableBoxConstraints,
@@ -25,8 +35,6 @@ export 'src/animatable_widget.dart'
         AnimatableParameter,
         AnimatableRect,
         AnimatableSize,
-        AnimatableState,
-        AnimatableStateMixin,
         OptionalAnimatableAlignmentGeometry,
         OptionalAnimatableBoxConstraints,
         OptionalAnimatableColor,
@@ -37,9 +45,7 @@ export 'src/animatable_widget.dart'
         OptionalAnimatableMatrix4,
         OptionalAnimatableObject,
         OptionalAnimatableRect,
-        OptionalAnimatableSize;
-export 'src/animate.dart' show Animated, withAnimation, AnimatingStateMixin;
-export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
-export 'src/common.dart' show Block;
-export 'src/duration.dart' show DurationFromIntExtension;
+        OptionalAnimatableSize,
+        AnimatableParameterHostMixin,
+        AnimatableParameterHost;
 export 'src/widget_extension.dart' show FleetWidgetExtension;
