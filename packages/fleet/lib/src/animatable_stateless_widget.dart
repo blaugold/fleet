@@ -43,7 +43,7 @@ class _AnimatableStatelessElement<T extends Object> extends ComponentElement
   BuildContext get context => this;
 
   @override
-  void update(covariant StatelessWidget newWidget) {
+  void update(covariant AnimatableStatelessWidget<void> newWidget) {
     var animatableParameters = _animatableParameters;
     if (animatableParameters == null) {
       if (Transaction.of(this) != null) {
