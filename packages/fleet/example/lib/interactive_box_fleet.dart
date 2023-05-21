@@ -52,21 +52,11 @@ class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
             _color = _distanceColorTween.begin!;
           });
         },
-        child: AAlign(
-          alignment: _alignment,
-          child: SizedBox.square(
-            dimension: 400,
-            child: AColoredBox(
-              color: _color,
-              child: const Center(
-                child: Text(
-                  'Drag me!',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: const Text('Drag me!', style: TextStyle(color: Colors.white))
+            .center()
+            .boxColor(_color)
+            .square(400)
+            .align(_alignment),
       ),
     );
   }

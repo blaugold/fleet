@@ -30,55 +30,40 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SegmentedButton<Observation>(
-              segments: const [
-                ButtonSegment(
-                  value: Observation.heartRate,
-                  label: Text('Heart Rate'),
-                ),
-                ButtonSegment(
-                  value: Observation.pace,
-                  label: Text('Pace'),
-                ),
-              ],
-              selected: {_observation},
-              onSelectionChanged: (selection) {
-                setState(() {
-                  _observation = selection.single;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: 400,
-              height: 200,
-              child: HikeGraph(
-                hike: hike,
-                observation: _observation,
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SegmentedButton<Observation>(
+            segments: const [
+              ButtonSegment(
+                value: Observation.heartRate,
+                label: Text('Heart Rate'),
               ),
-            )
-          ],
-        ),
-      ),
+              ButtonSegment(
+                value: Observation.pace,
+                label: Text('Pace'),
+              ),
+            ],
+            selected: {_observation},
+            onSelectionChanged: (selection) {
+              setState(() {
+                _observation = selection.single;
+              });
+            },
+          ),
+          const SizedBox(height: 10),
+          HikeGraph(
+            hike: hike,
+            observation: _observation,
+          ).size(width: 400, height: 200)
+        ],
+      ).center(),
     );
   }
 }
 
 AnimationSpec ripple(int index) {
   return Curves.bounceOut.animation().delay(Duration(milliseconds: 30 * index));
-}
-
-extension on Widget {
-  Widget animation(AnimationSpec animation) {
-    return Animated(
-      animation: animation,
-      child: this,
-    );
-  }
 }
 
 class HikeGraph extends StatelessWidget {
@@ -144,22 +129,14 @@ class GraphCapsule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final relativeRange = range.relativeTo(overallRange);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AContainer(
-          height: height * relativeRange.magnitude,
-          width: 24,
-          decoration: ShapeDecoration(
-            shape: const StadiumBorder(),
-            color: color,
-          ),
-        ),
-        ASizedBox(
-          height: height * relativeRange.min,
-        )
-      ],
-    );
+    return AContainer(
+      height: height * relativeRange.magnitude,
+      width: 24,
+      decoration: ShapeDecoration(
+        shape: const StadiumBorder(),
+        color: color,
+      ),
+    ).translate(Offset(0, -height * relativeRange.min));
   }
 }
 

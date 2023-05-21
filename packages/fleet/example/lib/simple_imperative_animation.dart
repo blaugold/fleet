@@ -49,32 +49,26 @@ class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ASizedBox.fromSize(
-          size: _size,
-          child: AColoredBox(
-            color: _color,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: _collapse,
-                    style: TextButton.styleFrom(foregroundColor: Colors.white),
-                    child: const Text('Collapsed'),
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    style: TextButton.styleFrom(foregroundColor: Colors.white),
-                    onPressed: _expand,
-                    child: const Text('Expanded'),
-                  ),
-                ],
-              ),
-            ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextButton(
+            onPressed: _collapse,
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
+            child: const Text('Collapsed'),
           ),
-        ),
-      ),
+          const SizedBox(height: 16),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
+            onPressed: _expand,
+            child: const Text('Expanded'),
+          ),
+        ],
+      ) //
+          .center()
+          .boxColor(_color)
+          .sizeWith(_size)
+          .center(),
     );
   }
 }
