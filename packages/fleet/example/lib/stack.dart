@@ -61,25 +61,15 @@ class StackElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = 500.0 - (index * 70);
-    return Animated(
-      animation: _buildAnimation(),
-      value: left,
-      child: AAlign(
-        alignment: Alignment(left ? -.5 : .5, 0),
-        child: SizedBox.square(
-          dimension: 500,
-          child: Center(
-            child: SizedBox.square(
-              dimension: dimension,
-              child: Material(
-                elevation: 50,
-                color: _buildColor(),
-                borderRadius: BorderRadius.circular(dimension / 20),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    return Material(
+      elevation: 50,
+      color: _buildColor(),
+      borderRadius: BorderRadius.circular(dimension / 20),
+    )
+        .square(dimension)
+        .center()
+        .square(500)
+        .align(Alignment(left ? -.5 : .5, 0))
+        .animation(_buildAnimation(), value: left);
   }
 }

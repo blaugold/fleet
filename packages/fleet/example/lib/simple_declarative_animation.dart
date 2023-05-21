@@ -30,25 +30,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Animated(
-          animation: Curves.ease.animation(1.s),
-          value: _expanded,
-          child: ASizedBox.fromSize(
-            size: _expanded ? const Size.square(400) : const Size.square(200),
-            child: AColoredBox(
-              color: _expanded ? Colors.green : Colors.blue,
-              child: Center(
-                child: TextButton(
-                  onPressed: () => setState(() => _expanded = !_expanded),
-                  style: TextButton.styleFrom(foregroundColor: Colors.white),
-                  child: const Text('Toggle'),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+      body: TextButton(
+        onPressed: () => setState(() => _expanded = !_expanded),
+        style: TextButton.styleFrom(foregroundColor: Colors.white),
+        child: const Text('Toggle'),
+      )
+          .center()
+          .boxColor(_expanded ? Colors.green : Colors.blue)
+          .sizeWith(_expanded ? const Size.square(400) : const Size.square(200))
+          .animation(Curves.ease.animation(1.s), value: _expanded)
+          .center(),
     );
   }
 }

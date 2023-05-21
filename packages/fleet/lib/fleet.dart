@@ -42,3 +42,4 @@ export 'src/animate.dart' show Animated, withAnimation, AnimatingStateMixin;
 export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
 export 'src/common.dart' show Block;
 export 'src/duration.dart' show DurationFromIntExtension;
+export 'src/widget_extension.dart' show FleetWidgetExtension;

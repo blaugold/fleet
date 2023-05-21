@@ -81,21 +81,11 @@ class _MyHomePageState extends State<MyHomePage>
           _colorTween.begin = _color;
           _controller.forward(from: 0);
         },
-        child: Align(
-          alignment: _alignment,
-          child: SizedBox.square(
-            dimension: 400,
-            child: ColoredBox(
-              color: _color,
-              child: const Center(
-                child: Text(
-                  'Drag me!',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: const Text('Drag me!', style: TextStyle(color: Colors.white))
+            .center()
+            .boxColor(_color)
+            .square(400)
+            .align(_alignment),
       ),
     );
   }
