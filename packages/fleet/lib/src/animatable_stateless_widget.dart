@@ -19,10 +19,10 @@ abstract class AnimatableStatelessWidget<T extends Object> extends Widget {
 
   /// Builds this widget with the [AnimatableParameter]s.
   ///
-  /// Only if an animation has been applied will [parameters] be non-null.
-  /// If [parameters] is null, the widget should be built without animation.
-  /// If [parameters] is non-null, the widget should use
-  /// the [AnimatableParameter.animatedValue]s.
+  /// Only if an animation has been applied will [parameters] be non-null. If
+  /// [parameters] is null, the widget should be built without animation. If
+  /// [parameters] is non-null, the widget should use the
+  /// [AnimatableParameter.animatedValue]s.
   Widget build(BuildContext context, T? parameters);
 
   @override
