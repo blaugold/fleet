@@ -55,7 +55,7 @@ class _AnimatableStatelessElement<T extends Object> extends ComponentElement
     super.update(newWidget);
 
     if (animatableParameters != null) {
-      widget.updateAnimatableParameters(animatableParameters);
+      applyUpdateToAnimatableParameters();
     }
 
     rebuild(force: true);
