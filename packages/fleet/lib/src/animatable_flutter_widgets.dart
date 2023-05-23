@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import 'animatable_render_object_widget.dart';
-import 'animatable_widget_state.dart';
+import 'animatable_stateless_widget.dart';
 import 'parameter.dart';
 
 typedef _AlignAnimatableParameters = ({
@@ -67,7 +67,7 @@ class AAlign extends Align
 /// Animatable version of [ColoredBox].
 ///
 /// {@category Animatable Flutter widget}
-class AColoredBox extends StatefulWidget {
+class AColoredBox extends AnimatableStatelessWidget<AnimatableColor> {
   /// Creates an animatable version of [ColoredBox].
   const AColoredBox({super.key, required this.color, this.child});
 
@@ -78,30 +78,41 @@ class AColoredBox extends StatefulWidget {
   final Widget? child;
 
   @override
-  State<AColoredBox> createState() => _AColoredBoxState();
-}
-
-class _AColoredBoxState extends AnimatableState<AColoredBox> {
-  late final _color = AnimatableColor(widget.color, host: this);
-
-  @override
-  void updateAnimatableParameters() {
-    _color.value = widget.color;
+  AnimatableColor createAnimatableParameters(AnimatableParameterHost host) {
+    return AnimatableColor(color, host: host);
   }
 
   @override
-  Widget build(BuildContext context) {
+  void updateAnimatableParameters(AnimatableColor parameters) {
+    parameters.value = color;
+  }
+
+  @override
+  Widget build(BuildContext context, AnimatableColor? parameters) {
     return ColoredBox(
-      color: _color.animatedValue,
-      child: widget.child,
+      color: parameters?.animatedValue ?? color,
+      child: child,
     );
   }
 }
 
+typedef _ContainerAnimatableParameters = ({
+  OptionalAnimatableAlignmentGeometry alignment,
+  OptionalAnimatableEdgeInsetsGeometry padding,
+  OptionalAnimatableColor color,
+  OptionalAnimatableDecoration decoration,
+  OptionalAnimatableDecoration foregroundDecoration,
+  OptionalAnimatableBoxConstraints constraints,
+  OptionalAnimatableEdgeInsetsGeometry margin,
+  OptionalAnimatableMatrix4 transform,
+  OptionalAnimatableAlignmentGeometry transformAlignment,
+});
+
 /// Animatable version of [Container].
 ///
 /// {@category Animatable Flutter widget}
-class AContainer extends StatefulWidget {
+class AContainer
+    extends AnimatableStatelessWidget<_ContainerAnimatableParameters> {
   /// Creates an animatable version of [Container].
   AContainer({
     super.key,
@@ -157,74 +168,57 @@ class AContainer extends StatefulWidget {
   final Widget? child;
 
   @override
-  State<AContainer> createState() => _AContainerState();
-}
-
-class _AContainerState extends AnimatableState<AContainer> {
-  late final _alignment = OptionalAnimatableAlignmentGeometry(
-    widget.alignment,
-    host: this,
-  );
-  late final _padding = OptionalAnimatableEdgeInsetsGeometry(
-    widget.padding,
-    host: this,
-  );
-  late final _color = OptionalAnimatableColor(
-    widget.color,
-    host: this,
-  );
-  late final _decoration = OptionalAnimatableDecoration(
-    widget.decoration,
-    host: this,
-  );
-  late final _foregroundDecoration = OptionalAnimatableDecoration(
-    widget.foregroundDecoration,
-    host: this,
-  );
-  late final _constraints = OptionalAnimatableBoxConstraints(
-    widget.constraints,
-    host: this,
-  );
-  late final _margin = OptionalAnimatableEdgeInsetsGeometry(
-    widget.margin,
-    host: this,
-  );
-  late final _transform = OptionalAnimatableMatrix4(
-    widget.transform,
-    host: this,
-  );
-  late final _transformAlignment = OptionalAnimatableAlignmentGeometry(
-    widget.transformAlignment,
-    host: this,
-  );
-
-  @override
-  void updateAnimatableParameters() {
-    _alignment.value = widget.alignment;
-    _padding.value = widget.padding;
-    _color.value = widget.color;
-    _decoration.value = widget.decoration;
-    _foregroundDecoration.value = widget.foregroundDecoration;
-    _constraints.value = widget.constraints;
-    _margin.value = widget.margin;
-    _transform.value = widget.transform;
-    _transformAlignment.value = widget.transformAlignment;
+  _ContainerAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: OptionalAnimatableAlignmentGeometry(alignment, host: host),
+      padding: OptionalAnimatableEdgeInsetsGeometry(padding, host: host),
+      color: OptionalAnimatableColor(color, host: host),
+      decoration: OptionalAnimatableDecoration(decoration, host: host),
+      foregroundDecoration:
+          OptionalAnimatableDecoration(foregroundDecoration, host: host),
+      constraints: OptionalAnimatableBoxConstraints(constraints, host: host),
+      margin: OptionalAnimatableEdgeInsetsGeometry(margin, host: host),
+      transform: OptionalAnimatableMatrix4(transform, host: host),
+      transformAlignment:
+          OptionalAnimatableAlignmentGeometry(transformAlignment, host: host),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  void updateAnimatableParameters(_ContainerAnimatableParameters parameters) {
+    parameters
+      ..alignment.value = alignment
+      ..padding.value = padding
+      ..color.value = color
+      ..decoration.value = decoration
+      ..foregroundDecoration.value = foregroundDecoration
+      ..constraints.value = constraints
+      ..margin.value = margin
+      ..transform.value = transform
+      ..transformAlignment.value = transformAlignment;
+  }
+
+  @override
+  Widget build(
+    BuildContext context,
+    _ContainerAnimatableParameters? parameters,
+  ) {
     return Container(
-      alignment: _alignment.animatedValue,
-      padding: _padding.animatedValue,
-      color: _color.animatedValue,
-      decoration: _decoration.animatedValue,
-      foregroundDecoration: _foregroundDecoration.animatedValue,
-      constraints: _constraints.animatedValue,
-      margin: _margin.animatedValue,
-      transform: _transform.animatedValue,
-      transformAlignment: _transformAlignment.animatedValue,
-      clipBehavior: widget.clipBehavior,
-      child: widget.child,
+      alignment: parameters?.alignment.animatedValue ?? alignment,
+      padding: parameters?.padding.animatedValue ?? padding,
+      color: parameters?.color.animatedValue ?? color,
+      decoration: parameters?.decoration.animatedValue ?? decoration,
+      foregroundDecoration: parameters?.foregroundDecoration.animatedValue ??
+          foregroundDecoration,
+      constraints: parameters?.constraints.animatedValue ?? constraints,
+      margin: parameters?.margin.animatedValue ?? margin,
+      transform: parameters?.transform.animatedValue ?? transform,
+      transformAlignment:
+          parameters?.transformAlignment.animatedValue ?? transformAlignment,
+      clipBehavior: clipBehavior,
+      child: child,
     );
   }
 }
@@ -304,10 +298,20 @@ class APadding extends Padding
   }
 }
 
+typedef _PositionedAnimatableParameters = ({
+  OptionalAnimatableDouble left,
+  OptionalAnimatableDouble top,
+  OptionalAnimatableDouble right,
+  OptionalAnimatableDouble bottom,
+  OptionalAnimatableDouble width,
+  OptionalAnimatableDouble height,
+});
+
 /// Animatable version of [Positioned].
 ///
 /// {@category Animatable Flutter widget}
-class APositioned extends StatefulWidget {
+class APositioned
+    extends AnimatableStatelessWidget<_PositionedAnimatableParameters> {
   /// Creates an animatable version of [Positioned].
   const APositioned({
     super.key,
@@ -414,37 +418,43 @@ class APositioned extends StatefulWidget {
   final Widget child;
 
   @override
-  State<APositioned> createState() => _APositionedState();
-}
-
-class _APositionedState extends AnimatableState<APositioned> {
-  late final _left = OptionalAnimatableDouble(widget.left, host: this);
-  late final _top = OptionalAnimatableDouble(widget.top, host: this);
-  late final _right = OptionalAnimatableDouble(widget.right, host: this);
-  late final _bottom = OptionalAnimatableDouble(widget.bottom, host: this);
-  late final _width = OptionalAnimatableDouble(widget.width, host: this);
-  late final _height = OptionalAnimatableDouble(widget.height, host: this);
-
-  @override
-  void updateAnimatableParameters() {
-    _left.value = widget.left;
-    _top.value = widget.top;
-    _right.value = widget.right;
-    _bottom.value = widget.bottom;
-    _width.value = widget.width;
-    _height.value = widget.height;
+  _PositionedAnimatableParameters createAnimatableParameters(
+    AnimatableParameterHost host,
+  ) {
+    return (
+      left: OptionalAnimatableDouble(left, host: host),
+      top: OptionalAnimatableDouble(top, host: host),
+      right: OptionalAnimatableDouble(right, host: host),
+      bottom: OptionalAnimatableDouble(bottom, host: host),
+      width: OptionalAnimatableDouble(width, host: host),
+      height: OptionalAnimatableDouble(height, host: host),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  void updateAnimatableParameters(_PositionedAnimatableParameters parameters) {
+    parameters
+      ..left.value = left
+      ..top.value = top
+      ..right.value = right
+      ..bottom.value = bottom
+      ..width.value = width
+      ..height.value = height;
+  }
+
+  @override
+  Widget build(
+    BuildContext context,
+    _PositionedAnimatableParameters? parameters,
+  ) {
     return Positioned(
-      left: _left.animatedValue,
-      top: _top.animatedValue,
-      right: _right.animatedValue,
-      bottom: _bottom.animatedValue,
-      width: _width.animatedValue,
-      height: _height.animatedValue,
-      child: widget.child,
+      left: parameters?.left.animatedValue ?? left,
+      top: parameters?.top.animatedValue ?? top,
+      right: parameters?.right.animatedValue ?? right,
+      bottom: parameters?.bottom.animatedValue ?? bottom,
+      width: parameters?.width.animatedValue ?? width,
+      height: parameters?.height.animatedValue ?? height,
+      child: child,
     );
   }
 }
