@@ -33,6 +33,7 @@ class AAlign extends Align
 
   @override
   _AlignAnimatableParameters createAnimatableParameters(
+    covariant RenderPositionedBox renderObject,
     AnimatableParameterHost host,
   ) {
     return (
@@ -43,7 +44,10 @@ class AAlign extends Align
   }
 
   @override
-  void updateAnimatableParameters(_AlignAnimatableParameters parameters) {
+  void updateAnimatableParameters(
+    BuildContext context,
+    _AlignAnimatableParameters parameters,
+  ) {
     parameters
       ..alignment.value = alignment
       ..widthFactor.value = widthFactor
@@ -242,13 +246,17 @@ class AOpacity extends Opacity
 
   @override
   _OpacityAnimatableParameters createAnimatableParameters(
+    covariant RenderOpacity renderObject,
     AnimatableParameterHost host,
   ) {
     return (opacity: AnimatableDouble(opacity, host: host));
   }
 
   @override
-  void updateAnimatableParameters(_OpacityAnimatableParameters parameters) {
+  void updateAnimatableParameters(
+    BuildContext context,
+    _OpacityAnimatableParameters parameters,
+  ) {
     parameters.opacity.value = opacity;
   }
 
@@ -277,13 +285,17 @@ class APadding extends Padding
 
   @override
   _PaddingAnimatableParameters createAnimatableParameters(
+    covariant RenderPadding renderObject,
     AnimatableParameterHost host,
   ) {
     return (padding: AnimatableEdgeInsetsGeometry(padding, host: host),);
   }
 
   @override
-  void updateAnimatableParameters(_PaddingAnimatableParameters parameters) {
+  void updateAnimatableParameters(
+    BuildContext context,
+    _PaddingAnimatableParameters parameters,
+  ) {
     parameters.padding.value = padding;
   }
 
@@ -543,6 +555,7 @@ class ASizedBox extends SizedBox
 
   @override
   _SizedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderConstrainedBox renderObject,
     AnimatableParameterHost host,
   ) {
     return (
@@ -554,7 +567,10 @@ class ASizedBox extends SizedBox
   }
 
   @override
-  void updateAnimatableParameters(_SizedBoxAnimatableParameters parameters) {
+  void updateAnimatableParameters(
+    BuildContext context,
+    _SizedBoxAnimatableParameters parameters,
+  ) {
     parameters.additionalConstraints.value = _additionalConstraints;
   }
 
@@ -588,6 +604,7 @@ class ASliverOpacity extends SliverOpacity
 
   @override
   _SliverOpacityAnimatableParameters createAnimatableParameters(
+    covariant RenderSliverOpacity renderObject,
     AnimatableParameterHost host,
   ) {
     return (opacity: AnimatableDouble(opacity, host: host),);
@@ -595,6 +612,7 @@ class ASliverOpacity extends SliverOpacity
 
   @override
   void updateAnimatableParameters(
+    BuildContext context,
     _SliverOpacityAnimatableParameters parameters,
   ) {
     parameters.opacity.value = opacity;
@@ -627,6 +645,7 @@ class ASliverPadding extends SliverPadding
 
   @override
   _SliverPaddingAnimatableParameters createAnimatableParameters(
+    covariant RenderSliverPadding renderObject,
     AnimatableParameterHost host,
   ) {
     return (padding: AnimatableEdgeInsetsGeometry(padding, host: host),);
@@ -634,6 +653,7 @@ class ASliverPadding extends SliverPadding
 
   @override
   void updateAnimatableParameters(
+    BuildContext context,
     _SliverPaddingAnimatableParameters parameters,
   ) {
     parameters.padding.value = padding;
@@ -742,6 +762,7 @@ abstract class _TransformBase<T> extends ATransform
 
   @override
   _TransformAnimatableParameters<T> createAnimatableParameters(
+    covariant RenderTransform renderObject,
     AnimatableParameterHost host,
   ) {
     return (
@@ -753,6 +774,7 @@ abstract class _TransformBase<T> extends ATransform
 
   @override
   void updateAnimatableParameters(
+    BuildContext context,
     _TransformAnimatableParameters<T> parameters,
   ) {
     updateTransformInputParameters(parameters.transformInput);
