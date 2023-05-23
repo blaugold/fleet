@@ -14,12 +14,15 @@ abstract class AnimatableRenderObjectWidget<T extends Object>
   const AnimatableRenderObjectWidget({super.key});
 
   /// Creates the [AnimatableParameter]s for this widget.
-  T createAnimatableParameters(AnimatableParameterHost host);
+  T createAnimatableParameters(
+    covariant RenderObject renderObject,
+    AnimatableParameterHost host,
+  );
 
   /// Updates the [AnimatableParameter]s with the new values.
   ///
   /// This is called when the widget is rebuilt.
-  void updateAnimatableParameters(T parameters);
+  void updateAnimatableParameters(BuildContext context, T parameters);
 
   /// Updates the [RenderObject] with the current
   /// [AnimatableParameter.animatedValue]s.
@@ -45,22 +48,32 @@ mixin _AnimatableRenderObjectElementMixin<T extends Object>
   void update(covariant RenderObjectWidget newWidget) {
     if (_animatableParameters == null) {
       if (Transaction.of(this) != null) {
-        _animatableParameters = widget.createAnimatableParameters(this);
+        _animatableParameters =
+            widget.createAnimatableParameters(renderObject, this);
       }
     }
 
     super.update(newWidget);
 
-    final animatableParameters = _animatableParameters;
-    if (animatableParameters != null) {
-      applyUpdateToAnimatableParameters();
-      _updateRenderObjectWithAnimatableParameters();
-    }
+    // TODO: It's inefficient to do this now, after the render object has
+    // already been updated by updateRenderObject. But there currently is no
+    // other way to do this.
+    _applyUpdateToAnimatableParameters();
+  }
+
+  @override
+  void performRebuild() {
+    super.performRebuild();
+
+    // TODO: It's inefficient to do this now, after the render object has
+    // already been updated by updateRenderObject. But there currently is no
+    // other way to do this.
+    _applyUpdateToAnimatableParameters();
   }
 
   @override
   void updateAnimatableParameters() {
-    widget.updateAnimatableParameters(_animatableParameters!);
+    widget.updateAnimatableParameters(this, _animatableParameters!);
   }
 
   @override
@@ -86,6 +99,14 @@ mixin _AnimatableRenderObjectElementMixin<T extends Object>
       renderObject,
       _animatableParameters!,
     );
+  }
+
+  void _applyUpdateToAnimatableParameters() {
+    final animatableParameters = _animatableParameters;
+    if (animatableParameters != null) {
+      applyUpdateToAnimatableParameters();
+      _updateRenderObjectWithAnimatableParameters();
+    }
   }
 }
 
