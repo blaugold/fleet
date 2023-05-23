@@ -80,7 +80,7 @@ extension FleetWidgetExtension on Widget {
     );
   }
 
-  /// Adds an equal [amount] of padding to specific [edges] of this view.
+  /// Adds an equal [amount] of padding to specific [edges] of this widget.
   @widgetFactory
   Widget padding([Set<Edge> edges = Edge.all, double? amount]) {
     return EdgePadding(
