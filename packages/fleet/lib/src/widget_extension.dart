@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'animatable_flutter_widgets.dart';
 import 'animate.dart';
 import 'animation.dart';
+import 'widgets/edge_padding.dart';
 
 /// Extension-based API for widgets provided by Fleet.
 extension FleetWidgetExtension on Widget {
@@ -79,9 +80,19 @@ extension FleetWidgetExtension on Widget {
     );
   }
 
+  /// Adds an equal [amount] of padding to specific [edges] of this view.
+  @widgetFactory
+  Widget padding([Set<Edge> edges = Edge.all, double? amount]) {
+    return EdgePadding(
+      edges: edges,
+      amount: amount,
+      child: this,
+    );
+  }
+
   /// Adds [padding] around this widget.
   @widgetFactory
-  Widget padding(EdgeInsets padding) {
+  Widget paddingWith(EdgeInsetsGeometry padding) {
     return APadding(
       padding: padding,
       child: this,

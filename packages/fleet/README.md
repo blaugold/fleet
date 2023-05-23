@@ -150,6 +150,10 @@ for animating with Fleet:
 - ASliverPadding
 - ATransform
 
+The following provided widgets are specific to Fleet:
+
+- EdgePadding
+
 ---
 
 **Gabriel Terwesten** &bullet; **GitHub**
