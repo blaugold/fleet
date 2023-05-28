@@ -97,7 +97,7 @@ final class EdgePadding extends SingleChildRenderObjectWidget
   final double? amount;
 
   EdgeInsetsGeometry _resolvePadding(BuildContext context) =>
-      edges.toEdgeInsets(defaultPadding.of(context));
+      edges.toEdgeInsets(amount ?? defaultPadding.of(context));
 
   @override
   RenderObject createRenderObject(BuildContext context) {

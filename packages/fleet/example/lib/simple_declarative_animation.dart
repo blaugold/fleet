@@ -35,10 +35,13 @@ class _MyHomePageState extends State<MyHomePage> {
         style: TextButton.styleFrom(foregroundColor: Colors.white),
         child: const Text('Toggle'),
       )
+          .padding(Edges.all, _expanded ? null : 32)
+          .animation(Curves.easeInOutCubic.animation(1.s))
+          .boxColor(Colors.orange)
           .center()
           .boxColor(_expanded ? Colors.green : Colors.blue)
           .sizeWith(_expanded ? const Size.square(400) : const Size.square(200))
-          .animation(Curves.ease.animation(1.s), value: _expanded)
+          .animation(Curves.ease.animation(1.s))
           .center(),
     );
   }
