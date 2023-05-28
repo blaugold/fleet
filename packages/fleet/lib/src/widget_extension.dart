@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'animatable_flutter_widgets.dart';
 import 'animate.dart';
 import 'animation.dart';
-import 'widgets/edge_padding.dart';
 
 /// Extension-based API for widgets provided by Fleet.
 extension FleetWidgetExtension on Widget {
@@ -76,16 +75,6 @@ extension FleetWidgetExtension on Widget {
   Widget square(double dimension) {
     return ASizedBox.square(
       dimension: dimension,
-      child: this,
-    );
-  }
-
-  /// Adds an equal [amount] of padding to specific [edges] of this widget.
-  @widgetFactory
-  Widget padding([Set<Edge> edges = Edge.all, double? amount]) {
-    return EdgePadding(
-      edges: edges,
-      amount: amount,
       child: this,
     );
   }

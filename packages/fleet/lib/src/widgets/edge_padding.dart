@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animatable_render_object_widget.dart';
+import '../environment.dart';
 import '../parameter.dart';
 
 /// An edge of a rectangle.
@@ -19,27 +20,30 @@ enum Edge {
 
   /// The bottom edge.
   bottom;
+}
 
+/// Combinations of [Edge]s.
+abstract final class Edges {
   /// Set of all edges.
-  static const all = {top, bottom, start, end};
+  static const all = {Edge.top, Edge.bottom, Edge.start, Edge.end};
 
   /// Set of all edges along the vertical axis.
-  static const vertical = {top, bottom};
+  static const vertical = {Edge.top, Edge.bottom};
 
   /// Set of all edges along the horizontal axis.
-  static const horizontal = {start, end};
+  static const horizontal = {Edge.start, Edge.end};
 
-  /// Set that contains only the [start] edge.
-  static const onlyStart = {start};
+  /// Set that contains only the [Edge.start] edge.
+  static const start = {Edge.start};
 
-  /// Set that contains only the [end] edge.
-  static const onlyEnd = {end};
+  /// Set that contains only the [Edge.end] edge.
+  static const end = {Edge.end};
 
-  /// Set that contains only the [top] edge.
-  static const onlyTop = {top};
+  /// Set that contains only the [Edge.top] edge.
+  static const top = {Edge.top};
 
-  /// Set that contains only the [bottom] edge.
-  static const onlyBottom = {bottom};
+  /// Set that contains only the [Edge.bottom] edge.
+  static const bottom = {Edge.bottom};
 }
 
 extension on Set<Edge> {
@@ -53,46 +57,35 @@ extension on Set<Edge> {
   }
 }
 
-/// Widget that provides a default amount of padding to use in [EdgePadding]s
-/// below it.
-class DefaultPadding extends InheritedWidget {
-  /// Creates a [DefaultPadding] widget.
-  const DefaultPadding({
-    super.key,
-    required this.amount,
-    required super.child,
-  });
-
-  // TODO: Maybe make this platform specific?
-  static const _defaultAmount = 8.0;
-
-  /// The default amount of padding to use in [EdgePadding] at the given
-  /// [context].
-  static double of(BuildContext context) {
-    final amount =
-        context.dependOnInheritedWidgetOfExactType<DefaultPadding>()?.amount;
-    return amount ?? _defaultAmount;
-  }
-
-  /// The default amount of padding to use in [EdgePadding]s below this widget.
-  final double amount;
+final class _DefaultPaddingKey
+    extends EnvironmentKey<double, _DefaultPaddingKey> {
+  const _DefaultPaddingKey();
 
   @override
-  bool updateShouldNotify(covariant DefaultPadding oldWidget) =>
-      amount != oldWidget.amount;
+  double defaultValue(BuildContext context) => 8;
 }
+
+/// [EnvironmentKey] for the default amount of padding to use in [EdgePadding].
+///
+/// {@template fleet.defaultPadding}
+/// [defaultPadding] is used by [EdgePadding] to determine the amount of padding
+/// to add when [EdgePadding.amount] is `null`.
+///
+/// The default value is `8`.
+/// {@endtemplate}
+const defaultPadding = _DefaultPaddingKey();
 
 typedef _PaddingAnimatableParameters = ({AnimatableEdgeInsetsGeometry padding});
 
 /// Adds an equal [amount] of padding to specific [edges] around [child].
-class EdgePadding extends SingleChildRenderObjectWidget
+final class EdgePadding extends SingleChildRenderObjectWidget
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _PaddingAnimatableParameters> {
   /// Creates an [EdgePadding] widget.
   const EdgePadding({
     super.key,
-    this.edges = Edge.all,
+    this.edges = Edges.all,
     this.amount,
     super.child,
   });
@@ -103,9 +96,8 @@ class EdgePadding extends SingleChildRenderObjectWidget
   /// The amount of padding to add.
   final double? amount;
 
-  EdgeInsetsGeometry _resolvePadding(BuildContext context) {
-    return edges.toEdgeInsets(amount ?? DefaultPadding.of(context));
-  }
+  EdgeInsetsGeometry _resolvePadding(BuildContext context) =>
+      edges.toEdgeInsets(defaultPadding.of(context));
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -153,5 +145,25 @@ class EdgePadding extends SingleChildRenderObjectWidget
     _PaddingAnimatableParameters parameters,
   ) {
     renderObject.padding = parameters.padding.animatedValue;
+  }
+}
+
+/// Extension-based API for [EdgePadding].
+extension EdgePaddingModifiers on Widget {
+  /// Sets the [defaultPadding] to [amount] for this widget and its descendants.
+  ///
+  /// {@macro fleet.defaultPadding}
+  @widgetFactory
+  Widget defaultPadding(double amount) =>
+      const _DefaultPaddingKey().update(value: amount, child: this);
+
+  /// Adds an equal [amount] of padding to specific [edges] of this widget.
+  @widgetFactory
+  Widget padding([Set<Edge> edges = Edges.all, double? amount]) {
+    return EdgePadding(
+      edges: edges,
+      amount: amount,
+      child: this,
+    );
   }
 }
