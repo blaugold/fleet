@@ -5,7 +5,6 @@ import '../widgets/basic_flutter_widgets.dart';
 import '../widgets/uniform_padding.dart';
 import 'animatable_render_object_widget.dart';
 import 'animatable_stateless_widget.dart';
-import 'animatable_widget_state.dart';
 import 'animation.dart';
 import 'transaction.dart';
 
@@ -143,8 +142,8 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// {@template fleet.Animated.widgets}
 ///
 /// Only widgets that support animating with Fleet will animate changes. To
-/// implement support for this in your own widgets use [AnimatableStateMixin],
-/// [AnimatableState], [AnimatableStatelessWidget] or
+/// implement support for this in your own widgets use
+/// [AnimatableStatelessWidget] or
 /// [AnimatableSingleChildRenderObjectWidgetMixin].
 ///
 /// The following provided widgets support animating with Fleet:

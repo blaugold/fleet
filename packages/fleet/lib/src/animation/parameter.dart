@@ -3,8 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart' hide Animation;
 
-import 'animatable_render_object_widget.dart';
-import 'animatable_widget_state.dart';
+import '../animation/animatable_render_object_widget.dart';
+import '../animation/animatable_stateless_widget.dart';
 import 'animation.dart';
 import 'transaction.dart';
 
@@ -455,7 +455,7 @@ abstract class AnimatableParameterHost implements TickerProvider {
 /// [AnimatableParameterHost].
 ///
 /// Usually you don't need to use this mixin directly. Instead, use classes that
-/// make use of it, such as [AnimatableState] and
+/// make use of it, such as [AnimatableStatelessWidget] and
 /// [AnimatableSingleChildRenderObjectWidgetMixin].
 mixin AnimatableParameterHostMixin on Diagnosticable
     implements AnimatableParameterHost {

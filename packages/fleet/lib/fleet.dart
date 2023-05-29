@@ -4,8 +4,6 @@ export 'src/animation/animatable_render_object_widget.dart'
         AnimatableSingleChildRenderObjectWidgetMixin;
 export 'src/animation/animatable_stateless_widget.dart'
     show AnimatableStatelessWidget;
-export 'src/animation/animatable_widget_state.dart'
-    show AnimatableState, AnimatableStateMixin;
 export 'src/animation/animate.dart'
     show Animated, withAnimation, AnimatingStateMixin;
 export 'src/animation/animation.dart'
