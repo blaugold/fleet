@@ -15,15 +15,15 @@ typedef _AlignAnimatableParameters = ({
   OptionalAnimatableDouble heightFactor,
 });
 
-/// Animatable version of [Align].
+/// Fleet's drop-in replacement of [Align].
 ///
-/// {@category Animatable Flutter widget}
-class AAlign extends Align
+/// {@category Flutter drop-in replacement}
+class FleetAlign extends Align
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _AlignAnimatableParameters> {
   /// Creates an animatable version of [Align].
-  const AAlign({
+  const FleetAlign({
     super.key,
     super.alignment,
     super.widthFactor,
@@ -68,12 +68,12 @@ class AAlign extends Align
   }
 }
 
-/// Animatable version of [ColoredBox].
+/// Fleet's drop-in replacement of [AnimatedAlign].
 ///
-/// {@category Animatable Flutter widget}
-class AColoredBox extends AnimatableStatelessWidget<AnimatableColor> {
+/// {@category Flutter drop-in replacement}
+class FleetColoredBox extends AnimatableStatelessWidget<AnimatableColor> {
   /// Creates an animatable version of [ColoredBox].
-  const AColoredBox({super.key, required this.color, this.child});
+  const FleetColoredBox({super.key, required this.color, this.child});
 
   /// See [ColoredBox.color].
   final Color color;
@@ -112,13 +112,13 @@ typedef _ContainerAnimatableParameters = ({
   OptionalAnimatableAlignmentGeometry transformAlignment,
 });
 
-/// Animatable version of [Container].
+/// Fleet's drop-in replacement of [Container].
 ///
-/// {@category Animatable Flutter widget}
-class AContainer
+/// {@category Flutter drop-in replacement}
+class FleetContainer
     extends AnimatableStatelessWidget<_ContainerAnimatableParameters> {
   /// Creates an animatable version of [Container].
-  AContainer({
+  FleetContainer({
     super.key,
     this.alignment,
     this.padding,
@@ -229,15 +229,15 @@ class AContainer
 
 typedef _OpacityAnimatableParameters = ({AnimatableDouble opacity});
 
-/// Animatable version of [Opacity].
+/// Fleet's drop-in replacement of [Opacity].
 ///
-/// {@category Animatable Flutter widget}
-class AOpacity extends Opacity
+/// {@category Flutter drop-in replacement}
+class FleetOpacity extends Opacity
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _OpacityAnimatableParameters> {
   /// Creates an animatable version of [Opacity].
-  const AOpacity({
+  const FleetOpacity({
     super.key,
     required super.opacity,
     super.alwaysIncludeSemantics,
@@ -273,15 +273,15 @@ class AOpacity extends Opacity
 
 typedef _PaddingAnimatableParameters = ({AnimatableEdgeInsetsGeometry padding});
 
-/// Animatable version of [Padding].
+/// Fleet's drop-in replacement of [Padding].
 ///
-/// {@category Animatable Flutter widget}
-class APadding extends Padding
+/// {@category Flutter drop-in replacement}
+class FleetPadding extends Padding
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _PaddingAnimatableParameters> {
   /// Creates an animatable version of [Padding].
-  const APadding({super.key, required super.padding, super.child});
+  const FleetPadding({super.key, required super.padding, super.child});
 
   @override
   _PaddingAnimatableParameters createAnimatableParameters(
@@ -319,13 +319,13 @@ typedef _PositionedAnimatableParameters = ({
   OptionalAnimatableDouble height,
 });
 
-/// Animatable version of [Positioned].
+/// Fleet's drop-in replacement of [Positioned].
 ///
-/// {@category Animatable Flutter widget}
-class APositioned
+/// {@category Flutter drop-in replacement}
+class FleetPositioned
     extends AnimatableStatelessWidget<_PositionedAnimatableParameters> {
   /// Creates an animatable version of [Positioned].
-  const APositioned({
+  const FleetPositioned({
     super.key,
     this.left,
     this.top,
@@ -338,7 +338,7 @@ class APositioned
         assert(top == null || bottom == null || height == null);
 
   /// See [Positioned.fromRect].
-  APositioned.fromRect({
+  FleetPositioned.fromRect({
     super.key,
     required Rect rect,
     required this.child,
@@ -350,7 +350,7 @@ class APositioned
         bottom = null;
 
   /// See [Positioned.fromRelativeRect].
-  APositioned.fromRelativeRect({
+  FleetPositioned.fromRelativeRect({
     super.key,
     required RelativeRect rect,
     required this.child,
@@ -362,7 +362,7 @@ class APositioned
         height = null;
 
   /// See [Positioned.fill].
-  const APositioned.fill({
+  const FleetPositioned.fill({
     super.key,
     this.left = 0.0,
     this.top = 0.0,
@@ -373,7 +373,7 @@ class APositioned
         height = null;
 
   /// See [Positioned.directional].
-  factory APositioned.directional({
+  factory FleetPositioned.directional({
     Key? key,
     required TextDirection textDirection,
     double? start,
@@ -396,7 +396,7 @@ class APositioned
         right = end;
         break;
     }
-    return APositioned(
+    return FleetPositioned(
       key: key,
       left: left,
       top: top,
@@ -471,12 +471,12 @@ class APositioned
   }
 }
 
-/// Animatable version of [PositionedDirectional].
+/// Fleet's drop-in replacement of [PositionedDirectional].
 ///
-/// {@category Animatable Flutter widget}
-class APositionedDirectional extends StatelessWidget {
+/// {@category Flutter drop-in replacement}
+class FleetPositionedDirectional extends StatelessWidget {
   /// Creates an animatable version of [PositionedDirectional].
-  const APositionedDirectional({
+  const FleetPositionedDirectional({
     super.key,
     this.start,
     this.top,
@@ -510,7 +510,7 @@ class APositionedDirectional extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return APositioned.directional(
+    return FleetPositioned.directional(
       textDirection: Directionality.of(context),
       start: start,
       top: top,
@@ -527,15 +527,15 @@ typedef _SizedBoxAnimatableParameters = ({
   AnimatableBoxConstraints additionalConstraints
 });
 
-/// Animatable version of [SizedBox].
+/// Fleet's drop-in replacement of [SizedBox].
 ///
-/// {@category Animatable Flutter widget}
-class ASizedBox extends SizedBox
+/// {@category Flutter drop-in replacement}
+class FleetSizedBox extends SizedBox
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _SizedBoxAnimatableParameters> {
   /// Creates an animatable version of [SizedBox].
-  const ASizedBox({
+  const FleetSizedBox({
     super.key,
     super.height,
     super.width,
@@ -543,10 +543,11 @@ class ASizedBox extends SizedBox
   });
 
   /// See [SizedBox.fromSize].
-  ASizedBox.fromSize({super.key, super.child, super.size}) : super.fromSize();
+  FleetSizedBox.fromSize({super.key, super.child, super.size})
+      : super.fromSize();
 
   /// See [SizedBox.square].
-  const ASizedBox.square({super.key, super.child, super.dimension})
+  const FleetSizedBox.square({super.key, super.child, super.dimension})
       : super.square();
 
   BoxConstraints get _additionalConstraints {
@@ -587,15 +588,15 @@ class ASizedBox extends SizedBox
 
 typedef _SliverOpacityAnimatableParameters = ({AnimatableDouble opacity});
 
-/// Animatable version of [SliverOpacity].
+/// Fleet's drop-in replacement of [SliverOpacity].
 ///
-/// {@category Animatable Flutter widget}
-class ASliverOpacity extends SliverOpacity
+/// {@category Flutter drop-in replacement}
+class FleetSliverOpacity extends SliverOpacity
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _SliverOpacityAnimatableParameters> {
   /// Creates an animatable version of [SliverOpacity].
-  const ASliverOpacity({
+  const FleetSliverOpacity({
     super.key,
     required super.opacity,
     super.alwaysIncludeSemantics,
@@ -633,15 +634,15 @@ typedef _SliverPaddingAnimatableParameters = ({
   AnimatableEdgeInsetsGeometry padding
 });
 
-/// Animatable version of [SliverPadding].
+/// Fleet's drop-in replacement of [SliverPadding].
 ///
-/// {@category Animatable Flutter widget}
-class ASliverPadding extends SliverPadding
+/// {@category Flutter drop-in replacement}
+class FleetSliverPadding extends SliverPadding
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _SliverPaddingAnimatableParameters> {
   /// Creates an animatable version of [SliverPadding].
-  const ASliverPadding({super.key, required super.padding, super.sliver});
+  const FleetSliverPadding({super.key, required super.padding, super.sliver});
 
   @override
   _SliverPaddingAnimatableParameters createAnimatableParameters(
@@ -670,12 +671,12 @@ class ASliverPadding extends SliverPadding
   }
 }
 
-/// Animatable version of [Transform].
+/// Fleet's drop-in replacement of [Transform].
 ///
-/// {@category Animatable Flutter widget}
-abstract class ATransform extends Transform {
+/// {@category Flutter drop-in replacement}
+abstract class FleetTransform extends Transform {
   /// Creates an animatable version of [Transform].
-  const factory ATransform({
+  const factory FleetTransform({
     Key? key,
     required Matrix4 transform,
     Offset? origin,
@@ -686,7 +687,7 @@ abstract class ATransform extends Transform {
   }) = _MatrixTransform;
 
   /// Creates an animatable version of [Transform.rotate].
-  factory ATransform.rotate({
+  factory FleetTransform.rotate({
     Key? key,
     required double angle,
     Offset? origin,
@@ -697,7 +698,7 @@ abstract class ATransform extends Transform {
   }) = _RotateTransform;
 
   /// Creates an animatable version of [Transform.translate].
-  factory ATransform.translate({
+  factory FleetTransform.translate({
     Key? key,
     required Offset offset,
     bool transformHitTests,
@@ -706,7 +707,7 @@ abstract class ATransform extends Transform {
   }) = _TranslateTransform;
 
   /// Creates an animatable version of [Transform.scale].
-  factory ATransform.scale({
+  factory FleetTransform.scale({
     Key? key,
     double? scale,
     double? scaleX,
@@ -718,7 +719,7 @@ abstract class ATransform extends Transform {
     Widget? child,
   }) = _ScaleTransform;
 
-  const ATransform._({
+  const FleetTransform._({
     super.key,
     required super.transform,
     super.origin,
@@ -737,8 +738,8 @@ typedef _TransformAnimatableParameters<T> = ({
 
 /// Animatable version of [Transform].
 ///
-/// {@category Animatable Flutter widget}
-abstract class _TransformBase<T> extends ATransform
+/// {@category Flutter drop-in replacement}
+abstract class _TransformBase<T> extends FleetTransform
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _TransformAnimatableParameters<T>> {

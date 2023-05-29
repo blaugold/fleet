@@ -36,7 +36,7 @@ extension BasicModifiers on Widget {
     double? widthFactor,
     double? heightFactor,
   }) {
-    return AAlign(
+    return FleetAlign(
       alignment: alignment,
       widthFactor: widthFactor,
       heightFactor: heightFactor,
@@ -50,7 +50,7 @@ extension BasicModifiers on Widget {
     double? widthFactor,
     double? heightFactor,
   }) {
-    return AAlign(
+    return FleetAlign(
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       child: this,
@@ -60,7 +60,7 @@ extension BasicModifiers on Widget {
   /// Sizes this widget to the given [width] and [height].
   @widgetFactory
   Widget size({double? width, double? height}) {
-    return ASizedBox(
+    return FleetSizedBox(
       width: width,
       height: height,
       child: this,
@@ -70,7 +70,7 @@ extension BasicModifiers on Widget {
   /// Sizes this widget to the given [Size].
   @widgetFactory
   Widget sizeWith(Size size) {
-    return ASizedBox.fromSize(
+    return FleetSizedBox.fromSize(
       size: size,
       child: this,
     );
@@ -79,7 +79,7 @@ extension BasicModifiers on Widget {
   /// Sizes this widget to a square with the given [dimension].
   @widgetFactory
   Widget square(double dimension) {
-    return ASizedBox.square(
+    return FleetSizedBox.square(
       dimension: dimension,
       child: this,
     );
@@ -88,7 +88,7 @@ extension BasicModifiers on Widget {
   /// Adds [padding] around this widget.
   @widgetFactory
   Widget padding(EdgeInsetsGeometry padding) {
-    return APadding(
+    return FleetPadding(
       padding: padding,
       child: this,
     );
@@ -97,7 +97,7 @@ extension BasicModifiers on Widget {
   /// Applies opacity to this widget.
   @widgetFactory
   Widget opacity(double opacity, {bool alwaysIncludeSemantics = false}) {
-    return AOpacity(
+    return FleetOpacity(
       opacity: opacity,
       alwaysIncludeSemantics: alwaysIncludeSemantics,
       child: this,
@@ -107,7 +107,7 @@ extension BasicModifiers on Widget {
   /// Paints the area of this widget.
   @widgetFactory
   Widget boxColor(Color color) {
-    return AColoredBox(
+    return FleetColoredBox(
       color: color,
       child: this,
     );
@@ -122,7 +122,7 @@ extension BasicModifiers on Widget {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
-    return ATransform(
+    return FleetTransform(
       transform: transform,
       origin: origin,
       alignment: alignment,
@@ -141,7 +141,7 @@ extension BasicModifiers on Widget {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
-    return ATransform.rotate(
+    return FleetTransform.rotate(
       angle: angle,
       origin: origin,
       alignment: alignment,
@@ -158,7 +158,7 @@ extension BasicModifiers on Widget {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
-    return ATransform.translate(
+    return FleetTransform.translate(
       offset: offset,
       transformHitTests: transformHitTests,
       filterQuality: filterQuality,
@@ -175,7 +175,7 @@ extension BasicModifiers on Widget {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
-    return ATransform.scale(
+    return FleetTransform.scale(
       scale: scale,
       origin: origin,
       alignment: alignment,
@@ -195,7 +195,7 @@ extension BasicModifiers on Widget {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
-    return ATransform.scale(
+    return FleetTransform.scale(
       scaleX: x,
       scaleY: y,
       origin: origin,

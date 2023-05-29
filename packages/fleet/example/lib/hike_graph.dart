@@ -130,7 +130,7 @@ class GraphCapsule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final relativeRange = range.relativeTo(overallRange);
-    return AContainer(
+    return FleetContainer(
       height: height * relativeRange.magnitude,
       width: 24,
       decoration: ShapeDecoration(
