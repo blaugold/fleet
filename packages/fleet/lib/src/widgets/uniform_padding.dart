@@ -151,7 +151,7 @@ final class UniformPadding extends SingleChildRenderObjectWidget
   }
 }
 
-/// Extension-based API for [UniformPadding].
+/// Extension-based widget modifiers for [UniformPadding].
 extension UniformPaddingModifiers on Widget {
   /// Sets the [defaultUniformPadding] to [amount] for this widget and its
   /// descendants.
