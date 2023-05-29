@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart' hide Animation;
 
-import 'animatable_flutter_widgets.dart';
+import '../animatable_flutter_widgets.dart';
+import '../common.dart';
+import '../widgets/uniform_padding.dart';
 import 'animatable_render_object_widget.dart';
 import 'animatable_stateless_widget.dart';
 import 'animatable_widget_state.dart';
 import 'animation.dart';
-import 'common.dart';
 import 'transaction.dart';
-import 'widgets/uniform_padding.dart';
 
 /// Applies an [animation] to the state changes caused by calling [block].
 ///

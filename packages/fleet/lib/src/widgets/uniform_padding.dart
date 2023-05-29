@@ -3,9 +3,9 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../animatable_render_object_widget.dart';
+import '../animation/animatable_render_object_widget.dart';
+import '../animation/parameter.dart';
 import '../environment.dart';
-import '../parameter.dart';
 
 /// An edge of a rectangle.
 enum Edge {

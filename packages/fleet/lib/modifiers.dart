@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import 'src/animatable_flutter_widgets.dart';
-import 'src/animate.dart';
-import 'src/animation.dart';
+import 'src/animation/animate.dart';
+import 'src/animation/animation.dart';
 
 export 'src/widgets/uniform_padding.dart' show UniformPaddingModifiers;
 

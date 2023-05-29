@@ -2,8 +2,8 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
-import './animate.dart';
-import 'common.dart';
+import '../common.dart';
+import 'animate.dart';
 
 /// Specification for animating state changes.
 ///

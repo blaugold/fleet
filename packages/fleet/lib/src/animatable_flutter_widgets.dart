@@ -5,9 +5,9 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import 'animatable_render_object_widget.dart';
-import 'animatable_stateless_widget.dart';
-import 'parameter.dart';
+import 'animation/animatable_render_object_widget.dart';
+import 'animation/animatable_stateless_widget.dart';
+import 'animation/parameter.dart';
 
 typedef _AlignAnimatableParameters = ({
   AnimatableAlignmentGeometry alignment,

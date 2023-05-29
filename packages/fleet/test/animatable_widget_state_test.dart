@@ -1,5 +1,5 @@
 import 'package:fleet/fleet.dart';
-import 'package:fleet/src/animation.dart';
+import 'package:fleet/src/animation/animation.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
