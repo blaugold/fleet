@@ -1,16 +1,3 @@
-export 'src/animatable_flutter_widgets.dart'
-    show
-        AAlign,
-        AColoredBox,
-        AContainer,
-        AOpacity,
-        APadding,
-        APositioned,
-        APositionedDirectional,
-        ASizedBox,
-        ASliverOpacity,
-        ASliverPadding,
-        ATransform;
 export 'src/animation/animatable_render_object_widget.dart'
     show
         AnimatableRenderObjectWidget,
@@ -53,5 +40,18 @@ export 'src/animation/parameter.dart'
         AnimatableParameterHost;
 export 'src/common.dart' show Block;
 export 'src/environment.dart' show EnvironmentKey, EnvironmentValueModifiers;
+export 'src/widgets/basic_flutter_widgets.dart'
+    show
+        AAlign,
+        AColoredBox,
+        AContainer,
+        AOpacity,
+        APadding,
+        APositioned,
+        APositionedDirectional,
+        ASizedBox,
+        ASliverOpacity,
+        ASliverPadding,
+        ATransform;
 export 'src/widgets/uniform_padding.dart'
     show Edge, Edges, UniformPadding, defaultUniformPadding;

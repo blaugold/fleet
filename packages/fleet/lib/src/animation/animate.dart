@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart' hide Animation;
 
-import '../animatable_flutter_widgets.dart';
 import '../common.dart';
+import '../widgets/basic_flutter_widgets.dart';
 import '../widgets/uniform_padding.dart';
 import 'animatable_render_object_widget.dart';
 import 'animatable_stateless_widget.dart';
