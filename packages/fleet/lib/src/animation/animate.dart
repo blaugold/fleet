@@ -42,7 +42,7 @@ import 'transaction.dart';
 ///       child: ValueListenableBuilder<bool>(
 ///         valueListenable: active,
 ///         builder: (context, active, _) {
-///           return AColoredBox(color: active ? Colors.blue : Colors.grey);
+///           return FleetColoredBox(color: active ? Colors.blue : Colors.grey);
 ///         },
 ///       ),
 ///     );
@@ -117,7 +117,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
   ///           _active = !_active;
   ///         });
   ///       },
-  ///       child: AColoredBox(color: _active ? Colors.blue : Colors.grey),
+  ///       child: FleetColoredBox(color: _active ? Colors.blue : Colors.grey),
   ///     );
   ///   }
   /// }
@@ -149,17 +149,17 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 ///
 /// The following provided widgets support animating with Fleet:
 ///
-/// - [AAlign]
-/// - [AColoredBox]
-/// - [AContainer]
-/// - [AOpacity]
-/// - [APadding]
-/// - [APositioned]
-/// - [APositionedDirectional]
-/// - [ASizedBox]
-/// - [ASliverOpacity]
-/// - [ASliverPadding]
-/// - [ATransform]
+/// - [FleetAlign]
+/// - [FleetColoredBox]
+/// - [FleetContainer]
+/// - [FleetOpacity]
+/// - [FleetPadding]
+/// - [FleetPositioned]
+/// - [FleetPositionedDirectional]
+/// - [FleetSizedBox]
+/// - [FleetSliverOpacity]
+/// - [FleetSliverPadding]
+/// - [FleetTransform]
 ///
 /// The following provided widgets are specific to Fleet:
 ///
@@ -200,7 +200,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 ///       child: Animated(
 ///         animation: Curves.ease.animation(250.ms),
 ///         value: _active,
-///         child: AColoredBox(color: _active ? Colors.blue : Colors.grey),
+///         child: FleetColoredBox(color: _active ? Colors.blue : Colors.grey),
 ///       ),
 ///     );
 ///   }

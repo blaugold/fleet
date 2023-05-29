@@ -138,17 +138,17 @@ extensions on `int`, e.g `250.ms` is equivalent to
 The following drop-in replacements for Flutter framework widgets are provided
 for animating with Fleet:
 
-- AAlign
-- AColoredBox
-- AContainer
-- AOpacity
-- APadding
-- APositioned
-- APositionedDirectional
-- ASizedBox
-- ASliverOpacity
-- ASliverPadding
-- ATransform
+- FleetAlign
+- FleetColoredBox
+- FleetContainer
+- FleetOpacity
+- FleetPadding
+- FleetPositioned
+- FleetPositionedDirectional
+- FleetSizedBox
+- FleetSliverOpacity
+- FleetSliverPadding
+- FleetTransform
 
 The following provided widgets are specific to Fleet:
 

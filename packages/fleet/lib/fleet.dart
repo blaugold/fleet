@@ -42,16 +42,16 @@ export 'src/common.dart' show Block;
 export 'src/environment.dart' show EnvironmentKey, EnvironmentValueModifiers;
 export 'src/widgets/basic_flutter_widgets.dart'
     show
-        AAlign,
-        AColoredBox,
-        AContainer,
-        AOpacity,
-        APadding,
-        APositioned,
-        APositionedDirectional,
-        ASizedBox,
-        ASliverOpacity,
-        ASliverPadding,
-        ATransform;
+        FleetAlign,
+        FleetColoredBox,
+        FleetContainer,
+        FleetOpacity,
+        FleetPadding,
+        FleetPositioned,
+        FleetPositionedDirectional,
+        FleetSizedBox,
+        FleetSliverOpacity,
+        FleetSliverPadding,
+        FleetTransform;
 export 'src/widgets/uniform_padding.dart'
     show Edge, Edges, UniformPadding, defaultUniformPadding;

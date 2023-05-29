@@ -2,8 +2,8 @@ dartdoc:
   categories:
     'Animation':
       markdown: doc/Animation.md
-    'Animatable Flutter widget':
-      markdown: doc/Animatable_Flutter_widget.md
+    'Flutter drop-in replacement':
+      markdown: doc/Flutter_drop-in_replacement.md
   categoryOrder:
     - 'Animation'
-    - 'Animatable Flutter widget'
+    - 'Flutter drop-in replacement'
