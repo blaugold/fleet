@@ -1,12 +1,9 @@
 dartdoc:
   categories:
-    'Animate':
-      markdown: doc/Animate.md
-    'Animatable widget':
-      markdown: doc/Animatable_widget.md
+    'Animation':
+      markdown: doc/Animation.md
     'Animatable Flutter widget':
       markdown: doc/Animatable_Flutter_widget.md
   categoryOrder:
-    - 'Animate'
-    - 'Animatable widget'
+    - 'Animation'
     - 'Animatable Flutter widget'

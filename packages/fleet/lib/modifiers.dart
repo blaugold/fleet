@@ -1,11 +1,13 @@
 import 'package:flutter/widgets.dart';
 
-import 'animatable_flutter_widgets.dart';
-import 'animate.dart';
-import 'animation.dart';
+import 'src/animation/animate.dart';
+import 'src/animation/animation.dart';
+import 'src/widgets/basic_flutter_widgets.dart';
 
-/// Extension-based API for widgets provided by Fleet.
-extension FleetWidgetExtension on Widget {
+export 'src/widgets/uniform_padding.dart' show UniformPaddingModifiers;
+
+/// Extension-based widget modifiers for animating with Fleet.
+extension FleetAnimationModifiers on Widget {
   /// Applies an [animation] to state changes in the descendants of this widget.
   ///
   /// See also:
@@ -22,7 +24,11 @@ extension FleetWidgetExtension on Widget {
       child: this,
     );
   }
+}
 
+/// Extension-based widget modifiers, which use Fleet's drop-in replacements for
+/// basic Flutter widgets.
+extension BasicModifiers on Widget {
   /// Aligns this widget within the available space.
   @widgetFactory
   Widget align(

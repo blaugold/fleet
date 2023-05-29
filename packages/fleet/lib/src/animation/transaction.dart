@@ -1,7 +1,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import 'common.dart';
+import '../common.dart';
 
 // === Intermediate building ===================================================
 

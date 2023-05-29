@@ -11,7 +11,7 @@
 /// final millisecond = 1000.us;
 /// ```
 ///
-/// {@category Animate}
+/// {@category Animation}
 extension DurationFromIntExtension on int {
   /// A [Duration] that is as many **days** long as this value.
   ///

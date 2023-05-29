@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart' hide Animation;
 
-import 'animatable_flutter_widgets.dart';
+import '../common.dart';
+import '../widgets/basic_flutter_widgets.dart';
+import '../widgets/uniform_padding.dart';
 import 'animatable_render_object_widget.dart';
 import 'animatable_stateless_widget.dart';
 import 'animatable_widget_state.dart';
 import 'animation.dart';
-import 'common.dart';
 import 'transaction.dart';
-import 'widgets/uniform_padding.dart';
 
 /// Applies an [animation] to the state changes caused by calling [block].
 ///
@@ -57,7 +57,7 @@ import 'widgets/uniform_padding.dart';
 /// - [Animated] for a widget that applies an [animation] to the state changes
 ///   in its descendants.
 ///
-/// {@category Animate}
+/// {@category Animation}
 T withAnimation<T>(AnimationSpec animation, Block<T> block) {
   return withTransaction(animation, block);
 }
@@ -65,7 +65,7 @@ T withAnimation<T>(AnimationSpec animation, Block<T> block) {
 /// Mixin for the [State] of a [StatefulWidget] for conveniently applying
 /// animations when making state changes.
 ///
-/// {@category Animate}
+/// {@category Animation}
 mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
   /// A version of [setState] that applies an [animation] to the state changes
   /// caused by calling [fn].
@@ -212,7 +212,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// - [withAnimation] for a function that applies an animation to the state
 ///   changes caused by calling a callback.
 ///
-/// {@category Animate}
+/// {@category Animation}
 class Animated extends StatefulWidget {
   /// Creates a widget that applies an [animation] only to state changes in its
   /// descendants.

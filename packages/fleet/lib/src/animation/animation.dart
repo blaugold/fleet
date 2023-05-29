@@ -2,8 +2,8 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
-import './animate.dart';
-import 'common.dart';
+import '../common.dart';
+import 'animate.dart';
 
 /// Specification for animating state changes.
 ///
@@ -37,7 +37,7 @@ import 'common.dart';
 ///     .speed(2.0);
 /// ```
 ///
-/// {@category Animate}
+/// {@category Animation}
 @immutable
 class AnimationSpec with Diagnosticable {
   /// Default animation which uses [defaultCurve] and [defaultDuration].
@@ -235,7 +235,7 @@ class AnimationSpec with Diagnosticable {
 ///
 /// - [AnimationSpec.curve]
 ///
-/// {@category Animate}
+/// {@category Animation}
 extension AnimationFromCurveExtension on Curve {
   /// Returns an animation which uses this curve and animates for a fixed
   /// [duration].

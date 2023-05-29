@@ -66,7 +66,7 @@ import 'parameter.dart';
 /// - [AnimatableState] for a [State] class that already mixes in
 ///   [AnimatableStateMixin] and [AnimatableParameterHostMixin].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 mixin AnimatableStateMixin<T extends StatefulWidget>
     on State<T>, AnimatableParameterHostMixin {
   @override
@@ -98,6 +98,6 @@ mixin AnimatableStateMixin<T extends StatefulWidget>
 /// [AnimatableParameterHostMixin] and [AnimatableStateMixin] into the state
 /// class.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 abstract class AnimatableState<T extends StatefulWidget> extends State<T>
     with AnimatableParameterHostMixin, AnimatableStateMixin<T> {}

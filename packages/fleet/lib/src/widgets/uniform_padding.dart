@@ -3,9 +3,9 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../animatable_render_object_widget.dart';
+import '../animation/animatable_render_object_widget.dart';
+import '../animation/parameter.dart';
 import '../environment.dart';
-import '../parameter.dart';
 
 /// An edge of a rectangle.
 enum Edge {
@@ -151,7 +151,7 @@ final class UniformPadding extends SingleChildRenderObjectWidget
   }
 }
 
-/// Extension-based API for [UniformPadding].
+/// Extension-based widget modifiers for [UniformPadding].
 extension UniformPaddingModifiers on Widget {
   /// Sets the [defaultUniformPadding] to [amount] for this widget and its
   /// descendants.
