@@ -5,6 +5,8 @@ import 'transaction.dart';
 
 /// A [StatelessWidget] that transparently animates some or all of its
 /// parameters with [AnimatableParameter]s.
+///
+/// {@category Animation}
 abstract class AnimatableStatelessWidget<T extends Object> extends Widget {
   /// Constructor for subclasses.
   const AnimatableStatelessWidget({super.key});

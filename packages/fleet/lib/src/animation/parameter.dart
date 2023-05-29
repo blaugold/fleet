@@ -23,7 +23,7 @@ import 'transaction.dart';
 /// When a new value is set, the currently available [AnimationSpec] is used to
 /// animate the change.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 abstract class AnimatableParameter<T>
     with Diagnosticable
     implements AnimatableValue<T> {
@@ -165,7 +165,7 @@ class _OptionalTween<T> extends Tween<T?> {
 /// An [AnimatableParameter] that animates changes to an [AlignmentGeometry]
 /// through an [AlignmentGeometryTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableAlignmentGeometry
     extends AnimatableParameter<AlignmentGeometry> {
   /// Creates an [AnimatableParameter] that animates changes to an
@@ -178,7 +178,7 @@ class AnimatableAlignmentGeometry
 
 /// Version of [AnimatableAlignmentGeometry] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableAlignmentGeometry
     extends AnimatableParameter<AlignmentGeometry?> {
   /// Creates a version of [AnimatableAlignmentGeometry] for optional
@@ -193,7 +193,7 @@ class OptionalAnimatableAlignmentGeometry
 /// An [AnimatableParameter] that animates changes to a [BoxConstraints] through
 /// a [BoxConstraintsTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableBoxConstraints extends AnimatableParameter<BoxConstraints> {
   /// Creates an [AnimatableParameter] that animates changes to a
   /// [BoxConstraints] through a [BoxConstraintsTween].
@@ -205,7 +205,7 @@ class AnimatableBoxConstraints extends AnimatableParameter<BoxConstraints> {
 
 /// Version of [AnimatableBoxConstraints] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableBoxConstraints
     extends AnimatableParameter<BoxConstraints?> {
   /// Creates a version of [AnimatableBoxConstraints] for optional parameters.
@@ -217,7 +217,7 @@ class OptionalAnimatableBoxConstraints
 /// An [AnimatableParameter] that animates changes to a [Color] through a
 /// [ColorTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableColor extends AnimatableParameter<Color> {
   /// Creates an [AnimatableParameter] that animates changes to a [Color]
   /// through a [ColorTween].
@@ -229,7 +229,7 @@ class AnimatableColor extends AnimatableParameter<Color> {
 
 /// Version of [AnimatableColor] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableColor extends AnimatableParameter<Color?> {
   /// Creates a version of [AnimatableColor] for optional parameters.
   OptionalAnimatableColor(super.value, {required super.host});
@@ -241,7 +241,7 @@ class OptionalAnimatableColor extends AnimatableParameter<Color?> {
 /// An [AnimatableParameter] that animates changes to a [Decoration] through a
 /// [DecorationTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableDecoration extends AnimatableParameter<Decoration> {
   /// Creates an [AnimatableParameter] that animates changes to a [Decoration]
   /// through a [DecorationTween].
@@ -253,7 +253,7 @@ class AnimatableDecoration extends AnimatableParameter<Decoration> {
 
 /// Version of [AnimatableDecoration] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableDecoration extends AnimatableParameter<Decoration?> {
   /// Creates a version of [AnimatableDecoration] for optional parameters.
   OptionalAnimatableDecoration(super.value, {required super.host});
@@ -265,7 +265,7 @@ class OptionalAnimatableDecoration extends AnimatableParameter<Decoration?> {
 /// An [AnimatableParameter] that animates changes to a [double] through a
 /// [Tween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableDouble extends AnimatableParameter<double> {
   /// Creates an [AnimatableParameter] that animates changes to a [double]
   /// through a [Tween].
@@ -277,7 +277,7 @@ class AnimatableDouble extends AnimatableParameter<double> {
 
 /// Version of [AnimatableDouble] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableDouble extends AnimatableParameter<double?> {
   /// Creates a version of [AnimatableDouble] for optional parameters.
   OptionalAnimatableDouble(super.value, {required super.host});
@@ -289,7 +289,7 @@ class OptionalAnimatableDouble extends AnimatableParameter<double?> {
 /// An [AnimatableParameter] that animates changes to an [EdgeInsetsGeometry]
 /// through an [EdgeInsetsGeometryTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableEdgeInsetsGeometry
     extends AnimatableParameter<EdgeInsetsGeometry> {
   /// Creates an [AnimatableParameter] that animates changes to an
@@ -302,7 +302,7 @@ class AnimatableEdgeInsetsGeometry
 
 /// Version of [AnimatableEdgeInsetsGeometry] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableEdgeInsetsGeometry
     extends AnimatableParameter<EdgeInsetsGeometry?> {
   /// Creates a version of [AnimatableEdgeInsetsGeometry] for optional
@@ -317,7 +317,7 @@ class OptionalAnimatableEdgeInsetsGeometry
 /// An [AnimatableParameter] that animates changes to an [int] through an
 /// [IntTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableInt extends AnimatableParameter<int> {
   /// Creates an [AnimatableParameter] that animates changes to an [int] through
   /// an [IntTween].
@@ -329,7 +329,7 @@ class AnimatableInt extends AnimatableParameter<int> {
 
 /// Version of [AnimatableInt] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableInt extends AnimatableParameter<int?> {
   /// Creates a version of [AnimatableInt] that for optional parameters.
   OptionalAnimatableInt(super.value, {required super.host});
@@ -341,7 +341,7 @@ class OptionalAnimatableInt extends AnimatableParameter<int?> {
 /// An [AnimatableParameter] that animates changes to a [Matrix4] through a
 /// [Matrix4Tween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableMatrix4 extends AnimatableParameter<Matrix4> {
   /// Creates an [AnimatableParameter] that animates changes to a [Matrix4]
   /// through a [Matrix4Tween].
@@ -353,7 +353,7 @@ class AnimatableMatrix4 extends AnimatableParameter<Matrix4> {
 
 /// Version of [AnimatableMatrix4] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableMatrix4 extends AnimatableParameter<Matrix4?> {
   /// Creates a version of [AnimatableMatrix4] for optional parameters.
   OptionalAnimatableMatrix4(super.value, {required super.host});
@@ -367,7 +367,7 @@ class OptionalAnimatableMatrix4 extends AnimatableParameter<Matrix4?> {
 ///
 /// See [Tween] for the requirements for a type to be interpolatable.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableObject<T> extends AnimatableParameter<T> {
   /// Creates an [AnimatableParameter] that animates changes to a value of an
   /// interpolatable type [T].
@@ -379,7 +379,7 @@ class AnimatableObject<T> extends AnimatableParameter<T> {
 
 /// Version of [AnimatableObject] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableObject<T> extends AnimatableParameter<T?> {
   /// Creates a version of [AnimatableObject] for optional parameters.
   OptionalAnimatableObject(super.value, {required super.host});
@@ -391,7 +391,7 @@ class OptionalAnimatableObject<T> extends AnimatableParameter<T?> {
 /// An [AnimatableParameter] that animates changes to a [Rect] through a
 /// [RectTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableRect extends AnimatableParameter<Rect> {
   /// Creates an [AnimatableParameter] that animates changes to a [Rect] through
   /// a [RectTween].
@@ -403,7 +403,7 @@ class AnimatableRect extends AnimatableParameter<Rect> {
 
 /// Version of [AnimatableRect] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableRect extends AnimatableParameter<Rect?> {
   /// Creates a version of [AnimatableRect] for optional parameters.
   OptionalAnimatableRect(super.value, {required super.host});
@@ -415,7 +415,7 @@ class OptionalAnimatableRect extends AnimatableParameter<Rect?> {
 /// An [AnimatableParameter] that animates changes to a [Size] through a
 /// [SizeTween].
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class AnimatableSize extends AnimatableParameter<Size> {
   /// Creates an [AnimatableParameter] that animates changes to a [Size] through
   /// a [SizeTween].
@@ -427,7 +427,7 @@ class AnimatableSize extends AnimatableParameter<Size> {
 
 /// Version of [AnimatableSize] for optional parameters.
 ///
-/// {@category Animatable widget}
+/// {@category Animation}
 class OptionalAnimatableSize extends AnimatableParameter<Size?> {
   /// Creates a version of [AnimatableSize] for optional parameters.
   OptionalAnimatableSize(super.value, {required super.host});

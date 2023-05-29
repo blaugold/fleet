@@ -57,7 +57,7 @@ import 'transaction.dart';
 /// - [Animated] for a widget that applies an [animation] to the state changes
 ///   in its descendants.
 ///
-/// {@category Animate}
+/// {@category Animation}
 T withAnimation<T>(AnimationSpec animation, Block<T> block) {
   return withTransaction(animation, block);
 }
@@ -65,7 +65,7 @@ T withAnimation<T>(AnimationSpec animation, Block<T> block) {
 /// Mixin for the [State] of a [StatefulWidget] for conveniently applying
 /// animations when making state changes.
 ///
-/// {@category Animate}
+/// {@category Animation}
 mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
   /// A version of [setState] that applies an [animation] to the state changes
   /// caused by calling [fn].
@@ -212,7 +212,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// - [withAnimation] for a function that applies an animation to the state
 ///   changes caused by calling a callback.
 ///
-/// {@category Animate}
+/// {@category Animation}
 class Animated extends StatefulWidget {
   /// Creates a widget that applies an [animation] only to state changes in its
   /// descendants.

@@ -8,6 +8,8 @@ import 'transaction.dart';
 ///
 /// [T] is the type of the object that holds the [AnimatableParameter]s. Usually
 /// this is a [Record] that holds the [AnimatableParameter]s as named fields.
+///
+/// {@category Animation}
 abstract class AnimatableRenderObjectWidget<T extends Object>
     extends RenderObjectWidget {
   /// Constructor for subclasses.
@@ -114,6 +116,8 @@ mixin _AnimatableRenderObjectElementMixin<T extends Object>
 /// animate some or all of its parameters with [AnimatableParameter]s.
 ///
 /// The widget has to implement the contract of [AnimatableRenderObjectWidget].
+///
+/// {@category Animation}
 mixin AnimatableSingleChildRenderObjectWidgetMixin<T extends Object>
     implements AnimatableRenderObjectWidget<T> {
   @override
