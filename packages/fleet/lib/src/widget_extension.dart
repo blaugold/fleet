@@ -81,7 +81,7 @@ extension FleetWidgetExtension on Widget {
 
   /// Adds [padding] around this widget.
   @widgetFactory
-  Widget padding(EdgeInsets padding) {
+  Widget padding(EdgeInsetsGeometry padding) {
     return APadding(
       padding: padding,
       child: this,

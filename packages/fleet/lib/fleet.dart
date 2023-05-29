@@ -22,6 +22,7 @@ export 'src/animate.dart' show Animated, withAnimation, AnimatingStateMixin;
 export 'src/animation.dart' show AnimationSpec, AnimationFromCurveExtension;
 export 'src/common.dart' show Block;
 export 'src/duration.dart' show DurationFromIntExtension;
+export 'src/environment.dart' show EnvironmentKey, EnvironmentValueModifiers;
 export 'src/parameter.dart'
     show
         AnimatableAlignmentGeometry,
@@ -50,3 +51,10 @@ export 'src/parameter.dart'
         AnimatableParameterHostMixin,
         AnimatableParameterHost;
 export 'src/widget_extension.dart' show FleetWidgetExtension;
+export 'src/widgets/uniform_padding.dart'
+    show
+        Edge,
+        Edges,
+        UniformPadding,
+        defaultUniformPadding,
+        UniformPaddingModifiers;
