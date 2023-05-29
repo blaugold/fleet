@@ -7,7 +7,7 @@ import 'animatable_widget_state.dart';
 import 'animation.dart';
 import 'common.dart';
 import 'transaction.dart';
-import 'widgets/edge_padding.dart';
+import 'widgets/uniform_padding.dart';
 
 /// Applies an [animation] to the state changes caused by calling [block].
 ///
@@ -163,7 +163,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 ///
 /// The following provided widgets are specific to Fleet:
 ///
-/// - [EdgePadding]
+/// - [UniformPadding]
 ///
 /// {@endtemplate}
 ///

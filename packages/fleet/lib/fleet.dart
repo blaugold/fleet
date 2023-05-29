@@ -51,5 +51,10 @@ export 'src/parameter.dart'
         AnimatableParameterHostMixin,
         AnimatableParameterHost;
 export 'src/widget_extension.dart' show FleetWidgetExtension;
-export 'src/widgets/edge_padding.dart'
-    show Edge, Edges, EdgePadding, defaultPadding, EdgePaddingModifiers;
+export 'src/widgets/uniform_padding.dart'
+    show
+        Edge,
+        Edges,
+        UniformPadding,
+        defaultUniformPadding,
+        UniformPaddingModifiers;

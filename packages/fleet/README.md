@@ -152,7 +152,7 @@ for animating with Fleet:
 
 The following provided widgets are specific to Fleet:
 
-- EdgePadding
+- UniformPadding
 
 ---
 

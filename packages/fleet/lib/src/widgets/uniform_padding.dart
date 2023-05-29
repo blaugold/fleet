@@ -47,7 +47,7 @@ abstract final class Edges {
 }
 
 extension on Set<Edge> {
-  EdgeInsetsGeometry toEdgeInsets(double amount) {
+  EdgeInsetsGeometry uniformEdgeInsets(double amount) {
     return EdgeInsetsDirectional.only(
       top: contains(Edge.top) ? amount : 0,
       bottom: contains(Edge.bottom) ? amount : 0,
@@ -57,33 +57,36 @@ extension on Set<Edge> {
   }
 }
 
-final class _DefaultPaddingKey
-    extends EnvironmentKey<double, _DefaultPaddingKey> {
-  const _DefaultPaddingKey();
+final class _DefaultUniformPaddingKey
+    extends EnvironmentKey<double, _DefaultUniformPaddingKey> {
+  const _DefaultUniformPaddingKey();
 
   @override
   double defaultValue(BuildContext context) => 8;
 }
 
-/// [EnvironmentKey] for the default amount of padding to use in [EdgePadding].
+/// [EnvironmentKey] for the default amount of padding to use in
+/// [UniformPadding].
 ///
-/// {@template fleet.defaultPadding}
-/// [defaultPadding] is used by [EdgePadding] to determine the amount of padding
-/// to add when [EdgePadding.amount] is `null`.
+/// {@template fleet.defaultUniformPadding}
+/// [defaultUniformPadding] is used by [UniformPadding] to determine the amount
+/// of padding to add when [UniformPadding.amount] is `null`.
 ///
 /// The default value is `8`.
 /// {@endtemplate}
-const defaultPadding = _DefaultPaddingKey();
+const defaultUniformPadding = _DefaultUniformPaddingKey();
 
-typedef _PaddingAnimatableParameters = ({AnimatableEdgeInsetsGeometry padding});
+typedef _UniformPaddingAnimatableParameters = ({
+  AnimatableEdgeInsetsGeometry padding
+});
 
 /// Adds an equal [amount] of padding to specific [edges] around [child].
-final class EdgePadding extends SingleChildRenderObjectWidget
+final class UniformPadding extends SingleChildRenderObjectWidget
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
-            _PaddingAnimatableParameters> {
-  /// Creates an [EdgePadding] widget.
-  const EdgePadding({
+            _UniformPaddingAnimatableParameters> {
+  /// Creates an [UniformPadding] widget.
+  const UniformPadding({
     super.key,
     this.edges = Edges.all,
     this.amount,
@@ -97,7 +100,7 @@ final class EdgePadding extends SingleChildRenderObjectWidget
   final double? amount;
 
   EdgeInsetsGeometry _resolvePadding(BuildContext context) =>
-      edges.toEdgeInsets(amount ?? defaultPadding.of(context));
+      edges.uniformEdgeInsets(amount ?? defaultUniformPadding.of(context));
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -118,7 +121,7 @@ final class EdgePadding extends SingleChildRenderObjectWidget
   }
 
   @override
-  _PaddingAnimatableParameters createAnimatableParameters(
+  _UniformPaddingAnimatableParameters createAnimatableParameters(
     covariant RenderPadding renderObject,
     AnimatableParameterHost host,
   ) {
@@ -133,7 +136,7 @@ final class EdgePadding extends SingleChildRenderObjectWidget
   @override
   void updateAnimatableParameters(
     BuildContext context,
-    _PaddingAnimatableParameters parameters,
+    _UniformPaddingAnimatableParameters parameters,
   ) {
     parameters.padding.value = _resolvePadding(context);
   }
@@ -142,25 +145,26 @@ final class EdgePadding extends SingleChildRenderObjectWidget
   void updateRenderObjectWithAnimatableParameters(
     BuildContext context,
     covariant RenderPadding renderObject,
-    _PaddingAnimatableParameters parameters,
+    _UniformPaddingAnimatableParameters parameters,
   ) {
     renderObject.padding = parameters.padding.animatedValue;
   }
 }
 
-/// Extension-based API for [EdgePadding].
-extension EdgePaddingModifiers on Widget {
-  /// Sets the [defaultPadding] to [amount] for this widget and its descendants.
+/// Extension-based API for [UniformPadding].
+extension UniformPaddingModifiers on Widget {
+  /// Sets the [defaultUniformPadding] to [amount] for this widget and its
+  /// descendants.
   ///
-  /// {@macro fleet.defaultPadding}
+  /// {@macro fleet.defaultUniformPadding}
   @widgetFactory
-  Widget defaultPadding(double amount) =>
-      const _DefaultPaddingKey().update(value: amount, child: this);
+  Widget defaultUniformPadding(double amount) =>
+      const _DefaultUniformPaddingKey().update(value: amount, child: this);
 
   /// Adds an equal [amount] of padding to specific [edges] of this widget.
   @widgetFactory
-  Widget padding([Set<Edge> edges = Edges.all, double? amount]) {
-    return EdgePadding(
+  Widget uniformPadding([Set<Edge> edges = Edges.all, double? amount]) {
+    return UniformPadding(
       edges: edges,
       amount: amount,
       child: this,
