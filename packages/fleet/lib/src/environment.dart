@@ -83,8 +83,11 @@ extension EnvironmentValueModifiers<T, K extends EnvironmentKey<T, K>>
   /// Returns a widget that provides the result of [transform] applied to the
   /// value of this key to its descendants.
   @widgetFactory
-  Widget transform({required T Function(T) transform, required Widget child}) {
-    return _EnvironmentTransformer(
+  Widget transform({
+    required T Function(T value) transform,
+    required Widget child,
+  }) {
+    return _EnvironmentValueTransformer(
       environmentKey: this,
       transform: transform,
       child: child,
@@ -106,16 +109,16 @@ final class _EnvironmentValue<T, K extends EnvironmentKey<T, K>>
       value != oldWidget.value;
 }
 
-final class _EnvironmentTransformer<T, K extends EnvironmentKey<T, K>>
+final class _EnvironmentValueTransformer<T, K extends EnvironmentKey<T, K>>
     extends StatelessWidget {
-  const _EnvironmentTransformer({
+  const _EnvironmentValueTransformer({
     required this.environmentKey,
     required this.transform,
     required this.child,
   });
 
   final K environmentKey;
-  final T Function(T) transform;
+  final T Function(T value) transform;
   final Widget child;
 
   @override
