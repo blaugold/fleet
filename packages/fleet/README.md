@@ -11,8 +11,7 @@
   state change. No need to manage `AnimationController`s or `Tween`s.
 - **Animatable widgets**: Comes out of the box with general purpose widgets that
   support animating with Fleet.
-  - [**Extensible**][animatablestatemixin]: Any widget can be made to support
-    animating with Fleet.
+  - **Extensible**: Any widget can be made to support animating with Fleet.
   - **Flexible**: Animatable widgets can be used with or without animations.
   - **Composable**: Widgets that build on animatable widgets are automatically
     animatable.
@@ -89,7 +88,7 @@ Now lets animate the state change of `_active`:
          });
        },
 -      child: ColoredBox(
-+      child: AColoredBox(
++      child: FleetColoredBox(
          color: _active ? Colors.blue : Colors.grey,
        ),
      );
@@ -103,23 +102,23 @@ We made the following changes:
    `setStateWithAnimation`.
 2. Use `setStateWithAnimation` to specify the animation that we want to apply to
    the state change.
-3. Use `AColoredBox` instead of `ColoredBox`.
+3. Use `FleetColoredBox` instead of `ColoredBox`.
 
-The `AColoredBox` widget is a drop-in replacement for `ColoredBox` that supports
-animating with Fleet. Widgets that support animating with Fleet don't have any
-special parameters related to animation and can be used without animation, just
-as well.
+The `FleetColoredBox` widget is a drop-in replacement for `ColoredBox` that
+supports animating with Fleet. Widgets that support animating with Fleet don't
+have any special parameters related to animation and can be used without
+animation, just as well.
 
 Fleet provides drop-in replacements for a number of generally useful Flutter
 framework widgets (all with the prefix `A`). Any widget can be made to support
 state-based animation through components provided by Fleet (see
-[`AnimatableStateMixin`][animatablestatemixin]). Issues or PRs for adding
-support for more widgets are welcome!
+[`AnimatableStatelessWidget`][AnimatableStatelessWidget]). Issues or PRs for
+adding support for more widgets are welcome!
 
 Note that we did not explicitly tell `setStateWithAnimation` what to animate.
 This is because Fleet uses a **state-based** approach. All state changes caused
 by executing the provided callback will be animated. Even the state changes
-which are indirect, like the `color` parameter of `AColoredBox` going from
+which are indirect, like the `color` parameter of `FleetColoredBox` going from
 `Colors.grey` to `Colors.blue`. Fleet does this by tracking the state of
 animatable parameters of animatable widgets from one build to the next.
 
@@ -170,10 +169,8 @@ The following provided widgets are specific to Fleet:
   https://pub.dev/documentation/fleet/latest/fleet/withAnimationAsync.html
 [setstatewithanimation]:
   https://pub.dev/documentation/fleet/latest/fleet/AnimatingStateMixin/setStateWithAnimation.html
-[animatablestatemixin]:
-  https://pub.dev/documentation/fleet/latest/fleet/AnimatableStateMixin-mixin.html
+[AnimatableStatelessWidget]:
+  https://pub.dev/documentation/fleet/latest/fleet/AnimatableStatelessWidget-class.html
 [animationspec]:
   https://pub.dev/documentation/fleet/latest/fleet/AnimationSpec-class.html
-[acoloredbox]:
-  https://pub.dev/documentation/fleet/latest/fleet/AColoredBox-class.html
 [animated]: https://pub.dev/documentation/fleet/latest/fleet/Animated-class.html

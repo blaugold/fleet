@@ -234,7 +234,7 @@ extension on WidgetTester {
   }
 }
 
-class TestHost implements AnimatableStateMixin {
+class TestHost implements AnimatableParameterHost {
   TestHost(this.tester);
 
   final WidgetTester tester;

@@ -20,10 +20,10 @@ scripts:
     run: daco format --set-exit-if-changed .
 
   analyze:
-    exec: dart analyze
+    exec: dart analyze --fatal-infos
 
   analyze:doc_comments:
-    exec: daco analyze
+    exec: daco analyze --fatal-infos
 
   test:unit:
     exec: flutter test
