@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import '../animation/animatable_render_object_widget.dart';
 import '../animation/animatable_stateless_widget.dart';
 import '../animation/parameter.dart';
+import '../environment.dart';
 
 typedef _AlignAnimatableParameters = ({
   AnimatableAlignmentGeometry alignment,
@@ -68,7 +69,7 @@ class FleetAlign extends Align
   }
 }
 
-/// Fleet's drop-in replacement of [AnimatedAlign].
+/// Fleet's drop-in replacement of [ColoredBox].
 ///
 /// {@category Flutter drop-in replacement}
 class FleetColoredBox extends AnimatableStatelessWidget<AnimatableColor> {
@@ -1036,5 +1037,272 @@ class _ScaleTransform
     return scale.useFilterQuality ||
         scaleX.useFilterQuality ||
         scaleY.useFilterQuality;
+  }
+}
+
+final class _DefaultHorizontalMainAxisSize
+    extends EnvironmentKey<MainAxisSize, _DefaultHorizontalMainAxisSize> {
+  const _DefaultHorizontalMainAxisSize();
+
+  @override
+  MainAxisSize defaultValue(BuildContext context) => MainAxisSize.max;
+}
+
+const defaultHorizontalMainAxisSize = _DefaultHorizontalMainAxisSize();
+
+final class _DefaultVerticalMainAxisSize
+    extends EnvironmentKey<MainAxisSize, _DefaultHorizontalMainAxisSize> {
+  const _DefaultVerticalMainAxisSize();
+
+  @override
+  MainAxisSize defaultValue(BuildContext context) => MainAxisSize.max;
+}
+
+const defaultVerticalMainAxisSize = _DefaultVerticalMainAxisSize();
+
+extension FleetFlexModifiers on Widget {
+  @widgetFactory
+  Widget defaultHorizontalMainAxisSize(MainAxisSize value) =>
+      const _DefaultHorizontalMainAxisSize().update(value: value, child: this);
+
+  @widgetFactory
+  Widget defaultVerticalMainAxisSize(MainAxisSize value) =>
+      const _DefaultVerticalMainAxisSize().update(value: value, child: this);
+}
+
+class FleetFlex extends StatelessWidget {
+  const FleetFlex({
+    super.key,
+    required this.direction,
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    this.mainAxisSize,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.textDirection,
+    this.verticalDirection = VerticalDirection.down,
+    this.textBaseline,
+    this.clipBehavior = Clip.none,
+    this.spacing,
+    this.children = const <Widget>[],
+  }) : assert(
+          !identical(crossAxisAlignment, CrossAxisAlignment.baseline) ||
+              textBaseline != null,
+          'textBaseline is required if you specify the crossAxisAlignment with CrossAxisAlignment.baseline',
+        );
+
+  final Axis direction;
+
+  final MainAxisAlignment mainAxisAlignment;
+
+  final MainAxisSize? mainAxisSize;
+
+  final CrossAxisAlignment crossAxisAlignment;
+
+  final TextDirection? textDirection;
+
+  final VerticalDirection verticalDirection;
+
+  final TextBaseline? textBaseline;
+
+  final Clip clipBehavior;
+
+  final double? spacing;
+
+  final List<Widget> children;
+
+  bool get _needTextDirection {
+    switch (direction) {
+      case Axis.horizontal:
+        return true; // because it affects the layout order.
+      case Axis.vertical:
+        return crossAxisAlignment == CrossAxisAlignment.start ||
+            crossAxisAlignment == CrossAxisAlignment.end;
+    }
+  }
+
+  @protected
+  TextDirection? getEffectiveTextDirection(BuildContext context) {
+    return textDirection ??
+        (_needTextDirection ? Directionality.maybeOf(context) : null);
+  }
+
+  @protected
+  MainAxisSize getEffectiveMainAxisSize(BuildContext context) {
+    return mainAxisSize ??
+        switch (direction) {
+          Axis.horizontal => defaultHorizontalMainAxisSize.of(context),
+          Axis.vertical => defaultVerticalMainAxisSize.of(context),
+        };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = this.spacing;
+    var children = this.children;
+
+    if (spacing != null) {
+      final spacer = FleetSizedBox(
+        width: direction == Axis.horizontal ? spacing : null,
+        height: direction == Axis.vertical ? spacing : null,
+      );
+      children = [
+        for (final child in children) ...[
+          child,
+          if (child != children.last) spacer
+        ],
+      ];
+    }
+
+    return Flex(
+      direction: direction,
+      mainAxisAlignment: mainAxisAlignment,
+      mainAxisSize: getEffectiveMainAxisSize(context),
+      crossAxisAlignment: crossAxisAlignment,
+      textDirection: getEffectiveTextDirection(context),
+      verticalDirection: verticalDirection,
+      textBaseline: textBaseline,
+      clipBehavior: clipBehavior,
+      children: children,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(EnumProperty<Axis>('direction', direction));
+    properties.add(
+      EnumProperty<MainAxisAlignment>(
+        'mainAxisAlignment',
+        mainAxisAlignment,
+      ),
+    );
+    properties.add(
+      EnumProperty<MainAxisSize>(
+        'mainAxisSize',
+        mainAxisSize,
+        defaultValue: MainAxisSize.max,
+      ),
+    );
+    properties.add(
+      EnumProperty<CrossAxisAlignment>(
+        'crossAxisAlignment',
+        crossAxisAlignment,
+      ),
+    );
+    properties.add(
+      EnumProperty<TextDirection>(
+        'textDirection',
+        textDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      EnumProperty<VerticalDirection>(
+        'verticalDirection',
+        verticalDirection,
+        defaultValue: VerticalDirection.down,
+      ),
+    );
+    properties.add(
+      EnumProperty<TextBaseline>(
+        'textBaseline',
+        textBaseline,
+        defaultValue: null,
+      ),
+    );
+  }
+}
+
+class FleetRow extends FleetFlex {
+  const FleetRow({
+    super.key,
+    super.mainAxisAlignment,
+    super.mainAxisSize,
+    super.crossAxisAlignment,
+    super.textDirection,
+    super.verticalDirection,
+    super.textBaseline,
+    super.clipBehavior,
+    super.spacing,
+    super.children,
+  }) : super(direction: Axis.horizontal);
+}
+
+class FleetColumn extends FleetFlex {
+  const FleetColumn({
+    super.key,
+    super.mainAxisAlignment,
+    super.mainAxisSize,
+    super.crossAxisAlignment,
+    super.textDirection,
+    super.verticalDirection,
+    super.textBaseline,
+    super.clipBehavior,
+    super.spacing,
+    super.children,
+  }) : super(direction: Axis.vertical);
+}
+
+extension FleetFlexCall on FleetFlex {
+  @widgetFactory
+  FleetFlex call(List<Widget> children) {
+    return FleetFlex(
+      direction: direction,
+      mainAxisAlignment: mainAxisAlignment,
+      mainAxisSize: mainAxisSize,
+      crossAxisAlignment: crossAxisAlignment,
+      textDirection: textDirection,
+      verticalDirection: verticalDirection,
+      textBaseline: textBaseline,
+      clipBehavior: clipBehavior,
+      spacing: spacing,
+      children: children,
+    );
+  }
+}
+
+extension FleetRowCall on FleetRow {
+  @widgetFactory
+  FleetRow call(List<Widget> children) {
+    return FleetRow(
+      mainAxisAlignment: mainAxisAlignment,
+      mainAxisSize: mainAxisSize,
+      crossAxisAlignment: crossAxisAlignment,
+      textDirection: textDirection,
+      verticalDirection: verticalDirection,
+      textBaseline: textBaseline,
+      clipBehavior: clipBehavior,
+      spacing: spacing,
+      children: children,
+    );
+  }
+}
+
+extension FleetColumnCall on FleetColumn {
+  @widgetFactory
+  FleetColumn call(List<Widget> children) {
+    return FleetColumn(
+      mainAxisAlignment: mainAxisAlignment,
+      mainAxisSize: mainAxisSize,
+      crossAxisAlignment: crossAxisAlignment,
+      textDirection: textDirection,
+      verticalDirection: verticalDirection,
+      textBaseline: textBaseline,
+      clipBehavior: clipBehavior,
+      spacing: spacing,
+      children: children,
+    );
+  }
+}
+
+extension FleetStackCall on Stack {
+  @widgetFactory
+  Stack call(List<Widget> children) {
+    return Stack(
+      alignment: alignment,
+      textDirection: textDirection,
+      fit: fit,
+      clipBehavior: clipBehavior,
+      children: children,
+    );
   }
 }

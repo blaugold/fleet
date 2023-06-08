@@ -4,6 +4,8 @@ import 'src/animation/animate.dart';
 import 'src/animation/animation.dart';
 import 'src/widgets/basic_flutter_widgets.dart';
 
+export 'src/widgets/basic_flutter_widgets.dart' show FleetFlexModifiers;
+export 'src/widgets/opinionated_defaults.dart' show OpinionatedDefaultsModifier;
 export 'src/widgets/uniform_padding.dart' show UniformPaddingModifiers;
 
 /// Extension-based widget modifiers for animating with Fleet.

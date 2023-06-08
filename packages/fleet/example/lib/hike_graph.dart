@@ -2,20 +2,10 @@ import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Page(),
-    );
-  }
+  runApp(const ExampleApp(page: Page()));
 }
 
 class Page extends StatefulWidget {
@@ -31,34 +21,29 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SegmentedButton<Observation>(
-            segments: const [
-              ButtonSegment(
-                value: Observation.heartRate,
-                label: Text('Heart Rate'),
-              ),
-              ButtonSegment(
-                value: Observation.pace,
-                label: Text('Pace'),
-              ),
-            ],
-            selected: {_observation},
-            onSelectionChanged: (selection) {
-              setState(() {
-                _observation = selection.single;
-              });
-            },
-          ),
-          const SizedBox(height: 10),
-          HikeGraph(
-            hike: hike,
-            observation: _observation,
-          ).size(width: 400, height: 200)
-        ],
-      ).center(),
+      body: const FleetColumn(spacing: 10)([
+        SegmentedButton<Observation>(
+          segments: const [
+            ButtonSegment(
+              value: Observation.heartRate,
+              label: Text('Heart Rate'),
+            ),
+            ButtonSegment(
+              value: Observation.pace,
+              label: Text('Pace'),
+            ),
+          ],
+          selected: {_observation},
+          onSelectionChanged: (selection) {
+            setState(() {
+              _observation = selection.single;
+            });
+          },
+        ),
+        HikeGraph(hike: hike, observation: _observation) //
+            .size(width: 400, height: 200)
+      ]) //
+          .center(),
     );
   }
 }
@@ -93,21 +78,19 @@ class HikeGraph extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final spacing = constraints.maxWidth / 120;
-        return Row(
+        return FleetRow(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            for (var i = 0; i < data.length; i++) ...[
-              GraphCapsule(
-                color: color,
-                height: constraints.maxHeight,
-                range: data[i],
-                overallRange: overallRange,
-              ).animation(ripple(i)),
-              if (i < data.length - 1) SizedBox(width: spacing)
-            ],
-          ],
-        );
+          spacing: constraints.maxWidth / 120,
+        )([
+          for (var i = 0; i < data.length; i++)
+            GraphCapsule(
+              color: color,
+              height: constraints.maxHeight,
+              range: data[i],
+              overallRange: overallRange,
+            ) //
+                .animation(ripple(i)),
+        ]);
       },
     );
   }

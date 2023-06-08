@@ -2,34 +2,31 @@ import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp(page: Page()));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class Page extends StatefulWidget {
+  const Page({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<Page> createState() => _PageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _PageState extends State<Page> {
   var _left = true;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => setState(() => _left = !_left),
-          child: Stack(
-            children: [
-              for (var i = 0; i < 6; i++) StackElement(index: i, left: _left)
-            ],
-          ),
-        ),
+    return Scaffold(
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _left = !_left),
+        child: const Stack()([
+          for (var i = 0; i < 6; i++) StackElement(index: i, left: _left),
+        ]),
       ),
     );
   }

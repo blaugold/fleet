@@ -50,6 +50,16 @@ export 'src/widgets/basic_flutter_widgets.dart'
         FleetSizedBox,
         FleetSliverOpacity,
         FleetSliverPadding,
-        FleetTransform;
+        FleetTransform,
+        FleetColumn,
+        FleetFlex,
+        FleetRow,
+        defaultHorizontalMainAxisSize,
+        defaultVerticalMainAxisSize,
+        FleetColumnCall,
+        FleetFlexCall,
+        FleetRowCall,
+        FleetStackCall;
+export 'src/widgets/opinionated_defaults.dart' show OpinionatedDefaults;
 export 'src/widgets/uniform_padding.dart'
     show Edge, Edges, UniformPadding, defaultUniformPadding;
