@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-06-10
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`fleet` - `v0.4.0`](#fleet---v040)
+
+Packages with other changes:
+
+ - [`fleet_imports` - `v0.1.0`](#fleet_imports---v010)
+
+---
+
+#### `fleet` - `v0.4.0`
+
+ - **REFACTOR**: restructure source files and categories ([#47](https://github.com/blaugold/fleet/issues/47)). ([12daa157](https://github.com/blaugold/fleet/commit/12daa157b9e8fb90414bc6d13c06ded35c8a9ec1))
+ - **FEAT**: add `fleet_imports` package ([#51](https://github.com/blaugold/fleet/issues/51)). ([8a93e9d0](https://github.com/blaugold/fleet/commit/8a93e9d03d0534a1cc059a5760d89dbd6c38696b))
+ - **FEAT**: add `FleetFlex` and related widgets ([#50](https://github.com/blaugold/fleet/issues/50)). ([4525bb91](https://github.com/blaugold/fleet/commit/4525bb91c21b52e54f7e019624fd9f0fddda0744))
+ - **FEAT**: add `UniformPadding` ([#46](https://github.com/blaugold/fleet/issues/46)). ([a33f4d89](https://github.com/blaugold/fleet/commit/a33f4d891cb2c158b62143e05f5f63e951b03908))
+ - **FEAT**: make `AnimatableRenderObjectWidget` work with `InheritedWidget`s ([#45](https://github.com/blaugold/fleet/issues/45)). ([677060d5](https://github.com/blaugold/fleet/commit/677060d528643b93f79de0aa899d742e44c143a7))
+ - **FEAT**: add `AnimatableStatelessWidget` ([#44](https://github.com/blaugold/fleet/issues/44)). ([fd949360](https://github.com/blaugold/fleet/commit/fd949360c4c5ed833ecbca7beb19e7d9bd8accc3))
+ - **FEAT**: add extension-based widget API ([#41](https://github.com/blaugold/fleet/issues/41)). ([8c3d283b](https://github.com/blaugold/fleet/commit/8c3d283b8b1ce74e44f5276e839ba87e1c17f738))
+ - **FEAT**: support always animating state changes with `Animated` ([#40](https://github.com/blaugold/fleet/issues/40)). ([4d2533e4](https://github.com/blaugold/fleet/commit/4d2533e43fa252bbec07e12f0a5a14d630b8372d))
+ - **BREAKING** **REFACTOR**: use `Fleet` as the prefix for Flutter drop-in replacements ([#48](https://github.com/blaugold/fleet/issues/48)). ([fe20ceb5](https://github.com/blaugold/fleet/commit/fe20ceb516c2d65df53b220305c3203ea2d189ec))
+ - **BREAKING** **FEAT**: remove `AnimatableState(Mixin)?` ([#49](https://github.com/blaugold/fleet/issues/49)). ([6996c597](https://github.com/blaugold/fleet/commit/6996c597d2ad3055bb00a397c78adaf2f40148f4))
+ - **BREAKING** **FEAT**: support making `RenderObjectWidget`s animatable ([#43](https://github.com/blaugold/fleet/issues/43)). ([adf9fb01](https://github.com/blaugold/fleet/commit/adf9fb01567956052739db6ced821a905a04b8de))
+ - **BREAKING** **FEAT**: upgrade SDK constraints ([#42](https://github.com/blaugold/fleet/issues/42)). ([5e4d611a](https://github.com/blaugold/fleet/commit/5e4d611a2a27189c5ae1f6bdda0d0831fae5bca2))
+
+#### `fleet_imports` - `v0.1.0`
+
+ - **FEAT**: add `fleet_imports` package ([#51](https://github.com/blaugold/fleet/issues/51)). ([8a93e9d0](https://github.com/blaugold/fleet/commit/8a93e9d03d0534a1cc059a5760d89dbd6c38696b))
+
+
 ## 2022-09-19
 
 ### Changes
