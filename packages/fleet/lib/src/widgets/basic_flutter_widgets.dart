@@ -1095,15 +1095,15 @@ const defaultVerticalMainAxisSize = _DefaultVerticalMainAxisSize();
 
 /// Extension-based widget modifiers for [FleetFlex] specific features.
 extension FleetFlexModifiers on Widget {
-  /// Overrides the default value for [FleetFlex.mainAxisSize] that is used
-  /// when no [MainAxisSize] is explicitly specified, for this widget and its
+  /// Overrides the default value for [FleetFlex.mainAxisSize] that is used when
+  /// no [MainAxisSize] is explicitly specified, for this widget and its
   /// descendants.
   @widgetFactory
   Widget defaultHorizontalMainAxisSize(MainAxisSize value) =>
       const _DefaultHorizontalMainAxisSize().update(value: value, child: this);
 
-  /// Overrides the default value for [FleetFlex.mainAxisSize] that is used
-  /// when no [MainAxisSize] is explicitly specified, for this widget and its
+  /// Overrides the default value for [FleetFlex.mainAxisSize] that is used when
+  /// no [MainAxisSize] is explicitly specified, for this widget and its
   /// descendants.
   @widgetFactory
   Widget defaultVerticalMainAxisSize(MainAxisSize value) =>
