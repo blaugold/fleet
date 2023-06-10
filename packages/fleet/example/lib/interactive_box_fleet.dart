@@ -46,8 +46,8 @@ class _PageState extends State<Page> with AnimatingStateMixin {
         child: const Text('Drag me!', style: TextStyle(color: Colors.white))
             .center()
             .boxColor(_color)
-            .square(400)
-            .align(_alignment),
+            .squareDimension(400)
+            .alignmentFrom(_alignment),
       ),
     );
   }

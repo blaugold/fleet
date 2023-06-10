@@ -149,12 +149,16 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// The following provided widgets support animating with Fleet:
 ///
 /// - [FleetAlign]
+/// - [FleetCenter]
 /// - [FleetColoredBox]
+/// - [FleetColumn]
 /// - [FleetContainer]
+/// - [FleetFlex]
 /// - [FleetOpacity]
 /// - [FleetPadding]
 /// - [FleetPositioned]
 /// - [FleetPositionedDirectional]
+/// - [FleetRow]
 /// - [FleetSizedBox]
 /// - [FleetSliverOpacity]
 /// - [FleetSliverPadding]

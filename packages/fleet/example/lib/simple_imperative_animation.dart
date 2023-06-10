@@ -57,7 +57,7 @@ class _PageState extends State<Page> with AnimatingStateMixin {
       ]) //
           .center()
           .boxColor(_color)
-          .sizeWith(_size)
+          .sizeFrom(_size)
           .center(),
     );
   }

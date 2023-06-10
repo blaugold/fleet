@@ -9,6 +9,7 @@ import '../animation/animatable_render_object_widget.dart';
 import '../animation/animatable_stateless_widget.dart';
 import '../animation/parameter.dart';
 import '../environment.dart';
+import 'opinionated_defaults.dart';
 
 typedef _AlignAnimatableParameters = ({
   AnimatableAlignmentGeometry alignment,
@@ -23,7 +24,7 @@ class FleetAlign extends Align
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _AlignAnimatableParameters> {
-  /// Creates an animatable version of [Align].
+  /// Corresponds constructor to [Align].
   const FleetAlign({
     super.key,
     super.alignment,
@@ -69,11 +70,24 @@ class FleetAlign extends Align
   }
 }
 
+/// Fleet's drop-in replacement of [Center].
+///
+/// {@category Flutter drop-in replacement}
+class FleetCenter extends FleetAlign {
+  /// Corresponds constructor to [Center].
+  const FleetCenter({
+    super.key,
+    super.widthFactor,
+    super.heightFactor,
+    super.child,
+  });
+}
+
 /// Fleet's drop-in replacement of [ColoredBox].
 ///
 /// {@category Flutter drop-in replacement}
 class FleetColoredBox extends AnimatableStatelessWidget<AnimatableColor> {
-  /// Creates an animatable version of [ColoredBox].
+  /// Corresponding constructor to [ColoredBox].
   const FleetColoredBox({super.key, required this.color, this.child});
 
   /// See [ColoredBox.color].
@@ -118,7 +132,7 @@ typedef _ContainerAnimatableParameters = ({
 /// {@category Flutter drop-in replacement}
 class FleetContainer
     extends AnimatableStatelessWidget<_ContainerAnimatableParameters> {
-  /// Creates an animatable version of [Container].
+  /// Corresponding constructor to [Container].
   FleetContainer({
     super.key,
     this.alignment,
@@ -237,7 +251,7 @@ class FleetOpacity extends Opacity
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _OpacityAnimatableParameters> {
-  /// Creates an animatable version of [Opacity].
+  /// Corresponding constructor to [Opacity].
   const FleetOpacity({
     super.key,
     required super.opacity,
@@ -281,7 +295,7 @@ class FleetPadding extends Padding
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _PaddingAnimatableParameters> {
-  /// Creates an animatable version of [Padding].
+  /// Corresponding constructor to [Padding].
   const FleetPadding({super.key, required super.padding, super.child});
 
   @override
@@ -325,7 +339,7 @@ typedef _PositionedAnimatableParameters = ({
 /// {@category Flutter drop-in replacement}
 class FleetPositioned
     extends AnimatableStatelessWidget<_PositionedAnimatableParameters> {
-  /// Creates an animatable version of [Positioned].
+  /// Corresponding constructor to [Positioned].
   const FleetPositioned({
     super.key,
     this.left,
@@ -338,7 +352,7 @@ class FleetPositioned
   })  : assert(left == null || right == null || width == null),
         assert(top == null || bottom == null || height == null);
 
-  /// See [Positioned.fromRect].
+  /// Corresponding constructor to [Positioned.fromRect].
   FleetPositioned.fromRect({
     super.key,
     required Rect rect,
@@ -350,7 +364,7 @@ class FleetPositioned
         right = null,
         bottom = null;
 
-  /// See [Positioned.fromRelativeRect].
+  /// Corresponding constructor to [Positioned.fromRelativeRect].
   FleetPositioned.fromRelativeRect({
     super.key,
     required RelativeRect rect,
@@ -362,7 +376,7 @@ class FleetPositioned
         width = null,
         height = null;
 
-  /// See [Positioned.fill].
+  /// Corresponding constructor to [Positioned.fill].
   const FleetPositioned.fill({
     super.key,
     this.left = 0.0,
@@ -373,7 +387,7 @@ class FleetPositioned
   })  : width = null,
         height = null;
 
-  /// See [Positioned.directional].
+  /// Corresponding constructor to [Positioned.directional].
   factory FleetPositioned.directional({
     Key? key,
     required TextDirection textDirection,
@@ -476,7 +490,7 @@ class FleetPositioned
 ///
 /// {@category Flutter drop-in replacement}
 class FleetPositionedDirectional extends StatelessWidget {
-  /// Creates an animatable version of [PositionedDirectional].
+  /// Corresponding constructor to [PositionedDirectional].
   const FleetPositionedDirectional({
     super.key,
     this.start,
@@ -535,7 +549,7 @@ class FleetSizedBox extends SizedBox
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _SizedBoxAnimatableParameters> {
-  /// Creates an animatable version of [SizedBox].
+  /// Corresponding constructor to [SizedBox].
   const FleetSizedBox({
     super.key,
     super.height,
@@ -543,11 +557,17 @@ class FleetSizedBox extends SizedBox
     super.child,
   });
 
-  /// See [SizedBox.fromSize].
+  /// Corresponding constructor to [SizedBox.expand].
+  FleetSizedBox.expand({super.key, super.child});
+
+  /// Corresponding constructor to [SizedBox.shrink].
+  FleetSizedBox.shrink({super.key, super.child});
+
+  /// Corresponding constructor to [SizedBox.fromSize].
   FleetSizedBox.fromSize({super.key, super.child, super.size})
       : super.fromSize();
 
-  /// See [SizedBox.square].
+  /// Corresponding constructor to [SizedBox.square].
   const FleetSizedBox.square({super.key, super.child, super.dimension})
       : super.square();
 
@@ -596,7 +616,7 @@ class FleetSliverOpacity extends SliverOpacity
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _SliverOpacityAnimatableParameters> {
-  /// Creates an animatable version of [SliverOpacity].
+  /// Corresponding constructor to [SliverOpacity].
   const FleetSliverOpacity({
     super.key,
     required super.opacity,
@@ -642,7 +662,7 @@ class FleetSliverPadding extends SliverPadding
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
             _SliverPaddingAnimatableParameters> {
-  /// Creates an animatable version of [SliverPadding].
+  /// Corresponding constructor to [SliverPadding].
   const FleetSliverPadding({super.key, required super.padding, super.sliver});
 
   @override
@@ -676,7 +696,7 @@ class FleetSliverPadding extends SliverPadding
 ///
 /// {@category Flutter drop-in replacement}
 abstract class FleetTransform extends Transform {
-  /// Creates an animatable version of [Transform].
+  /// Corresponding constructor to [Transform].
   const factory FleetTransform({
     Key? key,
     required Matrix4 transform,
@@ -687,7 +707,7 @@ abstract class FleetTransform extends Transform {
     Widget? child,
   }) = _MatrixTransform;
 
-  /// Creates an animatable version of [Transform.rotate].
+  /// Corresponding constructor to [Transform.rotate].
   factory FleetTransform.rotate({
     Key? key,
     required double angle,
@@ -698,7 +718,7 @@ abstract class FleetTransform extends Transform {
     Widget? child,
   }) = _RotateTransform;
 
-  /// Creates an animatable version of [Transform.translate].
+  /// Corresponding constructor to [Transform.translate].
   factory FleetTransform.translate({
     Key? key,
     required Offset offset,
@@ -707,7 +727,7 @@ abstract class FleetTransform extends Transform {
     Widget? child,
   }) = _TranslateTransform;
 
-  /// Creates an animatable version of [Transform.scale].
+  /// Corresponding constructor to [Transform.scale].
   factory FleetTransform.scale({
     Key? key,
     double? scale,
@@ -737,9 +757,6 @@ typedef _TransformAnimatableParameters<T> = ({
   OptionalAnimatableAlignmentGeometry alignment,
 });
 
-/// Animatable version of [Transform].
-///
-/// {@category Flutter drop-in replacement}
 abstract class _TransformBase<T> extends FleetTransform
     with
         AnimatableSingleChildRenderObjectWidgetMixin<
@@ -1048,6 +1065,14 @@ final class _DefaultHorizontalMainAxisSize
   MainAxisSize defaultValue(BuildContext context) => MainAxisSize.max;
 }
 
+/// [EnvironmentKey] for the default value for [FleetFlex.mainAxisSize] that is
+/// used when no [MainAxisSize] is explicitly specified.
+///
+/// The default value is [MainAxisSize.max].
+///
+/// See also:
+///
+/// - [OpinionatedDefaults], which overrides this default.
 const defaultHorizontalMainAxisSize = _DefaultHorizontalMainAxisSize();
 
 final class _DefaultVerticalMainAxisSize
@@ -1058,19 +1083,38 @@ final class _DefaultVerticalMainAxisSize
   MainAxisSize defaultValue(BuildContext context) => MainAxisSize.max;
 }
 
+/// [EnvironmentKey] for the default value for [FleetFlex.mainAxisSize] that is
+/// used when no [MainAxisSize] is explicitly specified.
+///
+/// The default value is [MainAxisSize.max].
+///
+/// See also:
+///
+/// - [OpinionatedDefaults], which overrides this default.
 const defaultVerticalMainAxisSize = _DefaultVerticalMainAxisSize();
 
+/// Extension-based widget modifiers for [FleetFlex] specific features.
 extension FleetFlexModifiers on Widget {
+  /// Overrides the default value for [FleetFlex.mainAxisSize] that is used
+  /// when no [MainAxisSize] is explicitly specified, for this widget and its
+  /// descendants.
   @widgetFactory
   Widget defaultHorizontalMainAxisSize(MainAxisSize value) =>
       const _DefaultHorizontalMainAxisSize().update(value: value, child: this);
 
+  /// Overrides the default value for [FleetFlex.mainAxisSize] that is used
+  /// when no [MainAxisSize] is explicitly specified, for this widget and its
+  /// descendants.
   @widgetFactory
   Widget defaultVerticalMainAxisSize(MainAxisSize value) =>
       const _DefaultVerticalMainAxisSize().update(value: value, child: this);
 }
 
+/// Fleet's drop-in replacement of [Flex].
+///
+/// {@category Flutter drop-in replacement}
 class FleetFlex extends StatelessWidget {
+  /// Corresponding constructor to [Flex].
   const FleetFlex({
     super.key,
     required this.direction,
@@ -1086,27 +1130,40 @@ class FleetFlex extends StatelessWidget {
   }) : assert(
           !identical(crossAxisAlignment, CrossAxisAlignment.baseline) ||
               textBaseline != null,
-          'textBaseline is required if you specify the crossAxisAlignment with CrossAxisAlignment.baseline',
+          'textBaseline is required if you specify the crossAxisAlignment with '
+          'CrossAxisAlignment.baseline',
         );
 
+  /// See [Flex.direction].
   final Axis direction;
 
+  /// See [Flex.mainAxisAlignment].
   final MainAxisAlignment mainAxisAlignment;
 
+  /// See [Flex.mainAxisSize].
   final MainAxisSize? mainAxisSize;
 
+  /// See [Flex.crossAxisAlignment].
   final CrossAxisAlignment crossAxisAlignment;
 
+  /// See [Flex.textDirection].
   final TextDirection? textDirection;
 
+  /// See [Flex.verticalDirection].
   final VerticalDirection verticalDirection;
 
+  /// See [Flex.textBaseline].
   final TextBaseline? textBaseline;
 
+  /// See [Flex.clipBehavior].
   final Clip clipBehavior;
 
+  /// The amount of space to place between children in a run in the main axis.
+  ///
+  /// If this is null, no spacing is added.
   final double? spacing;
 
+  /// See [Flex.children].
   final List<Widget> children;
 
   bool get _needTextDirection {
@@ -1119,6 +1176,7 @@ class FleetFlex extends StatelessWidget {
     }
   }
 
+  /// See [Flex.getEffectiveTextDirection].
   @protected
   TextDirection? getEffectiveTextDirection(BuildContext context) {
     return textDirection ??
@@ -1126,7 +1184,7 @@ class FleetFlex extends StatelessWidget {
   }
 
   @protected
-  MainAxisSize getEffectiveMainAxisSize(BuildContext context) {
+  MainAxisSize _getEffectiveMainAxisSize(BuildContext context) {
     return mainAxisSize ??
         switch (direction) {
           Axis.horizontal => defaultHorizontalMainAxisSize.of(context),
@@ -1155,7 +1213,7 @@ class FleetFlex extends StatelessWidget {
     return Flex(
       direction: direction,
       mainAxisAlignment: mainAxisAlignment,
-      mainAxisSize: getEffectiveMainAxisSize(context),
+      mainAxisSize: _getEffectiveMainAxisSize(context),
       crossAxisAlignment: crossAxisAlignment,
       textDirection: getEffectiveTextDirection(context),
       verticalDirection: verticalDirection,
@@ -1212,7 +1270,11 @@ class FleetFlex extends StatelessWidget {
   }
 }
 
+/// Fleet's drop-in replacement of [Row].
+///
+/// {@category Flutter drop-in replacement}
 class FleetRow extends FleetFlex {
+  /// Corresponding constructor to [Row].
   const FleetRow({
     super.key,
     super.mainAxisAlignment,
@@ -1227,7 +1289,11 @@ class FleetRow extends FleetFlex {
   }) : super(direction: Axis.horizontal);
 }
 
+/// Fleet's drop-in replacement of [Column].
+///
+/// {@category Flutter drop-in replacement}
 class FleetColumn extends FleetFlex {
+  /// Corresponding constructor to [Column].
   const FleetColumn({
     super.key,
     super.mainAxisAlignment,
@@ -1242,7 +1308,9 @@ class FleetColumn extends FleetFlex {
   }) : super(direction: Axis.vertical);
 }
 
-extension FleetFlexCall on FleetFlex {
+/// Extension to provide children of [FleetFlex] through partial-application.
+extension FleetFlexApplyChildren on FleetFlex {
+  /// Returns a new [FleetFlex] with the given [children].
   @widgetFactory
   FleetFlex call(List<Widget> children) {
     return FleetFlex(
@@ -1260,7 +1328,9 @@ extension FleetFlexCall on FleetFlex {
   }
 }
 
-extension FleetRowCall on FleetRow {
+/// Extension to provide children of [FleetRow] through partial-application.
+extension FleetRowApplyChildren on FleetRow {
+  /// Returns a new [FleetRow] with the given [children].
   @widgetFactory
   FleetRow call(List<Widget> children) {
     return FleetRow(
@@ -1277,7 +1347,9 @@ extension FleetRowCall on FleetRow {
   }
 }
 
-extension FleetColumnCall on FleetColumn {
+/// Extension to provide children of [FleetColumn] through partial-application.
+extension FleetColumnApplyChildren on FleetColumn {
+  /// Returns a new [FleetColumn] with the given [children].
   @widgetFactory
   FleetColumn call(List<Widget> children) {
     return FleetColumn(
@@ -1294,13 +1366,51 @@ extension FleetColumnCall on FleetColumn {
   }
 }
 
-extension FleetStackCall on Stack {
+/// Extension to provide children of [Stack] through partial-application.
+extension FleetStackApplyChildren on Stack {
+  /// Returns a new [Stack] with the given [children].
   @widgetFactory
   Stack call(List<Widget> children) {
     return Stack(
       alignment: alignment,
       textDirection: textDirection,
       fit: fit,
+      clipBehavior: clipBehavior,
+      children: children,
+    );
+  }
+}
+
+/// Extension to provide children of [IndexedStack] through partial-application.
+extension FleetIndexedStackApplyChildren on IndexedStack {
+  /// Returns a new [IndexedStack] with the given [children].
+  @widgetFactory
+  IndexedStack call(List<Widget> children) {
+    return IndexedStack(
+      alignment: alignment,
+      textDirection: textDirection,
+      clipBehavior: clipBehavior,
+      sizing: sizing,
+      index: index,
+      children: children,
+    );
+  }
+}
+
+/// Extension to provide children of [Wrap] through partial-application.
+extension FleetWrapApplyChildren on Wrap {
+  /// Returns a new [Wrap] with the given [children].
+  @widgetFactory
+  Wrap call(List<Widget> children) {
+    return Wrap(
+      direction: direction,
+      alignment: alignment,
+      spacing: spacing,
+      runAlignment: runAlignment,
+      runSpacing: runSpacing,
+      crossAxisAlignment: crossAxisAlignment,
+      textDirection: textDirection,
+      verticalDirection: verticalDirection,
       clipBehavior: clipBehavior,
       children: children,
     );

@@ -33,7 +33,30 @@ extension FleetAnimationModifiers on Widget {
 extension BasicModifiers on Widget {
   /// Aligns this widget within the available space.
   @widgetFactory
-  Widget align(
+  Widget alignment({
+    double? start,
+    double? x,
+    double y = 0,
+    double? widthFactor,
+    double? heightFactor,
+  }) {
+    assert(
+      (start == null || x == null) && (start != null || x != null),
+      'Exactly one of start or x must be provided.',
+    );
+    return alignmentFrom(
+      switch (start) {
+        final start? => AlignmentDirectional(start, y),
+        _ => Alignment(x!, y),
+      },
+      widthFactor: widthFactor,
+      heightFactor: heightFactor,
+    );
+  }
+
+  /// Aligns this widget within the available space.
+  @widgetFactory
+  Widget alignmentFrom(
     AlignmentGeometry alignment, {
     double? widthFactor,
     double? heightFactor,
@@ -52,7 +75,7 @@ extension BasicModifiers on Widget {
     double? widthFactor,
     double? heightFactor,
   }) {
-    return FleetAlign(
+    return FleetCenter(
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       child: this,
@@ -71,7 +94,7 @@ extension BasicModifiers on Widget {
 
   /// Sizes this widget to the given [Size].
   @widgetFactory
-  Widget sizeWith(Size size) {
+  Widget sizeFrom(Size size) {
     return FleetSizedBox.fromSize(
       size: size,
       child: this,
@@ -80,11 +103,23 @@ extension BasicModifiers on Widget {
 
   /// Sizes this widget to a square with the given [dimension].
   @widgetFactory
-  Widget square(double dimension) {
+  Widget squareDimension(double dimension) {
     return FleetSizedBox.square(
       dimension: dimension,
       child: this,
     );
+  }
+
+  /// Sizes this widget to become as large as its parent allows.
+  @widgetFactory
+  Widget maximalSize() {
+    return FleetSizedBox.expand(child: this);
+  }
+
+  /// Sizes this widget to become as small as its parent allows.
+  @widgetFactory
+  Widget minimalSize() {
+    return FleetSizedBox.shrink(child: this);
   }
 
   /// Adds [padding] around this widget.
@@ -136,7 +171,7 @@ extension BasicModifiers on Widget {
 
   /// Rotates this widget by [angle] radians.
   @widgetFactory
-  Widget rotate(
+  Widget rotation(
     double angle, {
     Offset? origin,
     AlignmentGeometry? alignment,
@@ -153,9 +188,24 @@ extension BasicModifiers on Widget {
     );
   }
 
+  /// Translates this widget by [x] and [y].
+  @widgetFactory
+  Widget offset({
+    double x = 0,
+    double y = 0,
+    bool transformHitTests = true,
+    FilterQuality? filterQuality,
+  }) {
+    return offsetFrom(
+      Offset(x, y),
+      transformHitTests: transformHitTests,
+      filterQuality: filterQuality,
+    );
+  }
+
   /// Translates this widget by [offset].
   @widgetFactory
-  Widget translate(
+  Widget offsetFrom(
     Offset offset, {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
@@ -204,6 +254,31 @@ extension BasicModifiers on Widget {
       alignment: alignment,
       transformHitTests: transformHitTests,
       filterQuality: filterQuality,
+      child: this,
+    );
+  }
+
+  /// Sizes this widget so that it fills the available space within its parent
+  /// [Row], [Column], or [Flex] widget.
+  @widgetFactory
+  Widget expanded([int flex = 1]) {
+    return this.flex(flex, fit: FlexFit.tight);
+  }
+
+  /// Sizes this widget within the constraints of the available space within its
+  /// parent [Row], [Column], or [Flex] widget.
+  @widgetFactory
+  Widget flexible([int flex = 1]) {
+    return this.flex(flex);
+  }
+
+  /// Specifies how this widget is supposed to fill the available space in the
+  /// main axis within its parent [Row], [Column], or [Flex] widget.
+  @widgetFactory
+  Widget flex(int flex, {FlexFit fit = FlexFit.loose}) {
+    return Flexible(
+      flex: flex,
+      fit: fit,
       child: this,
     );
   }

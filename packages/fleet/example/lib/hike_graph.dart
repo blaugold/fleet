@@ -120,7 +120,8 @@ class GraphCapsule extends StatelessWidget {
         shape: const StadiumBorder(),
         color: color,
       ),
-    ).translate(Offset(0, -height * relativeRange.min));
+    ) //
+        .offset(y: -height * relativeRange.min);
   }
 }
 

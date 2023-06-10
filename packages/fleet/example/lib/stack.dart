@@ -39,7 +39,7 @@ class StackElement extends StatelessWidget {
     required this.left,
   });
 
-  static const _stackDimension = 500.0;
+  static const _stackSize = 500.0;
   static const _step = 70.0;
 
   final int index;
@@ -54,16 +54,16 @@ class StackElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final elementDimension = _stackDimension - (index * _step);
+    final size = _stackSize - (index * _step);
     return Material(
       elevation: 50,
       color: _buildColor(),
-      borderRadius: BorderRadius.circular(elementDimension / 20),
+      borderRadius: BorderRadius.circular(size / 20),
     )
-        .square(elementDimension)
+        .squareDimension(size)
         .center()
-        .square(_stackDimension)
-        .align(Alignment(left ? -.5 : .5, 0))
+        .squareDimension(_stackSize)
+        .alignment(x: left ? -.5 : .5)
         .animation(_buildAnimation(), value: left);
   }
 }

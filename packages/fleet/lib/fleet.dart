@@ -5,9 +5,9 @@ export 'src/animation/animatable_render_object_widget.dart'
 export 'src/animation/animatable_stateless_widget.dart'
     show AnimatableStatelessWidget;
 export 'src/animation/animate.dart'
-    show Animated, withAnimation, AnimatingStateMixin;
+    show Animated, AnimatingStateMixin, withAnimation;
 export 'src/animation/animation.dart'
-    show AnimationSpec, AnimationFromCurveExtension;
+    show AnimationFromCurveExtension, AnimationSpec;
 export 'src/animation/duration.dart' show DurationFromIntExtension;
 export 'src/animation/parameter.dart'
     show
@@ -21,6 +21,8 @@ export 'src/animation/parameter.dart'
         AnimatableMatrix4,
         AnimatableObject,
         AnimatableParameter,
+        AnimatableParameterHost,
+        AnimatableParameterHostMixin,
         AnimatableRect,
         AnimatableSize,
         OptionalAnimatableAlignmentGeometry,
@@ -33,33 +35,34 @@ export 'src/animation/parameter.dart'
         OptionalAnimatableMatrix4,
         OptionalAnimatableObject,
         OptionalAnimatableRect,
-        OptionalAnimatableSize,
-        AnimatableParameterHostMixin,
-        AnimatableParameterHost;
+        OptionalAnimatableSize;
 export 'src/common.dart' show Block;
 export 'src/environment.dart' show EnvironmentKey, EnvironmentValueModifiers;
 export 'src/widgets/basic_flutter_widgets.dart'
     show
         FleetAlign,
+        FleetCenter,
         FleetColoredBox,
+        FleetColumn,
+        FleetColumnApplyChildren,
         FleetContainer,
+        FleetFlex,
+        FleetFlexApplyChildren,
+        FleetIndexedStackApplyChildren,
         FleetOpacity,
         FleetPadding,
         FleetPositioned,
         FleetPositionedDirectional,
+        FleetRow,
+        FleetRowApplyChildren,
         FleetSizedBox,
         FleetSliverOpacity,
         FleetSliverPadding,
+        FleetStackApplyChildren,
         FleetTransform,
-        FleetColumn,
-        FleetFlex,
-        FleetRow,
+        FleetWrapApplyChildren,
         defaultHorizontalMainAxisSize,
-        defaultVerticalMainAxisSize,
-        FleetColumnCall,
-        FleetFlexCall,
-        FleetRowCall,
-        FleetStackCall;
+        defaultVerticalMainAxisSize;
 export 'src/widgets/opinionated_defaults.dart' show OpinionatedDefaults;
 export 'src/widgets/uniform_padding.dart'
     show Edge, Edges, UniformPadding, defaultUniformPadding;

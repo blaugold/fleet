@@ -31,7 +31,7 @@ class _PageState extends State<Page> {
           .boxColor(Colors.orange)
           .center()
           .boxColor(_expanded ? Colors.green : Colors.blue)
-          .sizeWith(_expanded ? const Size.square(400) : const Size.square(200))
+          .squareDimension(_expanded ? 400 : 200)
           .animation(Curves.ease.animation(1.s))
           .center(),
     );
