@@ -1,6 +1,6 @@
 import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
-import 'package:flutter/material.dart';
+import 'package:fleet_imports/flutter/material.dart';
 
 import 'app.dart';
 
@@ -21,7 +21,7 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const FleetColumn(spacing: 10)([
+      body: const Column(spacing: 10)([
         SegmentedButton<Observation>(
           segments: const [
             ButtonSegment(
@@ -78,7 +78,7 @@ class HikeGraph extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return FleetRow(
+        return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           spacing: constraints.maxWidth / 120,
         )([
@@ -113,7 +113,7 @@ class GraphCapsule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final relativeRange = range.relativeTo(overallRange);
-    return FleetContainer(
+    return Container(
       height: height * relativeRange.magnitude,
       width: 24,
       decoration: ShapeDecoration(

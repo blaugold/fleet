@@ -124,21 +124,40 @@ extension BasicModifiers on Widget {
 
   /// Adds [padding] around this widget.
   @widgetFactory
-  Widget padding(EdgeInsetsGeometry padding) {
-    return FleetPadding(
-      padding: padding,
-      child: this,
-    );
+  Widget padding(EdgeInsetsGeometry padding, {bool sliver = false}) {
+    if (sliver) {
+      return FleetSliverPadding(
+        padding: padding,
+        sliver: this,
+      );
+    } else {
+      return FleetPadding(
+        padding: padding,
+        child: this,
+      );
+    }
   }
 
   /// Applies opacity to this widget.
   @widgetFactory
-  Widget opacity(double opacity, {bool alwaysIncludeSemantics = false}) {
-    return FleetOpacity(
-      opacity: opacity,
-      alwaysIncludeSemantics: alwaysIncludeSemantics,
-      child: this,
-    );
+  Widget opacity(
+    double opacity, {
+    bool alwaysIncludeSemantics = false,
+    bool sliver = false,
+  }) {
+    if (sliver) {
+      return FleetSliverOpacity(
+        opacity: opacity,
+        alwaysIncludeSemantics: alwaysIncludeSemantics,
+        sliver: this,
+      );
+    } else {
+      return FleetOpacity(
+        opacity: opacity,
+        alwaysIncludeSemantics: alwaysIncludeSemantics,
+        child: this,
+      );
+    }
   }
 
   /// Paints the area of this widget.
@@ -279,6 +298,80 @@ extension BasicModifiers on Widget {
     return Flexible(
       flex: flex,
       fit: fit,
+      child: this,
+    );
+  }
+
+  /// Positions this widget within its parent [Stack] widget.
+  @widgetFactory
+  Widget position({
+    double? start,
+    double? end,
+    double? left,
+    double? right,
+    double? top,
+    double? bottom,
+    double? height,
+    double? width,
+    bool fill = false,
+  }) {
+    assert(
+      (start == null && end == null) || (left == null && right == null),
+      'Cannot provide both a start and an end offset and a left and a right '
+      'offset simultaneously.',
+    );
+
+    if (fill) {
+      top ??= 0;
+      bottom ??= 0;
+    }
+
+    if (start != null || end != null) {
+      if (fill) {
+        start ??= 0;
+        end ??= 0;
+      }
+      return FleetPositionedDirectional(
+        start: start,
+        end: end,
+        top: top,
+        bottom: bottom,
+        height: height,
+        width: width,
+        child: this,
+      );
+    } else {
+      if (fill) {
+        left ??= 0;
+        right ??= 0;
+      }
+      return FleetPositioned(
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+        height: height,
+        width: width,
+        child: this,
+      );
+    }
+  }
+
+  /// Positions this widget within its parent [Stack] widget using a [Rect].
+  @widgetFactory
+  Widget positionFromRect(Rect rect) {
+    return FleetPositioned.fromRect(
+      rect: rect,
+      child: this,
+    );
+  }
+
+  /// Positions this widget within its parent [Stack] widget using a
+  /// [RelativeRect].
+  @widgetFactory
+  Widget positionFromRelativeRect(RelativeRect rect) {
+    return FleetPositioned.fromRelativeRect(
+      rect: rect,
       child: this,
     );
   }

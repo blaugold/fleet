@@ -1,6 +1,6 @@
 import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
-import 'package:flutter/material.dart';
+import 'package:fleet_imports/flutter/material.dart';
 
 import 'app.dart';
 
@@ -40,7 +40,7 @@ class _PageState extends State<Page> with AnimatingStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const FleetColumn(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 16,
       )([

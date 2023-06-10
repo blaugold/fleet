@@ -9,6 +9,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   fleet:
     path: ..
+  fleet_imports:
+    path: ../../fleet_imports
   flutter:
     sdk: flutter
 
