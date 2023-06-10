@@ -2,34 +2,31 @@ import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp(page: Page()));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class Page extends StatefulWidget {
+  const Page({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<Page> createState() => _PageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _PageState extends State<Page> {
   var _left = true;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => setState(() => _left = !_left),
-          child: Stack(
-            children: [
-              for (var i = 0; i < 6; i++) StackElement(index: i, left: _left)
-            ],
-          ),
-        ),
+    return Scaffold(
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _left = !_left),
+        child: const Stack()([
+          for (var i = 0; i < 6; i++) StackElement(index: i, left: _left),
+        ]),
       ),
     );
   }
@@ -42,7 +39,7 @@ class StackElement extends StatelessWidget {
     required this.left,
   });
 
-  static const _stackDimension = 500.0;
+  static const _stackSize = 500.0;
   static const _step = 70.0;
 
   final int index;
@@ -57,16 +54,16 @@ class StackElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final elementDimension = _stackDimension - (index * _step);
+    final size = _stackSize - (index * _step);
     return Material(
       elevation: 50,
       color: _buildColor(),
-      borderRadius: BorderRadius.circular(elementDimension / 20),
+      borderRadius: BorderRadius.circular(size / 20),
     )
-        .square(elementDimension)
+        .squareDimension(size)
         .center()
-        .square(_stackDimension)
-        .align(Alignment(left ? -.5 : .5, 0))
+        .squareDimension(_stackSize)
+        .alignment(x: left ? -.5 : .5)
         .animation(_buildAnimation(), value: left);
   }
 }

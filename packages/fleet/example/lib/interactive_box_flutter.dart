@@ -1,36 +1,26 @@
-import 'package:fleet/fleet.dart';
-import 'package:fleet/modifiers.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp(page: Page()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Page extends StatefulWidget {
+  const Page({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
-  }
+  State<Page> createState() => _PageState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _PageState extends State<Page> with SingleTickerProviderStateMixin {
   static final _distanceColorTween =
-      ColorTween(end: Colors.green, begin: Colors.blue);
+      ColorTween(begin: Colors.blue, end: Colors.green);
 
-  late final _controller = AnimationController(duration: 300.ms, vsync: this);
+  late final _controller = AnimationController(
+    duration: const Duration(milliseconds: 300),
+    vsync: this,
+  );
 
   final _alignmentTween = AlignmentTween(end: Alignment.center);
   final _colorTween = ColorTween(end: _distanceColorTween.begin);
@@ -82,11 +72,21 @@ class _MyHomePageState extends State<MyHomePage>
           _colorTween.begin = _color;
           _controller.forward(from: 0);
         },
-        child: const Text('Drag me!', style: TextStyle(color: Colors.white))
-            .center()
-            .boxColor(_color)
-            .square(400)
-            .align(_alignment),
+        child: Align(
+          alignment: _alignment,
+          child: SizedBox.square(
+            dimension: 400,
+            child: ColoredBox(
+              color: _color,
+              child: const Center(
+                child: Text(
+                  'Drag me!',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

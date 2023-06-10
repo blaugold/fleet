@@ -2,30 +2,20 @@ import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp(page: Page()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Page extends StatefulWidget {
+  const Page({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
-  }
+  State<Page> createState() => _PageState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
+class _PageState extends State<Page> with AnimatingStateMixin {
   static const _collapsedColor = Colors.blue;
   static const _expandedColor = Colors.green;
   static const _collapsedSize = Size.square(300);
@@ -50,25 +40,24 @@ class _MyHomePageState extends State<MyHomePage> with AnimatingStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: const FleetColumn(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          TextButton(
-            onPressed: _collapse,
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-            child: const Text('Collapsed'),
-          ),
-          const SizedBox(height: 16),
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-            onPressed: _expand,
-            child: const Text('Expanded'),
-          ),
-        ],
-      ) //
+        spacing: 16,
+      )([
+        TextButton(
+          onPressed: _collapse,
+          style: TextButton.styleFrom(foregroundColor: Colors.white),
+          child: const Text('Collapsed'),
+        ),
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: Colors.white),
+          onPressed: _expand,
+          child: const Text('Expanded'),
+        ),
+      ]) //
           .center()
           .boxColor(_color)
-          .sizeWith(_size)
+          .sizeFrom(_size)
           .center(),
     );
   }

@@ -2,30 +2,20 @@ import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp(page: Page()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Page extends StatefulWidget {
+  const Page({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
-  }
+  State<Page> createState() => _PageState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _PageState extends State<Page> {
   var _expanded = false;
 
   @override
@@ -41,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .boxColor(Colors.orange)
           .center()
           .boxColor(_expanded ? Colors.green : Colors.blue)
-          .sizeWith(_expanded ? const Size.square(400) : const Size.square(200))
+          .squareDimension(_expanded ? 400 : 200)
           .animation(Curves.ease.animation(1.s))
           .center(),
     );
