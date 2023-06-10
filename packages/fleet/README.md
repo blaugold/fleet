@@ -153,6 +153,9 @@ for animating with Fleet:
 - FleetSliverPadding
 - FleetTransform
 
+See the [fleet_imports] package for an way to start using these widgets with
+minimal changes to your code.
+
 The following provided widgets are specific to Fleet:
 
 - UniformPadding
@@ -178,3 +181,4 @@ The following provided widgets are specific to Fleet:
 [animationspec]:
   https://pub.dev/documentation/fleet/latest/fleet/AnimationSpec-class.html
 [animated]: https://pub.dev/documentation/fleet/latest/fleet/Animated-class.html
+[fleet_imports]: https://pub.dev/packages/fleet_imports

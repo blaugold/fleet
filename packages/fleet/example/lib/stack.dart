@@ -1,6 +1,6 @@
 import 'package:fleet/fleet.dart';
 import 'package:fleet/modifiers.dart';
-import 'package:flutter/material.dart';
+import 'package:fleet_imports/flutter/material.dart';
 
 import 'app.dart';
 
