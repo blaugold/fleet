@@ -1,6 +1,7 @@
 name: fleet
 packages:
   - packages/fleet
+  - packages/fleet/example
   - packages/fleet_imports
 repository: https://github.com/blaugold/fleet
 
