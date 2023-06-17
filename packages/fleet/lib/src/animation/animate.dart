@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart' hide Animation;
 
 import '../common.dart';
-import '../widgets/basic_flutter_widgets.dart';
+import '../widgets/flutter/basic.dart';
+import '../widgets/flutter/container.dart';
 import '../widgets/uniform_padding.dart';
 import 'animatable_render_object_widget.dart';
 import 'animatable_stateless_widget.dart';
@@ -153,6 +154,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// - [FleetColoredBox]
 /// - [FleetColumn]
 /// - [FleetContainer]
+/// - [FleetDecoratedBox]
 /// - [FleetFlex]
 /// - [FleetOpacity]
 /// - [FleetPadding]

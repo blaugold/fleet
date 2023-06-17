@@ -2,9 +2,10 @@ import 'package:flutter/widgets.dart';
 
 import 'src/animation/animate.dart';
 import 'src/animation/animation.dart';
-import 'src/widgets/basic_flutter_widgets.dart';
+import 'src/widgets/flutter/basic.dart';
+import 'src/widgets/flutter/container.dart';
 
-export 'src/widgets/basic_flutter_widgets.dart' show FleetFlexModifiers;
+export 'src/widgets/flutter/basic.dart' show FleetFlexModifiers;
 export 'src/widgets/opinionated_defaults.dart' show OpinionatedDefaultsModifier;
 export 'src/widgets/uniform_padding.dart' show UniformPaddingModifiers;
 
@@ -255,7 +256,7 @@ extension BasicModifiers on Widget {
     );
   }
 
-  /// Translates this widget by [x] and [y] or an [offset].
+  /// Offsets this widget by [x] and [y] or an [offset].
   @widgetFactory
   Widget offset({
     double? x,
@@ -263,7 +264,12 @@ extension BasicModifiers on Widget {
     Offset? offset,
     bool transformHitTests = true,
     FilterQuality? filterQuality,
+    bool fractional = false,
   }) {
+    assert(
+      !fractional || filterQuality == null,
+      'offset cannot be fractional and specify filterQuality.',
+    );
     assert(() {
       _debugCheckParameterCombinations(modifier: 'offset', [
         {'x': x, 'y': y},
@@ -272,12 +278,22 @@ extension BasicModifiers on Widget {
       return true;
     }());
 
-    return FleetTransform.translate(
-      offset: offset ?? Offset(x ?? 0, y ?? 0),
-      transformHitTests: transformHitTests,
-      filterQuality: filterQuality,
-      child: this,
-    );
+    offset ??= Offset(x ?? 0, y ?? 0);
+
+    if (fractional) {
+      return FleetFractionalTranslation(
+        translation: offset,
+        transformHitTests: transformHitTests,
+        child: this,
+      );
+    } else {
+      return FleetTransform.translate(
+        offset: offset,
+        transformHitTests: transformHitTests,
+        filterQuality: filterQuality,
+        child: this,
+      );
+    }
   }
 
   /// Scales this widget by [xy] for both the x and y axis or [x] and [y]
@@ -420,6 +436,72 @@ extension BasicModifiers on Widget {
         );
       }
     }
+  }
+}
+
+/// Extension-based widget modifiers, which use Fleet's drop-in replacements for
+/// [DecoratedBox].
+extension DecorationModifiers on Widget {
+  /// Paints a decoration either after (default) or before this widget.
+  @widgetFactory
+  Widget decoration({
+    // Common parameters for all decorations
+    Color? color,
+    DecorationImage? image,
+    Gradient? gradient,
+    List<BoxShadow>? shadows,
+    // BoxDecoration specific parameters
+    BoxBorder? border,
+    BorderRadiusGeometry? borderRadius,
+    BlendMode? backgroundBlendMode,
+    BoxShape? boxShape,
+    // ShapeDecoration specific parameters
+    ShapeBorder? shape,
+    // DecoratedBox parameters
+    Decoration? decoration,
+    DecorationPosition position = DecorationPosition.background,
+  }) {
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'decoration', [
+        {
+          'border': border,
+          'borderRadius': borderRadius,
+          'backgroundBlendMode': backgroundBlendMode,
+          'boxShape': boxShape,
+        },
+        {'shape': shape}
+      ]);
+      return true;
+    }());
+
+    if (decoration == null) {
+      if (shape != null) {
+        decoration = ShapeDecoration(
+          shape: shape,
+          color: color,
+          image: image,
+          gradient: gradient,
+          shadows: shadows,
+        );
+      } else {
+        decoration = BoxDecoration(
+          color: color,
+          image: image,
+          gradient: gradient,
+          boxShadow: shadows,
+          border: border,
+          borderRadius: borderRadius,
+          shape: boxShape ?? BoxShape.rectangle,
+          backgroundBlendMode: backgroundBlendMode,
+        );
+      }
+    }
+
+    return FleetDecoratedBox(
+      decoration: decoration,
+      position: position,
+      child: this,
+    );
   }
 }
 

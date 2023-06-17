@@ -7,6 +7,7 @@ export 'package:flutter/widgets.dart'
         ColoredBox,
         Column,
         Container,
+        DecoratedBox,
         Flex,
         Opacity,
         Padding,
@@ -32,6 +33,9 @@ typedef Column = FleetColumn;
 
 /// Fleet drop-in replacement for [Container].
 typedef Container = FleetContainer;
+
+/// Fleet drop-in replacement for [DecoratedBox].
+typedef DecoratedBox = FleetDecoratedBox;
 
 /// Fleet drop-in replacement for [Flex].
 typedef Flex = FleetFlex;

@@ -142,6 +142,7 @@ for animating with Fleet:
 - FleetColoredBox
 - FleetColumn
 - FleetContainer
+- FleetDecoratedBox
 - FleetFlex
 - FleetOpacity
 - FleetPadding

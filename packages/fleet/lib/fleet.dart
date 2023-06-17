@@ -38,16 +38,16 @@ export 'src/animation/parameter.dart'
         OptionalAnimatableSize;
 export 'src/common.dart' show Block;
 export 'src/environment.dart' show EnvironmentKey, EnvironmentValueModifiers;
-export 'src/widgets/basic_flutter_widgets.dart'
+export 'src/widgets/flutter/basic.dart'
     show
         FleetAlign,
         FleetCenter,
         FleetColoredBox,
         FleetColumn,
         FleetColumnApplyChildren,
-        FleetContainer,
         FleetFlex,
         FleetFlexApplyChildren,
+        FleetFractionalTranslation,
         FleetIndexedStackApplyChildren,
         FleetOpacity,
         FleetPadding,
@@ -63,6 +63,8 @@ export 'src/widgets/basic_flutter_widgets.dart'
         FleetWrapApplyChildren,
         defaultHorizontalMainAxisSize,
         defaultVerticalMainAxisSize;
+export 'src/widgets/flutter/container.dart'
+    show FleetContainer, FleetDecoratedBox;
 export 'src/widgets/opinionated_defaults.dart' show OpinionatedDefaults;
 export 'src/widgets/uniform_padding.dart'
     show Edge, Edges, UniformPadding, defaultUniformPadding;
