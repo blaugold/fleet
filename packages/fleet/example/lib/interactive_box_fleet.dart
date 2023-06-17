@@ -44,10 +44,10 @@ class _PageState extends State<Page> with AnimatingStateMixin {
           });
         },
         child: const Text('Drag me!', style: TextStyle(color: Colors.white))
-            .center()
+            .centered()
             .boxColor(_color)
-            .squareDimension(400)
-            .alignmentFrom(_alignment),
+            .size(square: 400)
+            .alignment(alignment: _alignment),
       ),
     );
   }

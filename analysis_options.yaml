@@ -60,3 +60,5 @@ linter:
     prefer_final_parameters: false
 
     diagnostic_describe_all_properties: false
+
+    parameter_assignments: false

@@ -60,9 +60,9 @@ class StackElement extends StatelessWidget {
       color: _buildColor(),
       borderRadius: BorderRadius.circular(size / 20),
     )
-        .squareDimension(size)
-        .center()
-        .squareDimension(_stackSize)
+        .size(square: size)
+        .centered()
+        .size(square: _stackSize)
         .alignment(x: left ? -.5 : .5)
         .animation(_buildAnimation(), value: left);
   }
