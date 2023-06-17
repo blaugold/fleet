@@ -36,45 +36,41 @@ extension BasicModifiers on Widget {
   Widget alignment({
     double? start,
     double? x,
-    double y = 0,
+    double? y,
+    AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    assert(
-      (start == null || x == null) && (start != null || x != null),
-      'Exactly one of start or x must be provided.',
-    );
-    return alignmentFrom(
-      switch (start) {
-        final start? => AlignmentDirectional(start, y),
-        _ => Alignment(x!, y),
-      },
-      widthFactor: widthFactor,
-      heightFactor: heightFactor,
-    );
-  }
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'alignment', [
+        {'start': start},
+        {'x': x}
+      ]);
+      _debugCheckParameterCombinations(modifier: 'alignment', [
+        {'start': start, 'x': x, 'y': y},
+        {'alignment': alignment}
+      ]);
+      return true;
+    }());
 
-  /// Aligns this widget within the available space.
-  @widgetFactory
-  Widget alignmentFrom(
-    AlignmentGeometry alignment, {
-    double? widthFactor,
-    double? heightFactor,
-  }) {
+    if (alignment == null) {
+      if (start != null) {
+        alignment = AlignmentDirectional(start, y ?? 0);
+      } else {
+        alignment = Alignment(x ?? 0, y ?? 0);
+      }
+    }
+
     return FleetAlign(
       alignment: alignment,
       widthFactor: widthFactor,
       heightFactor: heightFactor,
-      child: this,
     );
   }
 
   /// Centers this widget within the available space
   @widgetFactory
-  Widget center({
-    double? widthFactor,
-    double? heightFactor,
-  }) {
+  Widget centered({double? widthFactor, double? heightFactor}) {
     return FleetCenter(
       widthFactor: widthFactor,
       heightFactor: heightFactor,
@@ -82,49 +78,101 @@ extension BasicModifiers on Widget {
     );
   }
 
-  /// Sizes this widget to the given [width] and [height].
+  /// Applies tight size constraints to this widget.
   @widgetFactory
-  Widget size({double? width, double? height}) {
-    return FleetSizedBox(
-      width: width,
-      height: height,
-      child: this,
-    );
+  Widget size({
+    double? width,
+    double? height,
+    Size? size,
+    double? square,
+    bool? expand,
+    bool? shrink,
+  }) {
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'size', [
+        {'width': width, 'height': height},
+        {'size': size},
+        {'square': square},
+        {'expand': expand},
+        {'shrink': shrink}
+      ]);
+      return true;
+    }());
+
+    if (expand ?? false) {
+      return FleetSizedBox.expand(child: this);
+    } else if (shrink ?? false) {
+      return FleetSizedBox.shrink(child: this);
+    } else {
+      return FleetSizedBox(
+        width: width ?? size?.width ?? square,
+        height: height ?? size?.height ?? square,
+        child: this,
+      );
+    }
   }
 
-  /// Sizes this widget to the given [Size].
+  /// Adds padding around this widget.
   @widgetFactory
-  Widget sizeFrom(Size size) {
-    return FleetSizedBox.fromSize(
-      size: size,
-      child: this,
-    );
-  }
+  Widget padding({
+    double? start,
+    double? end,
+    double? left,
+    double? right,
+    double? top,
+    double? bottom,
+    double? horizontal,
+    double? vertical,
+    double? all,
+    EdgeInsetsGeometry? padding,
+    bool sliver = false,
+  }) {
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'padding', [
+        {'start': start, 'end': end},
+        {'left': left, 'right': right},
+      ]);
+      _debugCheckParameterCombinations(modifier: 'padding', [
+        {
+          'start': start,
+          'end': end,
+          'left': left,
+          'right': right,
+          'top': top,
+          'bottom': bottom
+        },
+        {'horizontal': horizontal, 'vertical': vertical},
+        {'all': all},
+        {'padding': padding}
+      ]);
+      return true;
+    }());
 
-  /// Sizes this widget to a square with the given [dimension].
-  @widgetFactory
-  Widget squareDimension(double dimension) {
-    return FleetSizedBox.square(
-      dimension: dimension,
-      child: this,
-    );
-  }
+    if (padding == null) {
+      if (all != null) {
+        padding = EdgeInsets.all(all);
+      } else if (horizontal != null || vertical != null) {
+        padding = EdgeInsets.symmetric(
+          horizontal: horizontal ?? 0,
+          vertical: vertical ?? 0,
+        );
+      } else if (start != null || end != null) {
+        padding = EdgeInsetsDirectional.only(
+          start: start ?? 0,
+          end: end ?? 0,
+          top: top ?? 0,
+          bottom: bottom ?? 0,
+        );
+      } else {
+        padding = EdgeInsets.only(
+          left: left ?? 0,
+          right: right ?? 0,
+          top: top ?? 0,
+          bottom: bottom ?? 0,
+        );
+      }
+    }
 
-  /// Sizes this widget to become as large as its parent allows.
-  @widgetFactory
-  Widget maximalSize() {
-    return FleetSizedBox.expand(child: this);
-  }
-
-  /// Sizes this widget to become as small as its parent allows.
-  @widgetFactory
-  Widget minimalSize() {
-    return FleetSizedBox.shrink(child: this);
-  }
-
-  /// Adds [padding] around this widget.
-  @widgetFactory
-  Widget padding(EdgeInsetsGeometry padding, {bool sliver = false}) {
     if (sliver) {
       return FleetSliverPadding(
         padding: padding,
@@ -160,7 +208,7 @@ extension BasicModifiers on Widget {
     }
   }
 
-  /// Paints the area of this widget.
+  /// Fills the area behind this widget with a [color].
   @widgetFactory
   Widget boxColor(Color color) {
     return FleetColoredBox(
@@ -207,58 +255,36 @@ extension BasicModifiers on Widget {
     );
   }
 
-  /// Translates this widget by [x] and [y].
+  /// Translates this widget by [x] and [y] or an [offset].
   @widgetFactory
   Widget offset({
-    double x = 0,
-    double y = 0,
+    double? x,
+    double? y,
+    Offset? offset,
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
-    return offsetFrom(
-      Offset(x, y),
-      transformHitTests: transformHitTests,
-      filterQuality: filterQuality,
-    );
-  }
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'offset', [
+        {'x': x, 'y': y},
+        {'offset': offset}
+      ]);
+      return true;
+    }());
 
-  /// Translates this widget by [offset].
-  @widgetFactory
-  Widget offsetFrom(
-    Offset offset, {
-    bool transformHitTests = true,
-    FilterQuality? filterQuality,
-  }) {
     return FleetTransform.translate(
-      offset: offset,
+      offset: offset ?? Offset(x ?? 0, y ?? 0),
       transformHitTests: transformHitTests,
       filterQuality: filterQuality,
       child: this,
     );
   }
 
-  /// Scales this widget by [scale].
+  /// Scales this widget by [xy] for both the x and y axis or [x] and [y]
+  /// separately.
   @widgetFactory
-  Widget scale(
-    double scale, {
-    Offset? origin,
-    AlignmentGeometry? alignment,
-    bool transformHitTests = true,
-    FilterQuality? filterQuality,
-  }) {
-    return FleetTransform.scale(
-      scale: scale,
-      origin: origin,
-      alignment: alignment,
-      transformHitTests: transformHitTests,
-      filterQuality: filterQuality,
-      child: this,
-    );
-  }
-
-  /// Scales this widget individually along the x and y axes.
-  @widgetFactory
-  Widget scaleXY({
+  Widget scale({
+    double? xy,
     double? x,
     double? y,
     Offset? origin,
@@ -266,9 +292,17 @@ extension BasicModifiers on Widget {
     bool transformHitTests = true,
     FilterQuality? filterQuality,
   }) {
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'scale', [
+        {'xy': xy},
+        {'x': x, 'y': y}
+      ]);
+      return true;
+    }());
+
     return FleetTransform.scale(
-      scaleX: x,
-      scaleY: y,
+      scaleX: x ?? xy,
+      scaleY: y ?? xy,
       origin: origin,
       alignment: alignment,
       transformHitTests: transformHitTests,
@@ -313,66 +347,105 @@ extension BasicModifiers on Widget {
     double? bottom,
     double? height,
     double? width,
-    bool fill = false,
+    bool? fill,
+    Rect? rect,
+    RelativeRect? relativeRect,
   }) {
-    assert(
-      (start == null && end == null) || (left == null && right == null),
-      'Cannot provide both a start and an end offset and a left and a right '
-      'offset simultaneously.',
-    );
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'position', [
+        {'start': start, 'end': end},
+        {'left': left, 'right': right},
+      ]);
+      _debugCheckParameterCombinations(modifier: 'position', [
+        {
+          'start': start,
+          'end': end,
+          'left': left,
+          'right': right,
+          'top': top,
+          'bottom': bottom,
+          'height': height,
+          'width': width,
+          'fill': fill,
+        },
+        {'rect': rect},
+        {'relativeRect': relativeRect},
+      ]);
+      return true;
+    }());
 
-    if (fill) {
-      top ??= 0;
-      bottom ??= 0;
-    }
-
-    if (start != null || end != null) {
-      if (fill) {
-        start ??= 0;
-        end ??= 0;
-      }
-      return FleetPositionedDirectional(
-        start: start,
-        end: end,
-        top: top,
-        bottom: bottom,
-        height: height,
-        width: width,
+    if (rect != null) {
+      return FleetPositioned.fromRect(
+        rect: rect,
+        child: this,
+      );
+    } else if (relativeRect != null) {
+      return FleetPositioned.fromRelativeRect(
+        rect: relativeRect,
         child: this,
       );
     } else {
-      if (fill) {
-        left ??= 0;
-        right ??= 0;
+      if (fill ?? false) {
+        top ??= 0;
+        bottom ??= 0;
       }
-      return FleetPositioned(
-        left: left,
-        top: top,
-        right: right,
-        bottom: bottom,
-        height: height,
-        width: width,
-        child: this,
-      );
+
+      if (start != null || end != null) {
+        if (fill ?? false) {
+          start ??= 0;
+          end ??= 0;
+        }
+        return FleetPositionedDirectional(
+          start: start,
+          end: end,
+          top: top,
+          bottom: bottom,
+          height: height,
+          width: width,
+          child: this,
+        );
+      } else {
+        if (fill ?? false) {
+          left ??= 0;
+          right ??= 0;
+        }
+        return FleetPositioned(
+          left: left,
+          top: top,
+          right: right,
+          bottom: bottom,
+          height: height,
+          width: width,
+          child: this,
+        );
+      }
     }
   }
+}
 
-  /// Positions this widget within its parent [Stack] widget using a [Rect].
-  @widgetFactory
-  Widget positionFromRect(Rect rect) {
-    return FleetPositioned.fromRect(
-      rect: rect,
-      child: this,
-    );
-  }
+void _debugCheckParameterCombinations(
+  List<Map<String, Object?>> groups, {
+  required String modifier,
+}) {
+  final groupsWithArguments = groups
+      .map(
+        (group) => group.entries
+            .where((entry) => entry.value != null)
+            .map((e) => e.key)
+            .toList(),
+      )
+      .where((group) => group.isNotEmpty);
 
-  /// Positions this widget within its parent [Stack] widget using a
-  /// [RelativeRect].
-  @widgetFactory
-  Widget positionFromRelativeRect(RelativeRect rect) {
-    return FleetPositioned.fromRelativeRect(
-      rect: rect,
-      child: this,
-    );
+  if (groupsWithArguments.length > 1) {
+    throw FlutterError.fromParts([
+      ErrorSummary(
+        'Invalid parameter combination for [$modifier] modifier.',
+      ),
+      ErrorDescription(
+        'The parameters in the following groups cannot be used together:',
+      ),
+      for (final group in groupsWithArguments)
+        ErrorDescription('  - [${group.join(', ')}]'),
+    ]);
   }
 }

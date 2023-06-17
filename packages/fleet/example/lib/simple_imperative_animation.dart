@@ -55,10 +55,10 @@ class _PageState extends State<Page> with AnimatingStateMixin {
           child: const Text('Expanded'),
         ),
       ]) //
-          .center()
+          .centered()
           .boxColor(_color)
-          .sizeFrom(_size)
-          .center(),
+          .size(size: _size)
+          .centered(),
     );
   }
 }

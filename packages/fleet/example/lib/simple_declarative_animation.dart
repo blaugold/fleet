@@ -29,11 +29,11 @@ class _PageState extends State<Page> {
           .uniformPadding(Edges.all, _expanded ? null : 32)
           .animation(Curves.easeInOutCubic.animation(1.s))
           .boxColor(Colors.orange)
-          .center()
+          .centered()
           .boxColor(_expanded ? Colors.green : Colors.blue)
-          .squareDimension(_expanded ? 400 : 200)
+          .size(square: _expanded ? 400 : 200)
           .animation(Curves.ease.animation(1.s))
-          .center(),
+          .centered(),
     );
   }
 }
