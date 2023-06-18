@@ -12,6 +12,7 @@ const flutterWidgets = [
   'DecoratedBox',
   'Flex',
   'FractionalTranslation',
+  'FractionallySizedBox',
   'Opacity',
   'Padding',
   'Positioned',

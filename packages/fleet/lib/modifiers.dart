@@ -88,7 +88,12 @@ extension BasicModifiers on Widget {
     double? square,
     bool? expand,
     bool? shrink,
+    bool fractional = false,
   }) {
+    assert(
+      !fractional || (expand == null && shrink == null),
+      'fractional cannot be used with expand or shrink',
+    );
     assert(() {
       _debugCheckParameterCombinations(modifier: 'size', [
         {'width': width, 'height': height},
@@ -105,11 +110,21 @@ extension BasicModifiers on Widget {
     } else if (shrink ?? false) {
       return FleetSizedBox.shrink(child: this);
     } else {
-      return FleetSizedBox(
-        width: width ?? size?.width ?? square,
-        height: height ?? size?.height ?? square,
-        child: this,
-      );
+      width ??= size?.width ?? square;
+      height ??= size?.height ?? square;
+      if (fractional) {
+        return FleetFractionallySizedBox(
+          widthFactor: width,
+          heightFactor: height,
+          child: this,
+        );
+      } else {
+        return FleetSizedBox(
+          width: width,
+          height: height,
+          child: this,
+        );
+      }
     }
   }
 

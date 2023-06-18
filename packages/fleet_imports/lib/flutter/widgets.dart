@@ -11,6 +11,7 @@ export 'package:flutter/widgets.dart'
         DecoratedBox,
         Flex,
         FractionalTranslation,
+        FractionallySizedBox,
         Opacity,
         Padding,
         Positioned,
@@ -47,6 +48,9 @@ typedef Flex = FleetFlex;
 
 /// Fleet drop-in replacement for [FractionalTranslation].
 typedef FractionalTranslation = FleetFractionalTranslation;
+
+/// Fleet drop-in replacement for [FractionallySizedBox].
+typedef FractionallySizedBox = FleetFractionallySizedBox;
 
 /// Fleet drop-in replacement for [Opacity].
 typedef Opacity = FleetOpacity;

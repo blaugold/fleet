@@ -1376,3 +1376,57 @@ class FleetAspectRatio extends AspectRatio
     renderObject.aspectRatio = parameters.aspectRatio.animatedValue;
   }
 }
+
+typedef _FractionallySizedBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  OptionalAnimatableDouble widthFactor,
+  OptionalAnimatableDouble heightFactor,
+});
+
+/// Fleet's drop-in replacement of [FractionallySizedBox].
+class FleetFractionallySizedBox extends FractionallySizedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _FractionallySizedBoxAnimatableParameters> {
+  /// Corresponding constructor to [FractionallySizedBox].
+  const FleetFractionallySizedBox({
+    super.key,
+    super.alignment,
+    super.widthFactor,
+    super.heightFactor,
+    super.child,
+  });
+
+  @override
+  _FractionallySizedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderFractionallySizedOverflowBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      widthFactor: OptionalAnimatableDouble(widthFactor, host: host),
+      heightFactor: OptionalAnimatableDouble(heightFactor, host: host)
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _FractionallySizedBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+    parameters.widthFactor.value = widthFactor;
+    parameters.heightFactor.value = heightFactor;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderFractionallySizedOverflowBox renderObject,
+    _FractionallySizedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+    renderObject.widthFactor = parameters.widthFactor.animatedValue;
+    renderObject.heightFactor = parameters.heightFactor.animatedValue;
+  }
+}

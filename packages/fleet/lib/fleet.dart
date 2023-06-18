@@ -49,6 +49,7 @@ export 'src/widgets/flutter/basic.dart'
         FleetFlex,
         FleetFlexApplyChildren,
         FleetFractionalTranslation,
+        FleetFractionallySizedBox,
         FleetIndexedStackApplyChildren,
         FleetOpacity,
         FleetPadding,
