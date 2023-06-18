@@ -1188,44 +1188,6 @@ class FleetFlex extends StatelessWidget {
   }
 }
 
-/// Fleet's drop-in replacement of [Row].
-///
-/// {@category Flutter drop-in replacement}
-class FleetRow extends FleetFlex {
-  /// Corresponding constructor to [Row].
-  const FleetRow({
-    super.key,
-    super.mainAxisAlignment,
-    super.mainAxisSize,
-    super.crossAxisAlignment,
-    super.textDirection,
-    super.verticalDirection,
-    super.textBaseline,
-    super.clipBehavior,
-    super.spacing,
-    super.children,
-  }) : super(direction: Axis.horizontal);
-}
-
-/// Fleet's drop-in replacement of [Column].
-///
-/// {@category Flutter drop-in replacement}
-class FleetColumn extends FleetFlex {
-  /// Corresponding constructor to [Column].
-  const FleetColumn({
-    super.key,
-    super.mainAxisAlignment,
-    super.mainAxisSize,
-    super.crossAxisAlignment,
-    super.textDirection,
-    super.verticalDirection,
-    super.textBaseline,
-    super.clipBehavior,
-    super.spacing,
-    super.children,
-  }) : super(direction: Axis.vertical);
-}
-
 /// Extension to provide children of [FleetFlex] through partial-application.
 extension FleetFlexApplyChildren on FleetFlex {
   /// Returns a new [FleetFlex] with the given [children].
@@ -1246,6 +1208,25 @@ extension FleetFlexApplyChildren on FleetFlex {
   }
 }
 
+/// Fleet's drop-in replacement of [Row].
+///
+/// {@category Flutter drop-in replacement}
+class FleetRow extends FleetFlex {
+  /// Corresponding constructor to [Row].
+  const FleetRow({
+    super.key,
+    super.mainAxisAlignment,
+    super.mainAxisSize,
+    super.crossAxisAlignment,
+    super.textDirection,
+    super.verticalDirection,
+    super.textBaseline,
+    super.clipBehavior,
+    super.spacing,
+    super.children,
+  }) : super(direction: Axis.horizontal);
+}
+
 /// Extension to provide children of [FleetRow] through partial-application.
 extension FleetRowApplyChildren on FleetRow {
   /// Returns a new [FleetRow] with the given [children].
@@ -1263,6 +1244,25 @@ extension FleetRowApplyChildren on FleetRow {
       children: children,
     );
   }
+}
+
+/// Fleet's drop-in replacement of [Column].
+///
+/// {@category Flutter drop-in replacement}
+class FleetColumn extends FleetFlex {
+  /// Corresponding constructor to [Column].
+  const FleetColumn({
+    super.key,
+    super.mainAxisAlignment,
+    super.mainAxisSize,
+    super.crossAxisAlignment,
+    super.textDirection,
+    super.verticalDirection,
+    super.textBaseline,
+    super.clipBehavior,
+    super.spacing,
+    super.children,
+  }) : super(direction: Axis.vertical);
 }
 
 /// Extension to provide children of [FleetColumn] through partial-application.
@@ -1332,5 +1332,47 @@ extension FleetWrapApplyChildren on Wrap {
       clipBehavior: clipBehavior,
       children: children,
     );
+  }
+}
+
+typedef _AspectRatioAnimatableParameters = ({
+  AnimatableDouble aspectRatio,
+});
+
+/// Fleet's drop-in replacement of [AspectRatio].
+class FleetAspectRatio extends AspectRatio
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _AspectRatioAnimatableParameters> {
+  /// Corresponding constructor to [AspectRatio].
+  const FleetAspectRatio({
+    super.key,
+    required super.aspectRatio,
+    super.child,
+  });
+
+  @override
+  _AspectRatioAnimatableParameters createAnimatableParameters(
+    covariant RenderAspectRatio renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (aspectRatio: AnimatableDouble(aspectRatio, host: host));
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _AspectRatioAnimatableParameters parameters,
+  ) {
+    parameters.aspectRatio.value = aspectRatio;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderAspectRatio renderObject,
+    _AspectRatioAnimatableParameters parameters,
+  ) {
+    renderObject.aspectRatio = parameters.aspectRatio.animatedValue;
   }
 }

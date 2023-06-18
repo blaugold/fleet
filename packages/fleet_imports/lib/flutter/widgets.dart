@@ -3,6 +3,7 @@ import 'package:fleet/fleet.dart';
 export 'package:flutter/widgets.dart'
     hide
         Align,
+        AspectRatio,
         Center,
         ColoredBox,
         Column,
@@ -22,6 +23,9 @@ export 'package:flutter/widgets.dart'
 
 /// Fleet drop-in replacement for [Align].
 typedef Align = FleetAlign;
+
+/// Fleet drop-in replacement for [AspectRatio].
+typedef AspectRatio = FleetAspectRatio;
 
 /// Fleet drop-in replacement for [Center].
 typedef Center = FleetCenter;

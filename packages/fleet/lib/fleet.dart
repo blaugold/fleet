@@ -41,6 +41,7 @@ export 'src/environment.dart' show EnvironmentKey, EnvironmentValueModifiers;
 export 'src/widgets/flutter/basic.dart'
     show
         FleetAlign,
+        FleetAspectRatio,
         FleetCenter,
         FleetColoredBox,
         FleetColumn,

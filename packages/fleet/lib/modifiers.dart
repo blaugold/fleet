@@ -113,6 +113,15 @@ extension BasicModifiers on Widget {
     }
   }
 
+  /// Attempts to size the widget to a specific aspect ratio.
+  @widgetFactory
+  Widget aspectRatio(double aspectRatio) {
+    return FleetAspectRatio(
+      aspectRatio: aspectRatio,
+      child: this,
+    );
+  }
+
   /// Adds padding around this widget.
   @widgetFactory
   Widget padding({

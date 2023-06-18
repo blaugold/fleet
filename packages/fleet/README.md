@@ -138,6 +138,7 @@ The following drop-in replacements for Flutter framework widgets are provided
 for animating with Fleet:
 
 - FleetAlign
+- FleetAspectRatio
 - FleetCenter
 - FleetColoredBox
 - FleetColumn

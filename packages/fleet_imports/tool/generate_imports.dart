@@ -4,6 +4,7 @@ import 'package:code_builder/code_builder.dart';
 
 const flutterWidgets = [
   'Align',
+  'AspectRatio',
   'Center',
   'ColoredBox',
   'Column',
