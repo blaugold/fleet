@@ -9,6 +9,7 @@ export 'package:flutter/cupertino.dart'
         Container,
         DecoratedBox,
         Flex,
+        FractionalTranslation,
         Opacity,
         Padding,
         Positioned,
@@ -39,6 +40,9 @@ typedef DecoratedBox = FleetDecoratedBox;
 
 /// Fleet drop-in replacement for [Flex].
 typedef Flex = FleetFlex;
+
+/// Fleet drop-in replacement for [FractionalTranslation].
+typedef FractionalTranslation = FleetFractionalTranslation;
 
 /// Fleet drop-in replacement for [Opacity].
 typedef Opacity = FleetOpacity;

@@ -156,6 +156,7 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// - [FleetContainer]
 /// - [FleetDecoratedBox]
 /// - [FleetFlex]
+/// - [FractionalTranslation]
 /// - [FleetOpacity]
 /// - [FleetPadding]
 /// - [FleetPositioned]

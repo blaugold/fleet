@@ -144,6 +144,7 @@ for animating with Fleet:
 - FleetContainer
 - FleetDecoratedBox
 - FleetFlex
+- FractionalTranslation
 - FleetOpacity
 - FleetPadding
 - FleetPositioned
