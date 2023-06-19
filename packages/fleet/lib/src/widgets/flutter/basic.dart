@@ -5,11 +5,11 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../animation/animatable_render_object_widget.dart';
-import '../animation/animatable_stateless_widget.dart';
-import '../animation/parameter.dart';
-import '../environment.dart';
-import 'opinionated_defaults.dart';
+import '../../animation/animatable_render_object_widget.dart';
+import '../../animation/animatable_stateless_widget.dart';
+import '../../animation/parameter.dart';
+import '../../environment.dart';
+import '../opinionated_defaults.dart';
 
 typedef _AlignAnimatableParameters = ({
   AnimatableAlignmentGeometry alignment,
@@ -115,133 +115,6 @@ class FleetColoredBox extends AnimatableStatelessWidget<AnimatableColor> {
   }
 }
 
-typedef _ContainerAnimatableParameters = ({
-  OptionalAnimatableAlignmentGeometry alignment,
-  OptionalAnimatableEdgeInsetsGeometry padding,
-  OptionalAnimatableColor color,
-  OptionalAnimatableDecoration decoration,
-  OptionalAnimatableDecoration foregroundDecoration,
-  OptionalAnimatableBoxConstraints constraints,
-  OptionalAnimatableEdgeInsetsGeometry margin,
-  OptionalAnimatableMatrix4 transform,
-  OptionalAnimatableAlignmentGeometry transformAlignment,
-});
-
-/// Fleet's drop-in replacement of [Container].
-///
-/// {@category Flutter drop-in replacement}
-class FleetContainer
-    extends AnimatableStatelessWidget<_ContainerAnimatableParameters> {
-  /// Corresponding constructor to [Container].
-  FleetContainer({
-    super.key,
-    this.alignment,
-    this.padding,
-    this.color,
-    this.decoration,
-    this.foregroundDecoration,
-    this.margin,
-    this.transform,
-    this.transformAlignment,
-    double? width,
-    double? height,
-    BoxConstraints? constraints,
-    this.clipBehavior = Clip.none,
-    this.child,
-  }) : constraints = (width != null || height != null)
-            ? constraints?.tighten(width: width, height: height) ??
-                BoxConstraints.tightFor(width: width, height: height)
-            : constraints;
-
-  /// See [Container.alignment].
-  final AlignmentGeometry? alignment;
-
-  /// See [Container.padding].
-  final EdgeInsetsGeometry? padding;
-
-  /// See [Container.color].
-  final Color? color;
-
-  /// See [Container.decoration].
-  final Decoration? decoration;
-
-  /// See [Container.foregroundDecoration].
-  final Decoration? foregroundDecoration;
-
-  /// See [Container.constraints].
-  final BoxConstraints? constraints;
-
-  /// See [Container.margin].
-  final EdgeInsetsGeometry? margin;
-
-  /// See [Container.transform].
-  final Matrix4? transform;
-
-  /// See [Container.transformAlignment].
-  final AlignmentGeometry? transformAlignment;
-
-  /// See [Container.clipBehavior].
-  final Clip clipBehavior;
-
-  /// See [Container.child].
-  final Widget? child;
-
-  @override
-  _ContainerAnimatableParameters createAnimatableParameters(
-    AnimatableParameterHost host,
-  ) {
-    return (
-      alignment: OptionalAnimatableAlignmentGeometry(alignment, host: host),
-      padding: OptionalAnimatableEdgeInsetsGeometry(padding, host: host),
-      color: OptionalAnimatableColor(color, host: host),
-      decoration: OptionalAnimatableDecoration(decoration, host: host),
-      foregroundDecoration:
-          OptionalAnimatableDecoration(foregroundDecoration, host: host),
-      constraints: OptionalAnimatableBoxConstraints(constraints, host: host),
-      margin: OptionalAnimatableEdgeInsetsGeometry(margin, host: host),
-      transform: OptionalAnimatableMatrix4(transform, host: host),
-      transformAlignment:
-          OptionalAnimatableAlignmentGeometry(transformAlignment, host: host),
-    );
-  }
-
-  @override
-  void updateAnimatableParameters(_ContainerAnimatableParameters parameters) {
-    parameters
-      ..alignment.value = alignment
-      ..padding.value = padding
-      ..color.value = color
-      ..decoration.value = decoration
-      ..foregroundDecoration.value = foregroundDecoration
-      ..constraints.value = constraints
-      ..margin.value = margin
-      ..transform.value = transform
-      ..transformAlignment.value = transformAlignment;
-  }
-
-  @override
-  Widget build(
-    BuildContext context,
-    _ContainerAnimatableParameters? parameters,
-  ) {
-    return Container(
-      alignment: parameters?.alignment.animatedValue ?? alignment,
-      padding: parameters?.padding.animatedValue ?? padding,
-      color: parameters?.color.animatedValue ?? color,
-      decoration: parameters?.decoration.animatedValue ?? decoration,
-      foregroundDecoration: parameters?.foregroundDecoration.animatedValue ??
-          foregroundDecoration,
-      constraints: parameters?.constraints.animatedValue ?? constraints,
-      margin: parameters?.margin.animatedValue ?? margin,
-      transform: parameters?.transform.animatedValue ?? transform,
-      transformAlignment:
-          parameters?.transformAlignment.animatedValue ?? transformAlignment,
-      clipBehavior: clipBehavior,
-      child: child,
-    );
-  }
-}
-
 typedef _OpacityAnimatableParameters = ({AnimatableDouble opacity});
 
 /// Fleet's drop-in replacement of [Opacity].
@@ -283,6 +156,51 @@ class FleetOpacity extends Opacity
   ) {
     final (:opacity) = parameters;
     renderObject.opacity = opacity.animatedValue;
+  }
+}
+
+typedef _FractionalTranslationAnimatableParameters = ({
+  AnimatableParameter<Offset> translation,
+});
+
+/// Fleet's drop-in replacement of [FractionalTranslation].
+///
+/// {@category Flutter drop-in replacement}
+class FleetFractionalTranslation extends FractionalTranslation
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _FractionalTranslationAnimatableParameters> {
+  /// Corresponding constructor to [FractionalTranslation].
+  const FleetFractionalTranslation({
+    super.key,
+    required super.translation,
+    super.transformHitTests = true,
+    super.child,
+  });
+
+  @override
+  _FractionalTranslationAnimatableParameters createAnimatableParameters(
+    covariant RenderObject renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (translation: AnimatableObject(translation, host: host),);
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _FractionalTranslationAnimatableParameters parameters,
+  ) {
+    parameters.translation.value = translation;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderFractionalTranslation renderObject,
+    _FractionalTranslationAnimatableParameters parameters,
+  ) {
+    renderObject.translation = parameters.translation.animatedValue;
   }
 }
 
@@ -1270,44 +1188,6 @@ class FleetFlex extends StatelessWidget {
   }
 }
 
-/// Fleet's drop-in replacement of [Row].
-///
-/// {@category Flutter drop-in replacement}
-class FleetRow extends FleetFlex {
-  /// Corresponding constructor to [Row].
-  const FleetRow({
-    super.key,
-    super.mainAxisAlignment,
-    super.mainAxisSize,
-    super.crossAxisAlignment,
-    super.textDirection,
-    super.verticalDirection,
-    super.textBaseline,
-    super.clipBehavior,
-    super.spacing,
-    super.children,
-  }) : super(direction: Axis.horizontal);
-}
-
-/// Fleet's drop-in replacement of [Column].
-///
-/// {@category Flutter drop-in replacement}
-class FleetColumn extends FleetFlex {
-  /// Corresponding constructor to [Column].
-  const FleetColumn({
-    super.key,
-    super.mainAxisAlignment,
-    super.mainAxisSize,
-    super.crossAxisAlignment,
-    super.textDirection,
-    super.verticalDirection,
-    super.textBaseline,
-    super.clipBehavior,
-    super.spacing,
-    super.children,
-  }) : super(direction: Axis.vertical);
-}
-
 /// Extension to provide children of [FleetFlex] through partial-application.
 extension FleetFlexApplyChildren on FleetFlex {
   /// Returns a new [FleetFlex] with the given [children].
@@ -1328,6 +1208,25 @@ extension FleetFlexApplyChildren on FleetFlex {
   }
 }
 
+/// Fleet's drop-in replacement of [Row].
+///
+/// {@category Flutter drop-in replacement}
+class FleetRow extends FleetFlex {
+  /// Corresponding constructor to [Row].
+  const FleetRow({
+    super.key,
+    super.mainAxisAlignment,
+    super.mainAxisSize,
+    super.crossAxisAlignment,
+    super.textDirection,
+    super.verticalDirection,
+    super.textBaseline,
+    super.clipBehavior,
+    super.spacing,
+    super.children,
+  }) : super(direction: Axis.horizontal);
+}
+
 /// Extension to provide children of [FleetRow] through partial-application.
 extension FleetRowApplyChildren on FleetRow {
   /// Returns a new [FleetRow] with the given [children].
@@ -1345,6 +1244,25 @@ extension FleetRowApplyChildren on FleetRow {
       children: children,
     );
   }
+}
+
+/// Fleet's drop-in replacement of [Column].
+///
+/// {@category Flutter drop-in replacement}
+class FleetColumn extends FleetFlex {
+  /// Corresponding constructor to [Column].
+  const FleetColumn({
+    super.key,
+    super.mainAxisAlignment,
+    super.mainAxisSize,
+    super.crossAxisAlignment,
+    super.textDirection,
+    super.verticalDirection,
+    super.textBaseline,
+    super.clipBehavior,
+    super.spacing,
+    super.children,
+  }) : super(direction: Axis.vertical);
 }
 
 /// Extension to provide children of [FleetColumn] through partial-application.
@@ -1414,5 +1332,349 @@ extension FleetWrapApplyChildren on Wrap {
       clipBehavior: clipBehavior,
       children: children,
     );
+  }
+}
+
+typedef _AspectRatioAnimatableParameters = ({
+  AnimatableDouble aspectRatio,
+});
+
+/// Fleet's drop-in replacement of [AspectRatio].
+class FleetAspectRatio extends AspectRatio
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _AspectRatioAnimatableParameters> {
+  /// Corresponding constructor to [AspectRatio].
+  const FleetAspectRatio({
+    super.key,
+    required super.aspectRatio,
+    super.child,
+  });
+
+  @override
+  _AspectRatioAnimatableParameters createAnimatableParameters(
+    covariant RenderAspectRatio renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (aspectRatio: AnimatableDouble(aspectRatio, host: host));
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _AspectRatioAnimatableParameters parameters,
+  ) {
+    parameters.aspectRatio.value = aspectRatio;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderAspectRatio renderObject,
+    _AspectRatioAnimatableParameters parameters,
+  ) {
+    renderObject.aspectRatio = parameters.aspectRatio.animatedValue;
+  }
+}
+
+typedef _FractionallySizedBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  OptionalAnimatableDouble widthFactor,
+  OptionalAnimatableDouble heightFactor,
+});
+
+/// Fleet's drop-in replacement of [FractionallySizedBox].
+class FleetFractionallySizedBox extends FractionallySizedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _FractionallySizedBoxAnimatableParameters> {
+  /// Corresponding constructor to [FractionallySizedBox].
+  const FleetFractionallySizedBox({
+    super.key,
+    super.alignment,
+    super.widthFactor,
+    super.heightFactor,
+    super.child,
+  });
+
+  @override
+  _FractionallySizedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderFractionallySizedOverflowBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      widthFactor: OptionalAnimatableDouble(widthFactor, host: host),
+      heightFactor: OptionalAnimatableDouble(heightFactor, host: host)
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _FractionallySizedBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+    parameters.widthFactor.value = widthFactor;
+    parameters.heightFactor.value = heightFactor;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderFractionallySizedOverflowBox renderObject,
+    _FractionallySizedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+    renderObject.widthFactor = parameters.widthFactor.animatedValue;
+    renderObject.heightFactor = parameters.heightFactor.animatedValue;
+  }
+}
+
+typedef _ConstrainedBoxAnimatableParameters = ({
+  AnimatableBoxConstraints constraints,
+});
+
+/// Fleet's drop-in replacement of [ConstrainedBox].
+class FleetConstrainedBox extends ConstrainedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _ConstrainedBoxAnimatableParameters> {
+  /// Corresponding constructor to [ConstrainedBox].
+  FleetConstrainedBox({
+    super.key,
+    required super.constraints,
+    super.child,
+  });
+
+  @override
+  _ConstrainedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderConstrainedBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (constraints: AnimatableBoxConstraints(constraints, host: host));
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _ConstrainedBoxAnimatableParameters parameters,
+  ) {
+    parameters.constraints.value = constraints;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderConstrainedBox renderObject,
+    _ConstrainedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.additionalConstraints = parameters.constraints.animatedValue;
+  }
+}
+
+typedef _OverflowBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  OptionalAnimatableDouble minWidth,
+  OptionalAnimatableDouble maxWidth,
+  OptionalAnimatableDouble minHeight,
+  OptionalAnimatableDouble maxHeight,
+});
+
+/// Fleet's drop-in replacement of [OverflowBox].
+class FleetOverflowBox extends OverflowBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _OverflowBoxAnimatableParameters> {
+  /// Corresponding constructor to [OverflowBox].
+  const FleetOverflowBox({
+    super.key,
+    super.alignment,
+    super.minHeight,
+    super.maxHeight,
+    super.minWidth,
+    super.maxWidth,
+    super.child,
+  });
+
+  @override
+  _OverflowBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderConstrainedOverflowBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      minWidth: OptionalAnimatableDouble(minWidth, host: host),
+      maxWidth: OptionalAnimatableDouble(maxWidth, host: host),
+      minHeight: OptionalAnimatableDouble(minHeight, host: host),
+      maxHeight: OptionalAnimatableDouble(maxHeight, host: host),
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _OverflowBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+    parameters.minWidth.value = minWidth;
+    parameters.maxWidth.value = maxWidth;
+    parameters.minHeight.value = minHeight;
+    parameters.maxHeight.value = maxHeight;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderConstrainedOverflowBox renderObject,
+    _OverflowBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+    renderObject.minWidth = parameters.minWidth.animatedValue;
+    renderObject.maxWidth = parameters.maxWidth.animatedValue;
+    renderObject.minHeight = parameters.minHeight.animatedValue;
+    renderObject.maxHeight = parameters.maxHeight.animatedValue;
+  }
+}
+
+typedef _SizedOverflowBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  AnimatableSize size,
+});
+
+/// Fleet's drop-in replacement of [SizedOverflowBox].
+class FleetSizedOverflowBox extends SizedOverflowBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _SizedOverflowBoxAnimatableParameters> {
+  /// Corresponding constructor to [SizedOverflowBox].
+  const FleetSizedOverflowBox({
+    super.key,
+    super.alignment,
+    required super.size,
+    super.child,
+  });
+
+  @override
+  _SizedOverflowBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderSizedOverflowBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      size: AnimatableSize(size, host: host),
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _SizedOverflowBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+    parameters.size.value = size;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderSizedOverflowBox renderObject,
+    _SizedOverflowBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+    renderObject.requestedSize = parameters.size.animatedValue;
+  }
+}
+
+typedef _FittedBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+});
+
+/// Fleet's drop-in replacement of [FittedBox].
+class FleetFittedBox extends FittedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _FittedBoxAnimatableParameters> {
+  /// Corresponding constructor to [FittedBox].
+  const FleetFittedBox({
+    super.key,
+    super.alignment,
+    super.fit,
+    super.clipBehavior,
+    super.child,
+  });
+
+  @override
+  _FittedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderFittedBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (alignment: AnimatableAlignmentGeometry(alignment, host: host));
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _FittedBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderFittedBox renderObject,
+    _FittedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+  }
+}
+
+typedef _LimitedBoxAnimatableParameters = ({
+  AnimatableDouble maxWidth,
+  AnimatableDouble maxHeight,
+});
+
+/// Fleet's drop-in replacement of [LimitedBox].
+class FleetLimitedBox extends LimitedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _LimitedBoxAnimatableParameters> {
+  /// Corresponding constructor to [LimitedBox].
+  const FleetLimitedBox({
+    super.key,
+    super.maxHeight,
+    super.maxWidth,
+    super.child,
+  });
+
+  @override
+  _LimitedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderLimitedBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      maxWidth: AnimatableDouble(maxWidth, host: host),
+      maxHeight: AnimatableDouble(maxHeight, host: host),
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _LimitedBoxAnimatableParameters parameters,
+  ) {
+    parameters.maxWidth.value = maxWidth;
+    parameters.maxHeight.value = maxHeight;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderLimitedBox renderObject,
+    _LimitedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.maxWidth = parameters.maxWidth.animatedValue;
+    renderObject.maxHeight = parameters.maxHeight.animatedValue;
   }
 }

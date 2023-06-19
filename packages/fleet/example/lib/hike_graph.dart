@@ -113,14 +113,8 @@ class GraphCapsule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final relativeRange = range.relativeTo(overallRange);
-    return Container(
-      height: height * relativeRange.magnitude,
-      width: 24,
-      decoration: ShapeDecoration(
-        shape: const StadiumBorder(),
-        color: color,
-      ),
-    ) //
+    return SizedBox(height: height * relativeRange.magnitude, width: 24)
+        .decoration(shape: const StadiumBorder(), color: color)
         .offset(y: -height * relativeRange.min);
   }
 }

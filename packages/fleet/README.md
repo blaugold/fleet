@@ -138,17 +138,26 @@ The following drop-in replacements for Flutter framework widgets are provided
 for animating with Fleet:
 
 - FleetAlign
+- FleetAspectRatio
 - FleetCenter
 - FleetColoredBox
 - FleetColumn
+- FleetConstrainedBox
 - FleetContainer
+- FleetDecoratedBox
+- FleetFittedBox
 - FleetFlex
+- FractionalTranslation
+- FleetFractionallySizedBox
+- FleetLimitedBox
 - FleetOpacity
+- FleetOverflowBox
 - FleetPadding
 - FleetPositioned
 - FleetPositionedDirectional
 - FleetRow
 - FleetSizedBox
+- FleetSizedOverflowBox
 - FleetSliverOpacity
 - FleetSliverPadding
 - FleetTransform

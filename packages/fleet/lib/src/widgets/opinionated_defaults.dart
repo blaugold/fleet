@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'basic_flutter_widgets.dart';
+import 'flutter/basic.dart';
 
 /// Applies opinionated defaults to the descendants of this widget, for
 /// configurable features of Fleet.

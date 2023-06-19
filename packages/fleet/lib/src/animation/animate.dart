@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart' hide Animation;
 
 import '../common.dart';
-import '../widgets/basic_flutter_widgets.dart';
+import '../widgets/flutter/basic.dart';
+import '../widgets/flutter/container.dart';
 import '../widgets/uniform_padding.dart';
 import 'animatable_render_object_widget.dart';
 import 'animatable_stateless_widget.dart';
@@ -149,17 +150,26 @@ mixin AnimatingStateMixin<T extends StatefulWidget> on State<T> {
 /// The following provided widgets support animating with Fleet:
 ///
 /// - [FleetAlign]
+/// - [FleetAspectRatio]
 /// - [FleetCenter]
 /// - [FleetColoredBox]
 /// - [FleetColumn]
+/// - [FleetConstrainedBox]
 /// - [FleetContainer]
+/// - [FleetDecoratedBox]
+/// - [FleetFittedBox]
 /// - [FleetFlex]
+/// - [FractionalTranslation]
+/// - [FleetFractionallySizedBox]
+/// - [FleetLimitedBox]
 /// - [FleetOpacity]
+/// - [FleetOverflowBox]
 /// - [FleetPadding]
 /// - [FleetPositioned]
 /// - [FleetPositionedDirectional]
 /// - [FleetRow]
 /// - [FleetSizedBox]
+/// - [FleetSizedOverflowBox]
 /// - [FleetSliverOpacity]
 /// - [FleetSliverPadding]
 /// - [FleetTransform]

@@ -3,23 +3,35 @@ import 'package:fleet/fleet.dart';
 export 'package:flutter/cupertino.dart'
     hide
         Align,
+        AspectRatio,
         Center,
         ColoredBox,
         Column,
+        ConstrainedBox,
         Container,
+        DecoratedBox,
+        FittedBox,
         Flex,
+        FractionalTranslation,
+        FractionallySizedBox,
+        LimitedBox,
         Opacity,
+        OverflowBox,
         Padding,
         Positioned,
         PositionedDirectional,
         Row,
         SizedBox,
+        SizedOverflowBox,
         SliverOpacity,
         SliverPadding,
         Transform;
 
 /// Fleet drop-in replacement for [Align].
 typedef Align = FleetAlign;
+
+/// Fleet drop-in replacement for [AspectRatio].
+typedef AspectRatio = FleetAspectRatio;
 
 /// Fleet drop-in replacement for [Center].
 typedef Center = FleetCenter;
@@ -30,14 +42,35 @@ typedef ColoredBox = FleetColoredBox;
 /// Fleet drop-in replacement for [Column].
 typedef Column = FleetColumn;
 
+/// Fleet drop-in replacement for [ConstrainedBox].
+typedef ConstrainedBox = FleetConstrainedBox;
+
 /// Fleet drop-in replacement for [Container].
 typedef Container = FleetContainer;
+
+/// Fleet drop-in replacement for [DecoratedBox].
+typedef DecoratedBox = FleetDecoratedBox;
+
+/// Fleet drop-in replacement for [FittedBox].
+typedef FittedBox = FleetFittedBox;
 
 /// Fleet drop-in replacement for [Flex].
 typedef Flex = FleetFlex;
 
+/// Fleet drop-in replacement for [FractionalTranslation].
+typedef FractionalTranslation = FleetFractionalTranslation;
+
+/// Fleet drop-in replacement for [FractionallySizedBox].
+typedef FractionallySizedBox = FleetFractionallySizedBox;
+
+/// Fleet drop-in replacement for [LimitedBox].
+typedef LimitedBox = FleetLimitedBox;
+
 /// Fleet drop-in replacement for [Opacity].
 typedef Opacity = FleetOpacity;
+
+/// Fleet drop-in replacement for [OverflowBox].
+typedef OverflowBox = FleetOverflowBox;
 
 /// Fleet drop-in replacement for [Padding].
 typedef Padding = FleetPadding;
@@ -53,6 +86,9 @@ typedef Row = FleetRow;
 
 /// Fleet drop-in replacement for [SizedBox].
 typedef SizedBox = FleetSizedBox;
+
+/// Fleet drop-in replacement for [SizedOverflowBox].
+typedef SizedOverflowBox = FleetSizedOverflowBox;
 
 /// Fleet drop-in replacement for [SliverOpacity].
 typedef SliverOpacity = FleetSliverOpacity;

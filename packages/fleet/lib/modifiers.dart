@@ -2,9 +2,10 @@ import 'package:flutter/widgets.dart';
 
 import 'src/animation/animate.dart';
 import 'src/animation/animation.dart';
-import 'src/widgets/basic_flutter_widgets.dart';
+import 'src/widgets/flutter/basic.dart';
+import 'src/widgets/flutter/container.dart';
 
-export 'src/widgets/basic_flutter_widgets.dart' show FleetFlexModifiers;
+export 'src/widgets/flutter/basic.dart' show FleetFlexModifiers;
 export 'src/widgets/opinionated_defaults.dart' show OpinionatedDefaultsModifier;
 export 'src/widgets/uniform_padding.dart' show UniformPaddingModifiers;
 
@@ -78,6 +79,73 @@ extension BasicModifiers on Widget {
     );
   }
 
+  /// Scales and positions this widget within the available space according to
+  /// [fit]
+  @widgetFactory
+  Widget fit(
+    BoxFit fit, {
+    AlignmentGeometry alignment = Alignment.center,
+    Clip clipBehavior = Clip.none,
+  }) {
+    return FleetFittedBox(
+      fit: fit,
+      alignment: alignment,
+      clipBehavior: clipBehavior,
+      child: this,
+    );
+  }
+
+  /// Applies additional constraints to this widget.
+  @widgetFactory
+  Widget constraints({
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
+    BoxConstraints? constraints,
+    bool overflow = false,
+    AlignmentGeometry? alignment,
+  }) {
+    assert(
+      overflow || alignment == null,
+      'alignment can only be used with overflow',
+    );
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'constraints', [
+        {
+          'minWidth': minWidth,
+          'maxWidth': maxWidth,
+          'minHeight': minHeight,
+          'maxHeight': maxHeight
+        },
+        {'constraints': constraints}
+      ]);
+      return true;
+    }());
+
+    if (overflow) {
+      return FleetOverflowBox(
+        minHeight: minHeight ?? constraints?.minHeight,
+        maxHeight: maxHeight ?? constraints?.maxHeight,
+        minWidth: minWidth ?? constraints?.minWidth,
+        maxWidth: maxWidth ?? constraints?.maxWidth,
+        alignment: alignment ?? Alignment.center,
+        child: this,
+      );
+    } else {
+      constraints ??= BoxConstraints(
+        minWidth: minWidth ?? 0,
+        maxWidth: maxWidth ?? double.infinity,
+        minHeight: minHeight ?? 0,
+        maxHeight: maxHeight ?? double.infinity,
+      );
+      return FleetConstrainedBox(
+        constraints: constraints,
+        child: this,
+      );
+    }
+  }
+
   /// Applies tight size constraints to this widget.
   @widgetFactory
   Widget size({
@@ -87,7 +155,22 @@ extension BasicModifiers on Widget {
     double? square,
     bool? expand,
     bool? shrink,
+    bool fractional = false,
+    bool overflow = false,
+    AlignmentGeometry? alignment,
   }) {
+    assert(
+      !fractional || (expand == null && shrink == null),
+      'fractional cannot be used with expand or shrink',
+    );
+    assert(
+      !overflow || (expand == null && shrink == null),
+      'overflow cannot be used with expand or shrink',
+    );
+    assert(
+      overflow || alignment == null,
+      'alignment can only be used with overflow',
+    );
     assert(() {
       _debugCheckParameterCombinations(modifier: 'size', [
         {'width': width, 'height': height},
@@ -104,12 +187,50 @@ extension BasicModifiers on Widget {
     } else if (shrink ?? false) {
       return FleetSizedBox.shrink(child: this);
     } else {
-      return FleetSizedBox(
-        width: width ?? size?.width ?? square,
-        height: height ?? size?.height ?? square,
-        child: this,
-      );
+      width ??= size?.width ?? square;
+      height ??= size?.height ?? square;
+      if (fractional) {
+        return FleetFractionallySizedBox(
+          widthFactor: width,
+          heightFactor: height,
+          child: this,
+        );
+      } else if (overflow) {
+        return FleetSizedOverflowBox(
+          size: Size(width!, height!),
+          alignment: alignment ?? Alignment.center,
+          child: this,
+        );
+      } else {
+        return FleetSizedBox(
+          width: width,
+          height: height,
+          child: this,
+        );
+      }
     }
+  }
+
+  /// Attempts to size the widget to a specific aspect ratio.
+  @widgetFactory
+  Widget aspectRatio(double aspectRatio) {
+    return FleetAspectRatio(
+      aspectRatio: aspectRatio,
+      child: this,
+    );
+  }
+
+  /// Limits this widget's size only when it's unconstrained.
+  @widgetFactory
+  Widget limit({
+    double maxHeight = double.infinity,
+    double maxWidth = double.infinity,
+  }) {
+    return FleetLimitedBox(
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
+      child: this,
+    );
   }
 
   /// Adds padding around this widget.
@@ -255,7 +376,7 @@ extension BasicModifiers on Widget {
     );
   }
 
-  /// Translates this widget by [x] and [y] or an [offset].
+  /// Offsets this widget by [x] and [y] or an [offset].
   @widgetFactory
   Widget offset({
     double? x,
@@ -263,7 +384,12 @@ extension BasicModifiers on Widget {
     Offset? offset,
     bool transformHitTests = true,
     FilterQuality? filterQuality,
+    bool fractional = false,
   }) {
+    assert(
+      !fractional || filterQuality == null,
+      'offset cannot be fractional and specify filterQuality.',
+    );
     assert(() {
       _debugCheckParameterCombinations(modifier: 'offset', [
         {'x': x, 'y': y},
@@ -272,12 +398,22 @@ extension BasicModifiers on Widget {
       return true;
     }());
 
-    return FleetTransform.translate(
-      offset: offset ?? Offset(x ?? 0, y ?? 0),
-      transformHitTests: transformHitTests,
-      filterQuality: filterQuality,
-      child: this,
-    );
+    offset ??= Offset(x ?? 0, y ?? 0);
+
+    if (fractional) {
+      return FleetFractionalTranslation(
+        translation: offset,
+        transformHitTests: transformHitTests,
+        child: this,
+      );
+    } else {
+      return FleetTransform.translate(
+        offset: offset,
+        transformHitTests: transformHitTests,
+        filterQuality: filterQuality,
+        child: this,
+      );
+    }
   }
 
   /// Scales this widget by [xy] for both the x and y axis or [x] and [y]
@@ -420,6 +556,72 @@ extension BasicModifiers on Widget {
         );
       }
     }
+  }
+}
+
+/// Extension-based widget modifiers, which use Fleet's drop-in replacements for
+/// [DecoratedBox].
+extension DecorationModifiers on Widget {
+  /// Paints a decoration either after (default) or before this widget.
+  @widgetFactory
+  Widget decoration({
+    // Common parameters for all decorations
+    Color? color,
+    DecorationImage? image,
+    Gradient? gradient,
+    List<BoxShadow>? shadows,
+    // BoxDecoration specific parameters
+    BoxBorder? border,
+    BorderRadiusGeometry? borderRadius,
+    BlendMode? backgroundBlendMode,
+    BoxShape? boxShape,
+    // ShapeDecoration specific parameters
+    ShapeBorder? shape,
+    // DecoratedBox parameters
+    Decoration? decoration,
+    DecorationPosition position = DecorationPosition.background,
+  }) {
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'decoration', [
+        {
+          'border': border,
+          'borderRadius': borderRadius,
+          'backgroundBlendMode': backgroundBlendMode,
+          'boxShape': boxShape,
+        },
+        {'shape': shape}
+      ]);
+      return true;
+    }());
+
+    if (decoration == null) {
+      if (shape != null) {
+        decoration = ShapeDecoration(
+          shape: shape,
+          color: color,
+          image: image,
+          gradient: gradient,
+          shadows: shadows,
+        );
+      } else {
+        decoration = BoxDecoration(
+          color: color,
+          image: image,
+          gradient: gradient,
+          boxShadow: shadows,
+          border: border,
+          borderRadius: borderRadius,
+          shape: boxShape ?? BoxShape.rectangle,
+          backgroundBlendMode: backgroundBlendMode,
+        );
+      }
+    }
+
+    return FleetDecoratedBox(
+      decoration: decoration,
+      position: position,
+      child: this,
+    );
   }
 }
 
