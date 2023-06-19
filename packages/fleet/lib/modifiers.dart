@@ -79,6 +79,22 @@ extension BasicModifiers on Widget {
     );
   }
 
+  /// Scales and positions this widget within the available space according to
+  /// [fit]
+  @widgetFactory
+  Widget fit(
+    BoxFit fit, {
+    AlignmentGeometry alignment = Alignment.center,
+    Clip clipBehavior = Clip.none,
+  }) {
+    return FleetFittedBox(
+      fit: fit,
+      alignment: alignment,
+      clipBehavior: clipBehavior,
+      child: this,
+    );
+  }
+
   /// Applies additional constraints to this widget.
   @widgetFactory
   Widget constraints({
@@ -200,6 +216,19 @@ extension BasicModifiers on Widget {
   Widget aspectRatio(double aspectRatio) {
     return FleetAspectRatio(
       aspectRatio: aspectRatio,
+      child: this,
+    );
+  }
+
+  /// Limits this widget's size only when it's unconstrained.
+  @widgetFactory
+  Widget limit({
+    double maxHeight = double.infinity,
+    double maxWidth = double.infinity,
+  }) {
+    return FleetLimitedBox(
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
       child: this,
     );
   }
