@@ -87,7 +87,13 @@ extension BasicModifiers on Widget {
     double? minHeight,
     double? maxHeight,
     BoxConstraints? constraints,
+    bool overflow = false,
+    AlignmentGeometry? alignment,
   }) {
+    assert(
+      overflow || alignment == null,
+      'alignment can only be used with overflow',
+    );
     assert(() {
       _debugCheckParameterCombinations(modifier: 'constraints', [
         {
@@ -101,17 +107,27 @@ extension BasicModifiers on Widget {
       return true;
     }());
 
-    constraints ??= BoxConstraints(
-      minWidth: minWidth ?? 0,
-      maxWidth: maxWidth ?? double.infinity,
-      minHeight: minHeight ?? 0,
-      maxHeight: maxHeight ?? double.infinity,
-    );
-
-    return FleetConstrainedBox(
-      constraints: constraints,
-      child: this,
-    );
+    if (overflow) {
+      return FleetOverflowBox(
+        minHeight: minHeight ?? constraints?.minHeight,
+        maxHeight: maxHeight ?? constraints?.maxHeight,
+        minWidth: minWidth ?? constraints?.minWidth,
+        maxWidth: maxWidth ?? constraints?.maxWidth,
+        alignment: alignment ?? Alignment.center,
+        child: this,
+      );
+    } else {
+      constraints ??= BoxConstraints(
+        minWidth: minWidth ?? 0,
+        maxWidth: maxWidth ?? double.infinity,
+        minHeight: minHeight ?? 0,
+        maxHeight: maxHeight ?? double.infinity,
+      );
+      return FleetConstrainedBox(
+        constraints: constraints,
+        child: this,
+      );
+    }
   }
 
   /// Applies tight size constraints to this widget.
@@ -124,10 +140,20 @@ extension BasicModifiers on Widget {
     bool? expand,
     bool? shrink,
     bool fractional = false,
+    bool overflow = false,
+    AlignmentGeometry? alignment,
   }) {
     assert(
       !fractional || (expand == null && shrink == null),
       'fractional cannot be used with expand or shrink',
+    );
+    assert(
+      !overflow || (expand == null && shrink == null),
+      'overflow cannot be used with expand or shrink',
+    );
+    assert(
+      overflow || alignment == null,
+      'alignment can only be used with overflow',
     );
     assert(() {
       _debugCheckParameterCombinations(modifier: 'size', [
@@ -151,6 +177,12 @@ extension BasicModifiers on Widget {
         return FleetFractionallySizedBox(
           widthFactor: width,
           heightFactor: height,
+          child: this,
+        );
+      } else if (overflow) {
+        return FleetSizedOverflowBox(
+          size: Size(width!, height!),
+          alignment: alignment ?? Alignment.center,
           child: this,
         );
       } else {

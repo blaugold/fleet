@@ -1472,3 +1472,209 @@ class FleetConstrainedBox extends ConstrainedBox
     renderObject.additionalConstraints = parameters.constraints.animatedValue;
   }
 }
+
+typedef _OverflowBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  OptionalAnimatableDouble minWidth,
+  OptionalAnimatableDouble maxWidth,
+  OptionalAnimatableDouble minHeight,
+  OptionalAnimatableDouble maxHeight,
+});
+
+/// Fleet's drop-in replacement of [OverflowBox].
+class FleetOverflowBox extends OverflowBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _OverflowBoxAnimatableParameters> {
+  /// Corresponding constructor to [OverflowBox].
+  const FleetOverflowBox({
+    super.key,
+    super.alignment,
+    super.minHeight,
+    super.maxHeight,
+    super.minWidth,
+    super.maxWidth,
+    super.child,
+  });
+
+  @override
+  _OverflowBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderConstrainedOverflowBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      minWidth: OptionalAnimatableDouble(minWidth, host: host),
+      maxWidth: OptionalAnimatableDouble(maxWidth, host: host),
+      minHeight: OptionalAnimatableDouble(minHeight, host: host),
+      maxHeight: OptionalAnimatableDouble(maxHeight, host: host),
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _OverflowBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+    parameters.minWidth.value = minWidth;
+    parameters.maxWidth.value = maxWidth;
+    parameters.minHeight.value = minHeight;
+    parameters.maxHeight.value = maxHeight;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderConstrainedOverflowBox renderObject,
+    _OverflowBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+    renderObject.minWidth = parameters.minWidth.animatedValue;
+    renderObject.maxWidth = parameters.maxWidth.animatedValue;
+    renderObject.minHeight = parameters.minHeight.animatedValue;
+    renderObject.maxHeight = parameters.maxHeight.animatedValue;
+  }
+}
+
+typedef _SizedOverflowBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+  AnimatableSize size,
+});
+
+/// Fleet's drop-in replacement of [SizedOverflowBox].
+class FleetSizedOverflowBox extends SizedOverflowBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _SizedOverflowBoxAnimatableParameters> {
+  /// Corresponding constructor to [SizedOverflowBox].
+  const FleetSizedOverflowBox({
+    super.key,
+    super.alignment,
+    required super.size,
+    super.child,
+  });
+
+  @override
+  _SizedOverflowBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderSizedOverflowBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      alignment: AnimatableAlignmentGeometry(alignment, host: host),
+      size: AnimatableSize(size, host: host),
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _SizedOverflowBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+    parameters.size.value = size;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderSizedOverflowBox renderObject,
+    _SizedOverflowBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+    renderObject.requestedSize = parameters.size.animatedValue;
+  }
+}
+
+typedef _FittedBoxAnimatableParameters = ({
+  AnimatableAlignmentGeometry alignment,
+});
+
+/// Fleet's drop-in replacement of [FittedBox].
+class FleetFittedBox extends FittedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _FittedBoxAnimatableParameters> {
+  /// Corresponding constructor to [FittedBox].
+  const FleetFittedBox({
+    super.key,
+    super.alignment,
+    super.fit,
+    super.clipBehavior,
+    super.child,
+  });
+
+  @override
+  _FittedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderFittedBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (alignment: AnimatableAlignmentGeometry(alignment, host: host));
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _FittedBoxAnimatableParameters parameters,
+  ) {
+    parameters.alignment.value = alignment;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderFittedBox renderObject,
+    _FittedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.alignment = parameters.alignment.animatedValue;
+  }
+}
+
+typedef _LimitedBoxAnimatableParameters = ({
+  AnimatableDouble maxWidth,
+  AnimatableDouble maxHeight,
+});
+
+/// Fleet's drop-in replacement of [LimitedBox].
+class FleetLimitedBox extends LimitedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _LimitedBoxAnimatableParameters> {
+  /// Corresponding constructor to [LimitedBox].
+  const FleetLimitedBox({
+    super.key,
+    super.maxHeight,
+    super.maxWidth,
+    super.child,
+  });
+
+  @override
+  _LimitedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderLimitedBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (
+      maxWidth: AnimatableDouble(maxWidth, host: host),
+      maxHeight: AnimatableDouble(maxHeight, host: host),
+    );
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _LimitedBoxAnimatableParameters parameters,
+  ) {
+    parameters.maxWidth.value = maxWidth;
+    parameters.maxHeight.value = maxHeight;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderLimitedBox renderObject,
+    _LimitedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.maxWidth = parameters.maxWidth.animatedValue;
+    renderObject.maxHeight = parameters.maxHeight.animatedValue;
+  }
+}
