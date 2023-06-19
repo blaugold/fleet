@@ -79,6 +79,41 @@ extension BasicModifiers on Widget {
     );
   }
 
+  /// Applies additional constraints to this widget.
+  @widgetFactory
+  Widget constraints({
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
+    BoxConstraints? constraints,
+  }) {
+    assert(() {
+      _debugCheckParameterCombinations(modifier: 'constraints', [
+        {
+          'minWidth': minWidth,
+          'maxWidth': maxWidth,
+          'minHeight': minHeight,
+          'maxHeight': maxHeight
+        },
+        {'constraints': constraints}
+      ]);
+      return true;
+    }());
+
+    constraints ??= BoxConstraints(
+      minWidth: minWidth ?? 0,
+      maxWidth: maxWidth ?? double.infinity,
+      minHeight: minHeight ?? 0,
+      maxHeight: maxHeight ?? double.infinity,
+    );
+
+    return FleetConstrainedBox(
+      constraints: constraints,
+      child: this,
+    );
+  }
+
   /// Applies tight size constraints to this widget.
   @widgetFactory
   Widget size({

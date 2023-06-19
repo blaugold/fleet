@@ -1430,3 +1430,45 @@ class FleetFractionallySizedBox extends FractionallySizedBox
     renderObject.heightFactor = parameters.heightFactor.animatedValue;
   }
 }
+
+typedef _ConstrainedBoxAnimatableParameters = ({
+  AnimatableBoxConstraints constraints,
+});
+
+/// Fleet's drop-in replacement of [ConstrainedBox].
+class FleetConstrainedBox extends ConstrainedBox
+    with
+        AnimatableSingleChildRenderObjectWidgetMixin<
+            _ConstrainedBoxAnimatableParameters> {
+  /// Corresponding constructor to [ConstrainedBox].
+  FleetConstrainedBox({
+    super.key,
+    required super.constraints,
+    super.child,
+  });
+
+  @override
+  _ConstrainedBoxAnimatableParameters createAnimatableParameters(
+    covariant RenderConstrainedBox renderObject,
+    AnimatableParameterHost host,
+  ) {
+    return (constraints: AnimatableBoxConstraints(constraints, host: host));
+  }
+
+  @override
+  void updateAnimatableParameters(
+    BuildContext context,
+    _ConstrainedBoxAnimatableParameters parameters,
+  ) {
+    parameters.constraints.value = constraints;
+  }
+
+  @override
+  void updateRenderObjectWithAnimatableParameters(
+    BuildContext context,
+    covariant RenderConstrainedBox renderObject,
+    _ConstrainedBoxAnimatableParameters parameters,
+  ) {
+    renderObject.additionalConstraints = parameters.constraints.animatedValue;
+  }
+}

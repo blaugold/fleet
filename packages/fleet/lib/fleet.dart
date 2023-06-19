@@ -46,6 +46,7 @@ export 'src/widgets/flutter/basic.dart'
         FleetColoredBox,
         FleetColumn,
         FleetColumnApplyChildren,
+        FleetConstrainedBox,
         FleetFlex,
         FleetFlexApplyChildren,
         FleetFractionalTranslation,

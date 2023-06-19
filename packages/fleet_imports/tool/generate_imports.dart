@@ -8,6 +8,7 @@ const flutterWidgets = [
   'Center',
   'ColoredBox',
   'Column',
+  'ConstrainedBox',
   'Container',
   'DecoratedBox',
   'Flex',

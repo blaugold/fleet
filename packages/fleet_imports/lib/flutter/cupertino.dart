@@ -7,6 +7,7 @@ export 'package:flutter/cupertino.dart'
         Center,
         ColoredBox,
         Column,
+        ConstrainedBox,
         Container,
         DecoratedBox,
         Flex,
@@ -36,6 +37,9 @@ typedef ColoredBox = FleetColoredBox;
 
 /// Fleet drop-in replacement for [Column].
 typedef Column = FleetColumn;
+
+/// Fleet drop-in replacement for [ConstrainedBox].
+typedef ConstrainedBox = FleetConstrainedBox;
 
 /// Fleet drop-in replacement for [Container].
 typedef Container = FleetContainer;
