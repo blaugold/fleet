@@ -1,3 +1,10 @@
+## 0.5.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: add more drop-in replacements for Flutter widgets ([#53](https://github.com/blaugold/fleet/issues/53)). ([e79ac71a](https://github.com/blaugold/fleet/commit/e79ac71aad5ce4f353c9107f41b8df94ee895932))
+ - **BREAKING** **FEAT**: streamline modifier API by overloading modifier methods ([#52](https://github.com/blaugold/fleet/issues/52)). ([42a676f2](https://github.com/blaugold/fleet/commit/42a676f23b14fa993853982db97852e9a1c97f13))
+
 ## 0.4.0
 
 > Note: This release has breaking changes.

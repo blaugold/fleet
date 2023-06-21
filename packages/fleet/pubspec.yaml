@@ -2,7 +2,7 @@ name: fleet
 description:
   An animation Framework for Flutter. It is state-based, declarative,
   extensible, composable and easy to use.
-version: 0.4.0
+version: 0.5.0
 issue_tracker: https://github.com/blaugold/fleet/issues
 homepage: https://github.com/blaugold/fleet/tree/main/packages/fleet
 repository: https://github.com/blaugold/fleet

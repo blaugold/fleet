@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-06-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`fleet` - `v0.5.0`](#fleet---v050)
+
+Packages with other changes:
+
+ - [`fleet_imports` - `v0.1.1`](#fleet_imports---v011)
+
+---
+
+#### `fleet` - `v0.5.0`
+
+ - **FEAT**: add more drop-in replacements for Flutter widgets ([#53](https://github.com/blaugold/fleet/issues/53)). ([e79ac71a](https://github.com/blaugold/fleet/commit/e79ac71aad5ce4f353c9107f41b8df94ee895932))
+ - **BREAKING** **FEAT**: streamline modifier API by overloading modifier methods ([#52](https://github.com/blaugold/fleet/issues/52)). ([42a676f2](https://github.com/blaugold/fleet/commit/42a676f23b14fa993853982db97852e9a1c97f13))
+
+#### `fleet_imports` - `v0.1.1`
+
+ - **FEAT**: add more drop-in replacements for Flutter widgets ([#53](https://github.com/blaugold/fleet/issues/53)). ([e79ac71a](https://github.com/blaugold/fleet/commit/e79ac71aad5ce4f353c9107f41b8df94ee895932))
+
+
 ## 2023-06-10
 
 ### Changes

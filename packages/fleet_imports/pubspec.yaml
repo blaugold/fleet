@@ -2,7 +2,7 @@ name: fleet_imports
 description:
   Alternative imports for Flutter libraries, that substitute widgets for which
   Fleet provides drop-in replacements.
-version: 0.1.0
+version: 0.1.1
 issue_tracker: https://github.com/blaugold/fleet/issues
 homepage: https://github.com/blaugold/fleet/tree/main/packages/fleet_imports
 repository: https://github.com/blaugold/fleet
@@ -14,7 +14,7 @@ environment:
   flutter: '>=3.10.0'
 
 dependencies:
-  fleet: ^0.4.0
+  fleet: ^0.5.0
   flutter:
     sdk: flutter
 
