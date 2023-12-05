@@ -66,6 +66,7 @@ extension BasicModifiers on Widget {
       alignment: alignment,
       widthFactor: widthFactor,
       heightFactor: heightFactor,
+      child: this,
     );
   }
 
