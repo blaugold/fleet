@@ -542,7 +542,7 @@ mixin AnimatableParameterHostMixin on Diagnosticable
 
   void _updateTickerModeNotifier() {
     final newNotifier = TickerMode.getNotifier(context);
-    if (newNotifier != _tickerModeNotifier) {
+    if (newNotifier == _tickerModeNotifier) {
       return;
     }
     _tickerModeNotifier?.removeListener(_updateTickers);
