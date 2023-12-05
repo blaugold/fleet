@@ -1,3 +1,7 @@
+## 0.5.0+1
+
+ - **FIX**: type and linter errors ([#54](https://github.com/blaugold/fleet/issues/54)). ([011f2dee](https://github.com/blaugold/fleet/commit/011f2deea5b00cfc204afc4fedac66b017b4c695))
+
 ## 0.5.0
 
 > Note: This release has breaking changes.
