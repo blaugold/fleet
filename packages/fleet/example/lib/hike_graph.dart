@@ -41,7 +41,7 @@ class _PageState extends State<Page> {
           },
         ),
         HikeGraph(hike: hike, observation: _observation) //
-            .size(width: 400, height: 200)
+            .size(width: 400, height: 200),
       ]) //
           .centered(),
     );
@@ -187,6 +187,6 @@ final hike = Hike(
       Range(min: 30, max: 40),
       Range(min: 15, max: 25),
       Range(min: 10, max: 20),
-    ]
+    ],
   },
 );
