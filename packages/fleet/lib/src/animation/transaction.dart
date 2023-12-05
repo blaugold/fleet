@@ -82,7 +82,7 @@ extension IntermediateBuildExtension on WidgetsBinding {
     _isBuildingIntermediately = true;
 
     buildOwner!.buildScope(rootElement!);
-    pipelineOwner.flushLayout();
+    rootPipelineOwner.flushLayout();
     buildOwner!.finalizeTree();
 
     _isBuildingIntermediately = false;
