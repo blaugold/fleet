@@ -460,7 +460,7 @@ abstract class AnimatableParameterHost implements TickerProvider {
 mixin AnimatableParameterHostMixin on Diagnosticable
     implements AnimatableParameterHost {
   List<AnimatableParameter<void>>? _parameters;
-  ValueNotifier<bool>? _tickerModeNotifier;
+  ValueListenable<bool>? _tickerModeNotifier;
   Set<Ticker>? _tickers;
 
   /// Returns the [BuildContext] of where this host is located.
@@ -542,7 +542,7 @@ mixin AnimatableParameterHostMixin on Diagnosticable
 
   void _updateTickerModeNotifier() {
     final newNotifier = TickerMode.getNotifier(context);
-    if (newNotifier == _tickerModeNotifier) {
+    if (newNotifier != _tickerModeNotifier) {
       return;
     }
     _tickerModeNotifier?.removeListener(_updateTickers);

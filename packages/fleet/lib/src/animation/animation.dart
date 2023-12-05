@@ -510,7 +510,7 @@ class _CurveAnimationProvider extends AnimationProvider {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(EnumProperty('curve', curve));
+    properties.add(DiagnosticsProperty<Curve>('curve', curve));
     properties.add(DiagnosticsProperty<Duration>('duration', duration));
   }
 

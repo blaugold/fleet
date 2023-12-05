@@ -1123,7 +1123,7 @@ class FleetFlex extends StatelessWidget {
       children = [
         for (final child in children) ...[
           child,
-          if (child != children.last) spacer
+          if (child != children.last) spacer,
         ],
       ];
     }

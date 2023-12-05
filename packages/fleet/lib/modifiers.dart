@@ -45,11 +45,11 @@ extension BasicModifiers on Widget {
     assert(() {
       _debugCheckParameterCombinations(modifier: 'alignment', [
         {'start': start},
-        {'x': x}
+        {'x': x},
       ]);
       _debugCheckParameterCombinations(modifier: 'alignment', [
         {'start': start, 'x': x, 'y': y},
-        {'alignment': alignment}
+        {'alignment': alignment},
       ]);
       return true;
     }());
@@ -116,9 +116,9 @@ extension BasicModifiers on Widget {
           'minWidth': minWidth,
           'maxWidth': maxWidth,
           'minHeight': minHeight,
-          'maxHeight': maxHeight
+          'maxHeight': maxHeight,
         },
-        {'constraints': constraints}
+        {'constraints': constraints},
       ]);
       return true;
     }());
@@ -177,7 +177,7 @@ extension BasicModifiers on Widget {
         {'size': size},
         {'square': square},
         {'expand': expand},
-        {'shrink': shrink}
+        {'shrink': shrink},
       ]);
       return true;
     }());
@@ -260,11 +260,11 @@ extension BasicModifiers on Widget {
           'left': left,
           'right': right,
           'top': top,
-          'bottom': bottom
+          'bottom': bottom,
         },
         {'horizontal': horizontal, 'vertical': vertical},
         {'all': all},
-        {'padding': padding}
+        {'padding': padding},
       ]);
       return true;
     }());
@@ -393,7 +393,7 @@ extension BasicModifiers on Widget {
     assert(() {
       _debugCheckParameterCombinations(modifier: 'offset', [
         {'x': x, 'y': y},
-        {'offset': offset}
+        {'offset': offset},
       ]);
       return true;
     }());
@@ -431,7 +431,7 @@ extension BasicModifiers on Widget {
     assert(() {
       _debugCheckParameterCombinations(modifier: 'scale', [
         {'xy': xy},
-        {'x': x, 'y': y}
+        {'x': x, 'y': y},
       ]);
       return true;
     }());
@@ -589,7 +589,7 @@ extension DecorationModifiers on Widget {
           'backgroundBlendMode': backgroundBlendMode,
           'boxShape': boxShape,
         },
-        {'shape': shape}
+        {'shape': shape},
       ]);
       return true;
     }());
