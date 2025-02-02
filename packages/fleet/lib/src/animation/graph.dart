@@ -107,12 +107,13 @@ final class AnimatedValue<T> {
     );
   }
 
-  /// Creates an [AnimationNode] that jumps to a new [value] without animating.
-  AnimationNode jump(T value) => to(value, over: Duration.zero);
+  /// Creates an [AnimationNode] that set this animated values to a new [value]
+  /// without animating.
+  AnimationNode set(T value) => to(value, over: Duration.zero);
 
   /// Creates an [AnimationNode] that resets this animated value to its
   /// [defaultValue] without animating.
-  AnimationNode reset() => jump(defaultValue);
+  AnimationNode reset() => set(defaultValue);
 
   /// Returns an [Animation] for this animated value by looking up an
   /// [AnimationGraphController] in the given [context].
