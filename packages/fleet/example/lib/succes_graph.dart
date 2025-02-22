@@ -10,11 +10,11 @@ import 'package:fleet/fleet.dart';
 import 'package:flutter/material.dart';
 
 abstract final class SuccessAnimation {
-  static final miniGameProgressOpacity = AnimatedValue.double$();
-  static final overlayOpacity = AnimatedValue.double$();
-  static final cheerOpacity = AnimatedValue.double$();
-  static final primaryButtonScale = AnimatedValue.double$();
-  static final secondaryButtonScale = AnimatedValue.double$();
+  static final miniGameProgressOpacity = TweenValue.double$();
+  static final overlayOpacity = TweenValue.double$();
+  static final cheerOpacity = TweenValue.double$();
+  static final primaryButtonScale = TweenValue.double$();
+  static final secondaryButtonScale = TweenValue.double$();
 
   AnimationNode enterAnimation() {
     return ValueAnimationDefaults(

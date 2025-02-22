@@ -12,24 +12,24 @@ export 'src/animation/duration.dart' show DurationFromIntExtension;
 export 'src/animation/graph.dart'
     show
         Action,
-        AnimatedDoubleExtension,
-        AnimatedValue,
         AnimationElement,
         AnimationGraphController,
         AnimationGraphMixin,
-        AnimationGraphScope,
         AnimationNode,
         AnimationNodeExtension,
         Delay,
+        DoubleTweenValueExtension,
         GraphAnimation,
         Group,
         OnExitCallback,
         Pause,
         Sequence,
         Speed,
-        ValueAnimation,
+        TweenValue,
+        TweenValueAnimation,
+        Value,
         ValueAnimationDefaults,
-        resetAll;
+        ValueJump;
 export 'src/animation/parameter.dart'
     show
         AnimatableAlignmentGeometry,

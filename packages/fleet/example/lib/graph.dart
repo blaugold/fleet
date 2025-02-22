@@ -3,11 +3,11 @@ import 'package:flutter/material.dart' hide Action;
 
 import 'app.dart';
 
-final _scale = AnimatedValue.double$(defaultValue: 1, name: 'scale');
-final _rotation = AnimatedValue.double$(name: 'rotation');
-final _opacity = AnimatedValue.double$(defaultValue: 1, name: 'opacity');
-final _color = AnimatedValue.color(defaultValue: Colors.pink, name: 'color');
-final _offset = AnimatedValue.offset(name: 'offset');
+final _scale = TweenValue.double$(value: 1, name: 'scale');
+final _rotation = TweenValue.double$(name: 'rotation');
+final _opacity = TweenValue.double$(value: 1, name: 'opacity');
+final _color = TweenValue.color(value: Colors.pink, name: 'color');
+final _offset = TweenValue.offset(name: 'offset');
 
 AnimationNode _buildAnimation() {
   // An animation graph is an immutable data structure that represents an
@@ -21,13 +21,13 @@ AnimationNode _buildAnimation() {
       // the animated values are not reset automatically.
       // Unless `AnimatedValue.to(from: ...)` is specified, the animation of
       // that value starts from the value that was last set, either by an
-      // animation, explicitly, or by resetting to the default value.
-      resetAll([
-        _scale,
-        _rotation,
-        _opacity,
-        _color,
-        _offset,
+      // animation or directly.
+      Group([
+        _scale.jump(1),
+        _rotation.jump(0),
+        _opacity.jump(1),
+        _color.jump(Colors.pink),
+        _offset.jump(Offset.zero),
       ]),
       Group([
         _scale.to(2, over: 300.ms),
@@ -73,54 +73,46 @@ class _PageState extends State<Page>
 
   @override
   Widget build(BuildContext context) {
-    // By using an AnimationGraphScope, child widgets can access the
-    // AnimationGraphController instance and it does not need to be passed
-    // down the widget tree.
-    return AnimationGraphScope(
-      controller: animationGraphController,
-      child: Scaffold(
-        body: SizedBox.expand(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              TranslateTransition(
-                offset: _offset.of(context),
-                child: RotationTransition(
-                  turns: _rotation.of(context),
-                  child: ScaleTransition(
-                    scale: _scale.of(context),
-                    child: FadeTransition(
-                      opacity: _opacity.of(context),
-                      child: _ColoredSquare(color: _color),
-                    ),
+    return Scaffold(
+      body: SizedBox.expand(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            TranslateTransition(
+              offset: _offset,
+              child: RotationTransition(
+                turns: _rotation,
+                child: ScaleTransition(
+                  scale: _scale,
+                  child: FadeTransition(
+                    opacity: _opacity,
+                    child: _ColoredSquare(color: _color),
                   ),
                 ),
               ),
-              ElevatedButton(
-                onPressed: _animate,
-                child: const Text('Animate'),
-              ),
-            ],
-          ),
+            ),
+            ElevatedButton(
+              onPressed: _animate,
+              child: const Text('Animate'),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-// This widget is reusable since it is decoupled from the concrete
-// AnimationGraphController and AnimatedValue used in the animation graph.
 class _ColoredSquare extends StatelessWidget {
   const _ColoredSquare({required this.color});
 
-  final AnimatedValue<Color> color;
+  final Value<Color> color;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
       dimension: 200,
       child: ValueListenableBuilder(
-        valueListenable: color.of(context),
+        valueListenable: color,
         builder: (context, color, _) {
           return ColoredBox(color: color);
         },

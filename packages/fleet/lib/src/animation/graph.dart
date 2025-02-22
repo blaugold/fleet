@@ -4,88 +4,119 @@ import 'package:clock/clock.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-/// An animated value that can participate in an animation graph.
-///
-/// The current value of an animated value is managed by an
-/// [AnimationGraphController].
-///
-/// To use an animated value in a widget, use [of] to access an [Animation] that
-/// notifies listeners when the value changes.
-///
-/// You can also access the current value or an [Animation] for an animated
-/// value by calling [AnimationGraphController.get] or
-/// [AnimationGraphController.animation] respectively.
-final class AnimatedValue<T> {
-  /// Creates an animated value.
-  const AnimatedValue({
+/// An value that can participate in an animation graph.
+final class Value<T> extends Animation<T>
+    with
+        AnimationLocalListenersMixin,
+        AnimationLocalStatusListenersMixin,
+        AnimationEagerListenerMixin {
+  /// Creates a value that can participate in an animation graph.
+  Value({
     this.name,
-    required this.defaultValue,
+    required T value,
+  }) : _value = value;
+
+  /// The name of this value for debugging purposes.
+  final String? name;
+
+  AnimationStatus _status = AnimationStatus.dismissed;
+
+  @override
+  AnimationStatus get status => _status;
+
+  set status(AnimationStatus status) {
+    if (_status != status) {
+      _status = status;
+      notifyStatusListeners(status);
+    }
+  }
+
+  T _value;
+
+  @override
+  T get value => _value;
+
+  set value(T value) {
+    if (_value != value) {
+      _value = value;
+      notifyListeners();
+    }
+  }
+
+  /// Creates an [AnimationNode] that set this [Value.value] to a new [value]
+  /// without animating.
+  AnimationNode jump(T value) => ValueJump(value: this, to: value);
+}
+
+/// A [Value] that defines a tween to animate between states of the value.
+final class TweenValue<T> extends Value<T> {
+  /// Creates a [Value] that defines a tween to animate between states of the
+  /// value.
+  TweenValue({
+    super.name,
+    required super.value,
     required this.tweenFactory,
   });
 
-  /// Creates an animated [double] value.
-  static AnimatedValue<double> double$({
+  /// Creates an [TweenValue] with type [double], that uses [Tween] to animate
+  /// between states of the value.
+  static TweenValue<double> double$({
     String? name,
-    double defaultValue = 0,
+    double value = 0,
   }) {
-    return AnimatedValue(
+    return TweenValue(
       name: name,
-      defaultValue: defaultValue,
+      value: value,
       tweenFactory: Tween.new,
     );
   }
 
-  /// Creates an animated [int] value.
-  static AnimatedValue<int> int$({
+  /// Creates an [TweenValue] with type [int], that uses [IntTween] to animate
+  /// between states of the value.
+  static TweenValue<int> int$({
     String? name,
-    int defaultValue = 0,
+    int value = 0,
   }) {
-    return AnimatedValue(
+    return TweenValue(
       name: name,
-      defaultValue: defaultValue,
+      value: value,
       tweenFactory: IntTween.new,
     );
   }
 
-  /// Creates an animated [Color] value.
-  static AnimatedValue<Color> color({
+  /// Creates an [TweenValue] with type [Color], that uses [ColorTween] to
+  /// animate between states of the value.
+  static TweenValue<Color> color({
     String? name,
-    Color defaultValue = const Color(0x00000000),
+    Color value = const Color(0x00000000),
   }) {
-    return AnimatedValue(
+    return TweenValue(
       name: name,
-      defaultValue: defaultValue,
+      value: value,
       tweenFactory: ColorTween.new,
     );
   }
 
-  /// Creates an animated [Offset] value.
-  static AnimatedValue<Offset> offset({
+  /// Creates an [TweenValue] with type [Offset], that uses [Tween] to
+  /// animate between states of the value.
+  static TweenValue<Offset> offset({
     String? name,
-    Offset defaultValue = Offset.zero,
+    Offset value = Offset.zero,
   }) {
-    return AnimatedValue(
+    return TweenValue(
       name: name,
-      defaultValue: defaultValue,
+      value: value,
       tweenFactory: Tween.new,
     );
   }
 
-  /// The name of this animated value for debugging purposes.
-  final String? name;
-
-  /// The default value of this animated value when no animation has been
-  /// started.
-  final T defaultValue;
-
-  /// A factory function for creating a tween to animate between values of this
-  /// animated value.
+  /// A factory for creating a tween to animate between states of this value.
   final Tween<T?> Function() tweenFactory;
 
   /// Creates an [AnimationNode] that animates this value to a new [value].
   ///
   /// If [from] is provided, the animation will start from that value. Otherwise
-  /// the animation will start from the current value of this animated value.
+  /// the animation will start from the current value.
   ///
   /// The animation will have a duration of [over].
   ///
@@ -98,7 +129,7 @@ final class AnimatedValue<T> {
     Duration? over,
     Curve? curve,
   }) {
-    return ValueAnimation(
+    return TweenValueAnimation(
       value: this,
       from: from,
       to: value,
@@ -106,56 +137,11 @@ final class AnimatedValue<T> {
       curve: curve,
     );
   }
-
-  /// Creates an [AnimationNode] that set this animated values to a new [value]
-  /// without animating.
-  AnimationNode set(T value) => to(value, over: Duration.zero);
-
-  /// Creates an [AnimationNode] that resets this animated value to its
-  /// [defaultValue] without animating.
-  AnimationNode reset() => set(defaultValue);
-
-  /// Returns an [Animation] for this animated value by looking up an
-  /// [AnimationGraphController] in the given [context].
-  ///
-  /// See [AnimationGraphController.maybeOf] for more information about where a
-  /// controller is available.
-  ///
-  /// If no controller is found, an [AlwaysStoppedAnimation] with the default
-  /// value of this animated value is returned.
-  Animation<T> of(BuildContext context) =>
-      AnimationGraphController.maybeOf(context)?.animation(this) ??
-      AlwaysStoppedAnimation(defaultValue);
-
-  _ValueAnimation<T> _animation(AnimationGraphController controller) =>
-      // TODO: We are leaking memory here. We should find a way to clean up
-      // _ValueAnimations that are no longer used.
-      controller._valueAnimations.putIfAbsent(
-        this,
-        () => _ValueAnimation<T>(
-          AnimationStatus.dismissed,
-          this.defaultValue,
-        ),
-      ) as _ValueAnimation<T>;
-
-  void _set(
-    AnimationGraphController controller,
-    T value, {
-    AnimationStatus status = AnimationStatus.dismissed,
-  }) =>
-      _animation(controller)
-        ..value = value
-        ..status = status;
-
-  void _reset(AnimationGraphController controller) =>
-      _set(controller, defaultValue);
-
-  T _get(AnimationGraphController controller) => _animation(controller).value;
 }
 
-/// Convenience extensions for [AnimatedValue]s that have [double] as their
+/// Convenience extensions for [TweenValue]s that have [double] as their
 /// type.
-extension AnimatedDoubleExtension on AnimatedValue<double> {
+extension DoubleTweenValueExtension on TweenValue<double> {
   /// Creates an [AnimationNode] that animates this value to to `1.0`.
   AnimationNode forward({
     Duration? over,
@@ -383,21 +369,54 @@ class _SequenceElement extends AnimationElement {
   void dispose() => _currentChild?.dispose();
 }
 
-/// A node that provides default values for unspecified [ValueAnimation]
+/// A node that immediately sets [value] to a new value without animating.
+final class ValueJump<T> extends AnimationNode {
+  /// Creates a value jump node that immediately sets [value] to a new value
+  ValueJump({required this.value, required this.to});
+
+  /// The value to set to a new value.
+  final Value<T> value;
+
+  /// The value to set the [value] to.
+  final T to;
+
+  @override
+  AnimationElement createElement() => _ValueJumpElement(this);
+}
+
+final class _ValueJumpElement<T> extends AnimationElement {
+  _ValueJumpElement(this.node);
+
+  @override
+  final ValueJump<T> node;
+
+  @override
+  void tick(Duration elapsed) {
+    node.value
+      ..value = node.to
+      ..status = AnimationStatus.completed;
+    onExit(elapsed);
+  }
+
+  @override
+  void dispose() {}
+}
+
+/// A node that provides default values for unspecified [TweenValueAnimation]
 /// parameters to its [child] sub-graph.
 final class ValueAnimationDefaults extends AnimationNode {
   /// Creates a value animation defaults node that provides default values for
-  /// unspecified [ValueAnimation] parameters to its [child] sub-graph.
+  /// unspecified [TweenValueAnimation] parameters to its [child] sub-graph.
   ValueAnimationDefaults(
     this.child, {
     this.duration,
     this.curve,
   });
 
-  /// The default duration for [ValueAnimation.duration].
+  /// The default duration for [TweenValueAnimation.duration].
   static const defaultDuration = Duration(milliseconds: 300);
 
-  /// The default curve for [ValueAnimation.curve].
+  /// The default curve for [TweenValueAnimation.curve].
   static const defaultCurve = Curves.linear;
 
   static ValueAnimationDefaults? _defaultOf(AnimationElement element) =>
@@ -409,10 +428,10 @@ final class ValueAnimationDefaults extends AnimationNode {
   static Curve _curveOf(AnimationElement element) =>
       _defaultOf(element)?.curve ?? defaultCurve;
 
-  /// The default duration for [ValueAnimation.duration].
+  /// The default duration for [TweenValueAnimation.duration].
   final Duration? duration;
 
-  /// The default curve for [ValueAnimation.curve].
+  /// The default curve for [TweenValueAnimation.curve].
   final Curve? curve;
 
   /// The animation sub-graph to apply the defaults within.
@@ -442,10 +461,10 @@ final class _ValueAnimationDefaultsElement extends AnimationElement {
   }
 }
 
-/// An animation node that animates an [AnimatedValue].
-final class ValueAnimation<T> extends AnimationNode {
+/// An animation node that animates an [Value].
+final class TweenValueAnimation<T> extends AnimationNode {
   /// Creates a value animation that animates the given [value].
-  ValueAnimation({
+  TweenValueAnimation({
     required this.value,
     this.from,
     required this.to,
@@ -453,8 +472,8 @@ final class ValueAnimation<T> extends AnimationNode {
     this.curve,
   });
 
-  /// The animated value to animate.
-  final AnimatedValue<T> value;
+  /// The value to animate.
+  final TweenValue<T> value;
 
   /// The value to start the animation from.
   final T? from;
@@ -469,26 +488,26 @@ final class ValueAnimation<T> extends AnimationNode {
   final Curve? curve;
 
   @override
-  AnimationElement createElement() => _ValueAnimationElement(this);
+  AnimationElement createElement() => _TweenValueAnimationElement(this);
 }
 
-class _ValueAnimationElement<T> extends AnimationElement {
-  _ValueAnimationElement(this.node);
+class _TweenValueAnimationElement<T> extends AnimationElement {
+  _TweenValueAnimationElement(this.node);
 
   @override
-  final ValueAnimation<T> node;
+  final TweenValueAnimation<T> node;
 
   Tween<T?>? _tween;
 
   @override
   void tick(Duration elapsed) {
     _tween ??= node.value.tweenFactory()
-      ..begin = node.from ?? animation.controller.get(node.value)
+      ..begin = node.from ?? node.value.value
       ..end = node.to;
 
     final duration = node.duration ?? ValueAnimationDefaults._durationOf(this);
     if (duration == Duration.zero) {
-      animation.controller.set(node.value, node.to);
+      node.value.value = node.to;
       onExit(elapsed);
       return;
     } else {
@@ -501,12 +520,11 @@ class _ValueAnimationElement<T> extends AnimationElement {
       final progress = curve
           .transform(effectiveElapsed.inMilliseconds / duration.inMilliseconds)
           .clamp(0.0, 1.0);
-      final value = _tween!.transform(progress);
-      animation.controller.set(
-        node.value,
-        value,
-        status: completed ? AnimationStatus.completed : AnimationStatus.forward,
-      );
+      final value = _tween!.transform(progress) as T;
+      node.value
+        ..value = value
+        ..status =
+            completed ? AnimationStatus.completed : AnimationStatus.forward;
 
       if (completed) {
         onExit(elapsedAfterExit);
@@ -619,13 +637,6 @@ class _SpeedElement extends AnimationElement {
   void dispose() {}
 }
 
-/// Creates an animation node that resets all [values] to their default values.
-AnimationNode resetAll(Iterable<AnimatedValue<void>> values) {
-  return Group([
-    for (final value in values) value.reset(),
-  ]);
-}
-
 /// An animation node that immediately runs an [action] and waits for it to
 /// complete.
 final class Action extends AnimationNode {
@@ -702,42 +713,11 @@ class AnimationGraphController {
     _ticker = vsync.createTicker(_tick);
   }
 
-  /// Returns the nearest [AnimationGraphController] from the given [context],
-  /// if available.
-  ///
-  /// This method can be used to access the [AnimationGraphController] from a
-  /// widget that is a descendant of a [AnimationGraphScope] or a [State] that
-  /// uses the [AnimationGraphMixin] mixin.
-  static AnimationGraphController? maybeOf(BuildContext context) {
-    if (context
-        case StatefulElement(
-          state: AnimationGraphMixin(:final animationGraphController)
-        )) {
-      return animationGraphController;
-    }
-
-    return context
-        .dependOnInheritedWidgetOfExactType<AnimationGraphScope>()
-        ?.controller;
-  }
-
-  /// Returns the nearest [AnimationGraphController] from the given [context].
-  ///
-  /// Same as [maybeOf], but throws an error if no controller is found.
-  static AnimationGraphController of(BuildContext context) {
-    final controller = maybeOf(context);
-    if (controller == null) {
-      throw FlutterError('No AnimationGraphController found in context');
-    }
-    return controller;
-  }
-
   /// The ticker provider for creating tickers for animations.
   final TickerProvider vsync;
 
   late final Ticker _ticker;
 
-  final _valueAnimations = <AnimatedValue<void>, _ValueAnimation<void>>{};
   final _runningAnimations = <GraphAnimation>[];
 
   /// Starts the animation graph specified by the given [node] node.
@@ -748,32 +728,6 @@ class AnimationGraphController {
     final animation = GraphAnimation._(this, node);
     animation._mount();
     return animation;
-  }
-
-  /// Returns the [Animation] for the given animated [value].
-  Animation<T> animation<T>(AnimatedValue<T> value) => value._animation(this);
-
-  /// Returns the current value of the given animated [value].
-  T get<T>(AnimatedValue<T> value) => value._get(this);
-
-  /// Sets the current value of the animated [value] to [newValue].
-  void set<T>(
-    AnimatedValue<T> value,
-    T newValue, {
-    AnimationStatus status = AnimationStatus.dismissed,
-  }) =>
-      value._set(this, newValue, status: status);
-
-  /// Resets the current value of the given animated [value] to its
-  /// [AnimatedValue.defaultValue].
-  void reset(AnimatedValue<void> value) => value._reset(this);
-
-  /// Resets the current values of all [AnimatedValue]s to their
-  /// [AnimatedValue.defaultValue]s.
-  void resetAll() {
-    for (final MapEntry(:key, :value) in _valueAnimations.entries) {
-      value.value = key.defaultValue;
-    }
   }
 
   /// Cancels all running animations.
@@ -808,41 +762,6 @@ class AnimationGraphController {
       animation.tick(elapsed);
     }
   }
-}
-
-class _ValueAnimation<T> extends Animation<T>
-    with AnimationLocalListenersMixin, AnimationLocalStatusListenersMixin {
-  _ValueAnimation(this._status, this._value);
-
-  AnimationStatus _status;
-
-  @override
-  AnimationStatus get status => _status;
-
-  set status(AnimationStatus status) {
-    if (_status != status) {
-      _status = status;
-      notifyStatusListeners(status);
-    }
-  }
-
-  T _value;
-
-  @override
-  T get value => _value;
-
-  set value(T value) {
-    if (_value != value) {
-      _value = value;
-      notifyListeners();
-    }
-  }
-
-  @override
-  void didRegisterListener() {}
-
-  @override
-  void didUnregisterListener() {}
 }
 
 /// An animation that executes the graph animation specified by a [node]
@@ -927,33 +846,6 @@ mixin AnimationGraphMixin<T extends StatefulWidget> on State<T>
   GraphAnimation animate(AnimationNode root) =>
       animationGraphController.animate(root);
 
-  /// Resets the current values of all [AnimatedValue]s to their
-  /// [AnimatedValue.defaultValue]s.
-  ///
-  /// See [AnimationGraphController.resetAll] for more information.
-  void resetAllAnimatedValues() => animationGraphController.resetAll();
-
   /// Cancels all running animations.
   void cancelAllAnimations() => animationGraphController.cancelAll();
-}
-
-/// Provides an [AnimationGraphController] to child widgets.
-///
-/// A provided controller can be accessed by calling
-/// [AnimationGraphController.of] with the [BuildContext] of a widget that is a
-/// descendant of an [AnimationGraphScope].
-class AnimationGraphScope extends InheritedWidget {
-  /// Creates an animation graph scope.
-  const AnimationGraphScope({
-    super.key,
-    required this.controller,
-    required super.child,
-  });
-
-  /// The animation graph controller to provide to child widgets.
-  final AnimationGraphController controller;
-
-  @override
-  bool updateShouldNotify(AnimationGraphScope oldWidget) =>
-      controller != oldWidget.controller;
 }
