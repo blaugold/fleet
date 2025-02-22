@@ -128,6 +128,8 @@ final class AnimatedValue<T> {
       AlwaysStoppedAnimation(defaultValue);
 
   _ValueAnimation<T> _animation(AnimationGraphController controller) =>
+      // TODO: We are leaking memory here. We should find a way to clean up
+      // _ValueAnimations that are no longer used.
       controller._valueAnimations.putIfAbsent(
         this,
         () => _ValueAnimation<T>(
@@ -136,8 +138,14 @@ final class AnimatedValue<T> {
         ),
       ) as _ValueAnimation<T>;
 
-  void _set(AnimationGraphController controller, T value) =>
-      _animation(controller).value = value;
+  void _set(
+    AnimationGraphController controller,
+    T value, {
+    AnimationStatus status = AnimationStatus.dismissed,
+  }) =>
+      _animation(controller)
+        ..value = value
+        ..status = status;
 
   void _reset(AnimationGraphController controller) =>
       _set(controller, defaultValue);
@@ -486,13 +494,22 @@ class _ValueAnimationElement<T> extends AnimationElement {
     } else {
       final curve = node.curve ?? ValueAnimationDefaults._curveOf(this);
       final effectiveElapsed = elapsed > duration ? duration : elapsed;
-      final progress = curve
-          .transform(effectiveElapsed.inMilliseconds / duration.inMilliseconds);
-      final value = _tween!.transform(progress);
-      animation.controller.set(node.value, value);
 
-      if (progress >= 1) {
-        onExit(elapsed - effectiveElapsed);
+      final elapsedAfterExit = elapsed - duration;
+      final completed = elapsedAfterExit >= Duration.zero;
+
+      final progress = curve
+          .transform(effectiveElapsed.inMilliseconds / duration.inMilliseconds)
+          .clamp(0.0, 1.0);
+      final value = _tween!.transform(progress);
+      animation.controller.set(
+        node.value,
+        value,
+        status: completed ? AnimationStatus.completed : AnimationStatus.forward,
+      );
+
+      if (completed) {
+        onExit(elapsedAfterExit);
       }
     }
   }
@@ -740,7 +757,12 @@ class AnimationGraphController {
   T get<T>(AnimatedValue<T> value) => value._get(this);
 
   /// Sets the current value of the animated [value] to [newValue].
-  void set<T>(AnimatedValue<T> value, T newValue) => value._set(this, newValue);
+  void set<T>(
+    AnimatedValue<T> value,
+    T newValue, {
+    AnimationStatus status = AnimationStatus.dismissed,
+  }) =>
+      value._set(this, newValue, status: status);
 
   /// Resets the current value of the given animated [value] to its
   /// [AnimatedValue.defaultValue].
@@ -782,7 +804,7 @@ class AnimationGraphController {
   }
 
   void _tick(Duration elapsed) {
-    for (final animation in _runningAnimations) {
+    for (final animation in List.of(_runningAnimations)) {
       animation.tick(elapsed);
     }
   }
