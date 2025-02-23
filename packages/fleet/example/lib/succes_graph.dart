@@ -31,7 +31,7 @@ abstract final class SuccessAnimation {
           cheerOpacity.forward(),
           ValueAnimationDefaults(
             curve: Curves.easeOutBack,
-            staggered(delay: 200.ms, [
+            Group(stagger: 200.ms, [
               primaryButtonScale.forward(),
               secondaryButtonScale.forward(),
             ]),
@@ -40,13 +40,4 @@ abstract final class SuccessAnimation {
       ]),
     );
   }
-}
-
-AnimationNode staggered(
-  List<AnimationNode> children, {
-  required Duration delay,
-}) {
-  return Group([
-    for (final (i, child) in children.indexed) child.delay(delay * i),
-  ]);
 }

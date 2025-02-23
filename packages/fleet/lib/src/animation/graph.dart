@@ -256,7 +256,14 @@ extension AnimationNodeExtension on AnimationNode {
 /// A group of animation nodes that are started and run in parallel.
 final class Group extends AnimationNode {
   /// Creates a group of [children] that are started and run in parallel.
-  Group(this.children);
+  Group(this.children, {this.stagger});
+
+  /// The duration to stagger the start of each child by.
+  ///
+  /// The first child will start at the beginning of the group, the second child
+  /// will start after the duration of [stagger], the third child will start
+  /// after the duration of [stagger] * 2, and so on.
+  final Duration? stagger;
 
   /// The children of this group, which are started and run in parallel.
   final List<AnimationNode> children;
@@ -282,7 +289,11 @@ class _GroupElement extends AnimationElement {
     }
 
     if (_children.isEmpty) {
-      for (final childNode in node.children) {
+      for (var (i, childNode) in node.children.indexed) {
+        if (node.stagger case final stagger? when i > 0) {
+          childNode = Delay(stagger * i, childNode);
+        }
+
         final child = createChild(childNode);
         _children.add(child);
         child.onExit = (elapsed) => _onChildExit(child, elapsed);
@@ -317,7 +328,10 @@ class _GroupElement extends AnimationElement {
 /// A sequence of animation nodes that are started and run in sequence.
 final class Sequence extends AnimationNode {
   /// Creates a sequence of [children] that are started and run in sequence.
-  Sequence(this.children);
+  Sequence(this.children, {this.pause});
+
+  /// The duration to pause between each child.
+  final Duration? pause;
 
   /// The children of this sequence, which are started and run in sequence.
   final List<AnimationNode> children;
@@ -355,7 +369,13 @@ class _SequenceElement extends AnimationElement {
       return;
     }
 
-    final child = createChild(node.children[_index++]);
+    final index = _index;
+    var childNode = node.children[_index++];
+    if (node.pause case final pause? when index > 0) {
+      childNode = Delay(pause, childNode);
+    }
+
+    final child = createChild(childNode);
     _currentChild = child;
     child.onExit = _onChildExit;
   }
