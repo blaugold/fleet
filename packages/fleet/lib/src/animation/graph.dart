@@ -833,7 +833,13 @@ final class GraphAnimation extends AnimationElement {
 mixin AnimationGraphMixin<T extends StatefulWidget> on State<T>
     implements TickerProvider {
   /// The animation graph controller for this state.
-  late final animationGraphController = AnimationGraphController(vsync: this);
+  late final AnimationGraphController animationGraphController;
+
+  @override
+  void initState() {
+    super.initState();
+    animationGraphController = AnimationGraphController(vsync: this);
+  }
 
   @override
   void dispose() {
