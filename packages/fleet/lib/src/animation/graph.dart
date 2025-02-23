@@ -830,6 +830,9 @@ final class GraphAnimation extends AnimationElement {
 }
 
 /// A mixin that simplifies working with animation graphs in a [State].
+///
+/// Make sure to apply this mixin after [SingleTickerProviderStateMixin] or
+/// [TickerProviderStateMixin].
 mixin AnimationGraphMixin<T extends StatefulWidget> on State<T>
     implements TickerProvider {
   /// The animation graph controller for this state.
