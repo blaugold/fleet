@@ -222,14 +222,14 @@ abstract class AnimationElement {
   ///
   /// Returns `null` if no parent of the given type is found.
   T? findParentOfType<T extends AnimationElement>() {
+    if (isRoot) {
+      return null;
+    }
+
     final parent = this.parent;
 
     if (parent is T) {
       return parent;
-    }
-
-    if (parent.isRoot) {
-      return null;
     }
 
     return parent.findParentOfType<T>();
@@ -451,7 +451,7 @@ final class _ValueAnimationDefaultsElement extends AnimationElement {
 
   @override
   void tick(Duration elapsed) {
-    _child ??= createChild(node.child);
+    _child ??= createChild(node.child)..onExit = onExit;
     _child!.tick(elapsed);
   }
 
@@ -774,7 +774,9 @@ class AnimationGraphController {
 /// You can also await the [doneOrCanceled] future, which will complete when the
 /// animation has completed or has been canceled.
 final class GraphAnimation extends AnimationElement {
-  GraphAnimation._(this.controller, this.node);
+  GraphAnimation._(this.controller, this.node) {
+    animation = this;
+  }
 
   /// The animation graph controller this animation belongs to.
   final AnimationGraphController controller;
@@ -803,12 +805,11 @@ final class GraphAnimation extends AnimationElement {
   Future<bool> get doneOrCanceled => _doneOrDisposedCompleter.future;
 
   void _mount() {
-    element = node.createElement()
+    element = createChild(node)
       ..onExit = (elapsedAfterExit) {
         _doneCompleter.complete();
         dispose();
-      }
-      ..animation = this;
+      };
     controller._attach(this);
   }
 
